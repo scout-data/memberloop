@@ -59,11 +59,14 @@
     .hero-bg {
       background-image: url('assets/hero-companies-c.jpg');
       background-size: cover;
-      background-position: center 40%;
+      background-position: 70% 40%;
       height: 100vh;
       height: 100dvh;
       display: flex;
       flex-direction: column;
+    }
+    @media (min-width: 768px) {
+      .hero-bg { background-position: center 40%; }
     }
     .hero-content {
       flex: 1;
