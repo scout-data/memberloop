@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mantle | About us</title>
+  <meta name="description" content="A platform connecting retired senior professionals with the next generation. Hand-matched mentorship, events, and community.">
+
+  <link rel="stylesheet" href="assets/styles.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink:       #1C1B18;
+      --ink-soft:  #5C5950;
+      --accent:    #2D5440;
+      --cream:     #F0EBDE;
+      --rule:      rgba(28, 27, 24, 0.10);
+    }
+    html, body { background-color: #FFFFFF !important; }
+    body {
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .font-display {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+    }
+    .font-hand {
+      font-family: 'Caveat', cursive;
+      font-weight: 500;
+    }
+    .text-ink { color: var(--ink); }
+    .text-ink-soft { color: var(--ink-soft); }
+    .text-accent { color: var(--accent); }
+    .bg-accent { background-color: var(--accent); }
+    .bg-cream  { background-color: var(--cream); }
+    .rule { border-color: var(--rule); }
+
+    /* Beige problem section */
+    .bg-beige { background-color: #FBFBF9; }
+    .news-card-border { border-color: rgba(28, 27, 24, 0.08); }
+
+    /* Looping news feed - sticks in view while LHS scrolls past */
+    .news-feed {
+      position: relative;
+      height: calc(100vh - 200px);
+      max-height: 760px;
+      overflow: hidden;
+      mask: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+      -webkit-mask: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+    }
+    .news-feed-track {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: scroll-up 60s linear infinite;
+    }
+    .news-feed:hover .news-feed-track {
+      animation-play-state: paused;
+    }
+    @keyframes scroll-up {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-50%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .news-feed-track { animation: none; }
+    }
+
+    /* Scrapbook photos - no border, sharp edges, soft shadow, tilted */
+    .scrap {
+      position: absolute;
+      border-radius: 16px;
+      object-fit: cover;
+      box-shadow:
+        0 2px 4px rgba(28, 27, 24, 0.08),
+        0 14px 36px rgba(28, 27, 24, 0.18);
+      transition: transform 260ms ease, box-shadow 260ms ease;
+    }
+    .scrap:hover {
+      transform: rotate(0deg) scale(1.02) translateY(-3px) !important;
+      z-index: 10;
+      box-shadow:
+        0 4px 8px rgba(28, 27, 24, 0.10),
+        0 20px 44px rgba(28, 27, 24, 0.22);
+    }
+
+    /* Button micro-polish */
+    .btn {
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="relative z-30 max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+  <a href="index.html" class="flex items-center gap-2.5">
+    <img src="assets/logo/mantle-logo-black.svg" alt="" class="h-5 w-auto">
+    <span class="font-display text-2xl tracking-tight">Mantle</span>
+  </a>
+
+  <div class="hidden md:flex items-center gap-9 text-sm text-ink-soft">
+    <a href="index.html" class="hover:text-ink transition">For mentors</a>
+    <a href="for-companies.html" class="hover:text-ink transition">For companies</a>
+    <a href="about.html" class="text-ink font-medium">About us</a>
+  </div>
+
+  <a href="mailto:benanthoney97@gmail.com" class="btn inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-accent text-white">
+    Talk to us
+    <span class="opacity-80">→</span>
+  </a>
+</nav>
+
+
+<!-- ============ THE PROBLEM ============ -->
+<section class="bg-white">
+  <div class="max-w-7xl mx-auto px-6 pt-8 pb-20 md:pt-12 md:pb-32 grid md:grid-cols-12 gap-12 md:gap-16">
+
+    <!-- LEFT: problem + vision copy (7/12) -->
+    <div class="md:col-span-7 space-y-24">
+
+      <!-- The problem -->
+      <div>
+        <h2 class="font-display text-[1.375rem] md:text-[1.875rem] leading-[1.1] mb-8">
+          The problem
+        </h2>
+        <div class="space-y-6 text-base leading-[1.6] text-ink">
+          <p>
+            Most young people get no help on starting their career.
+          </p>
+          <p>
+            1,000,000+ young people in the UK are not in education, employment, or training. They want to work. But knowing where to start is, for many, a complete unknown.
+          </p>
+          <p>
+            For those who do land a first job, mentorship is rarely available. Only the largest organisations have the resource to run mentor programmes. Leaving junior employees to figure it out alone.
+          </p>
+          <p>
+            Meanwhile, every year hundreds of thousands of senior professionals retire. Taking with them professional networks and decades of expertise that the next generation is desperate for, with no way of passing it down.
+          </p>
+          <p>
+            There's a severe knowledge gap at the start of a career. And a huge knowledge drain at the end of one.
+          </p>
+          <p>
+            Mantle exists to bridge this gap.
+          </p>
+        </div>
+      </div>
+
+      <!-- Our vision -->
+      <div>
+        <h2 class="font-display text-[1.375rem] md:text-[1.875rem] leading-[1.1] mb-8">
+          Our vision
+        </h2>
+        <div class="space-y-6 text-base leading-[1.6] text-ink">
+          <p>
+            We want to solve the graduate job crisis through the expertise, guidance and support of the UK's most successful ex-senior leaders.
+          </p>
+          <p>
+            We're building the infrastructure that takes the knowledge drain from the end of a career, and uses it to fill the knowledge gap experienced at the start of a career.
+          </p>
+          <p>
+            Practically, we're a career education platform for young people to get 1:1 mentorship from and attend events with ex-industry leaders.
+          </p>
+          <p>
+            For every junior employee who joins through their employer, we fund a young person currently out of work to receive the same mentorship, for free.
+          </p>
+        </div>
+
+        <!-- Four stakeholders visualization -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12">
+
+          <div class="bg-white border rule rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background-color: rgba(45, 84, 64, 0.10);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent">
+                  <path d="M3 21V7l9-4 9 4v14"/>
+                  <path d="M3 21h18"/>
+                  <path d="M9 21v-6h6v6"/>
+                  <path d="M9 9h.01M13 9h.01M17 9h.01"/>
+                </svg>
+              </div>
+              <div class="font-semibold text-[15px] text-ink">Companies</div>
+            </div>
+            <p class="text-sm text-ink-soft leading-relaxed">
+              Develop junior employees faster and retain them longer. With zero burden of running a mentorship programme.
+            </p>
+          </div>
+
+          <div class="bg-white border rule rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background-color: rgba(45, 84, 64, 0.10);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent">
+                  <rect x="2" y="7" width="20" height="14" rx="2"/>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                </svg>
+              </div>
+              <div class="font-semibold text-[15px] text-ink">Junior employees</div>
+            </div>
+            <p class="text-sm text-ink-soft leading-relaxed">
+              Get guidance and a network their employer can't always provide.
+            </p>
+          </div>
+
+          <div class="bg-white border rule rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background-color: rgba(45, 84, 64, 0.10);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                  <path d="M6 12v5c0 1.66 4 3 6 3s6-1.34 6-3v-5"/>
+                </svg>
+              </div>
+              <div class="font-semibold text-[15px] text-ink">Young people out of work</div>
+            </div>
+            <p class="text-sm text-ink-soft leading-relaxed">
+              Get the advice they need on breaking into the industry, for free.
+            </p>
+          </div>
+
+          <div class="bg-white border rule rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background-color: rgba(45, 84, 64, 0.10);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+              </div>
+              <div class="font-semibold text-[15px] text-ink">Retirees</div>
+            </div>
+            <p class="text-sm text-ink-soft leading-relaxed">
+              Pass on what they know and share their expertise with the next generation.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Our team -->
+      <div id="team" class="scroll-mt-12">
+        <h2 class="font-display text-[1.375rem] md:text-[1.875rem] leading-[1.1] mb-6">
+          Our team
+        </h2>
+        <p class="text-base text-ink-soft leading-[1.55] mb-10 max-w-xl">
+          A small London-based team with deep experience in startups and professional services.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+          <!-- Ben -->
+          <div class="bg-white border rule rounded-xl p-8 text-center">
+            <img loading="lazy" decoding="async" src="assets/headshots/team/1708378572286%20(1).jpeg"
+                 class="w-28 h-28 rounded-full mx-auto mb-6 object-cover"
+                 alt="Ben Anthoney">
+            <div class="font-semibold text-[16px] text-ink mb-1">Ben Anthoney</div>
+            <div class="text-sm text-ink-soft">Co-founder</div>
+          </div>
+
+          <!-- Matt -->
+          <div class="bg-white border rule rounded-xl p-8 text-center">
+            <img loading="lazy" decoding="async" src="assets/headshots/team/1620052014904.jpeg"
+                 class="w-28 h-28 rounded-full mx-auto mb-6 object-cover"
+                 alt="Matt Lavelle">
+            <div class="font-semibold text-[16px] text-ink mb-1">Matt Lavelle</div>
+            <div class="text-sm text-ink-soft">Co-founder</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: sticky news feed (5/12) - stays in view while LHS scrolls -->
+    <div class="md:col-span-5">
+      <div class="sticky top-10 self-start">
+        <div class="text-sm font-medium text-ink mb-5">In the news</div>
+        <div class="news-feed">
+        <div class="news-feed-track">
+
+          <!-- Set 1 -->
+          <a href="https://www.ucl.ac.uk/news/2026/apr/being-neet-early-adulthood-has-scarring-effect-midlife" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="assets/news-ucl.jpg" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/ucl.ac.uk?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">UCL News</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Being a NEET in early adulthood has 'scarring effect' in midlife</div>
+              <div class="text-[10px] text-ink-soft">April 2026</div>
+            </div>
+          </a>
+
+          <a href="https://www.dazeddigital.com/life-culture/article/70441/1/youth-unemployment-crisis-alan-milburn-report-neets-brit-uk-bedroom-generation" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="https://images-prod.dazeddigital.com/1080/115-0-1080-720/azure/dazed-prod/1440/7/1447035.jpg" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/dazeddigital.com?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">Dazed Digital</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Britain's 'bedroom generation': inside the youth unemployment crisis</div>
+              <div class="text-[10px] text-ink-soft">2026</div>
+            </div>
+          </a>
+
+          <a href="https://www.bbc.co.uk/news/articles/cy026x9jpd0o" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="https://ichef.bbci.co.uk/news/1024/branded_news/3298/live/8a627ad0-5abb-11f1-89a3-d1f559421220.jpg" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/bbc.co.uk?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">BBC News</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Opportunities shrinking for too many young people, says major report on 'lost generation'</div>
+              <div class="text-[10px] text-ink-soft">2026</div>
+            </div>
+          </a>
+
+          <a href="https://news.sky.com/story/former-mands-boss-drafted-in-to-help-ministers-tackle-neet-crisis-13549430" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden flex items-center justify-center" style="background: linear-gradient(135deg, #0046be 0%, #00133d 100%);"><img loading="lazy" decoding="async" src="https://img.logo.dev/sky.com?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="h-7 object-contain opacity-95" alt=""></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/sky.com?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">Sky News</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Former M&amp;S boss drafted in to help ministers tackle NEET crisis</div>
+              <div class="text-[10px] text-ink-soft">2025</div>
+            </div>
+          </a>
+
+          <a href="https://www.theguardian.com/society/2026/may/28/a-record-of-failure-whats-in-the-first-part-of-alan-milburns-neet-report" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="https://i.guim.co.uk/img/media/66281b81367d255b075a5f242e6383361e33045c/752_0_3760_3008/master/3760.jpg?width=1200&amp;height=630&amp;quality=85&amp;auto=format&amp;fit=crop&amp;precrop=40:21,offset-x50,offset-y0&amp;overlay-align=bottom%2Cleft&amp;overlay-width=100p&amp;overlay-base64=L2ltZy9zdGF0aWMvb3ZlcmxheXMvdGctZGVmYXVsdC5wbmc&amp;enable=upscale&amp;s=07a6814a1336df698361e4d328697d7b" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/theguardian.com?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">The Guardian</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">'A record of failure': what's in the first part of Alan Milburn's NEET report</div>
+              <div class="text-[10px] text-ink-soft">May 2026</div>
+            </div>
+          </a>
+
+          <a href="https://www.thetimes.com/uk/politics/article/alan-milburn-report-review-neets-key-takeaways-5k5t83wgt" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="https://www.thetimes.com/imageserver/image/fc0347ae-35ff-472f-a3ba-16a0081d31d6.png?strip=all&amp;format=webp&amp;crop=1600px%2C900px%2C0px%2C0px&amp;resize=1200" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/thetimes.com?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">The Times</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Alan Milburn's NEET report review: the key takeaways</div>
+              <div class="text-[10px] text-ink-soft">2026</div>
+            </div>
+          </a>
+
+          <a href="https://www.manchester.ac.uk/about/news/young-people-in-uks-poorest-households-three-times-more-likely-to-be-neet/" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="https://content.presspage.com/uploads/1369/d99b13ca-28f1-4077-85b3-d3d1ef213e18/1920_poverty-2.jpg?10000" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/manchester.ac.uk?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">University of Manchester</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Young people in UK's poorest households three times more likely to be NEET</div>
+              <div class="text-[10px] text-ink-soft">Research</div>
+            </div>
+          </a>
+
+          <a href="https://www.ft.com/content/40080223-f5f6-4dba-976e-026127457355" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="https://images.ft.com/v3/image/raw/https%3A%2F%2Fd1e00ek4ebabms.cloudfront.net%2Fproduction%2Fece47576-87e3-4fab-ac89-59f337fcbffd.jpg?source=next-article&amp;fit=scale-down&amp;quality=highest&amp;width=700&amp;dpr=1" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/ft.com?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">Financial Times</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Employers must listen to young people if they want to help</div>
+              <div class="text-[10px] text-ink-soft">2026</div>
+            </div>
+          </a>
+
+          <!-- Set 2 (duplicate for seamless loop) -->
+          <a href="https://www.ucl.ac.uk/news/2026/apr/being-neet-early-adulthood-has-scarring-effect-midlife" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3" aria-hidden="true">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="assets/news-ucl.jpg" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/ucl.ac.uk?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">UCL News</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Being a NEET in early adulthood has 'scarring effect' in midlife</div>
+              <div class="text-[10px] text-ink-soft">April 2026</div>
+            </div>
+          </a>
+
+          <a href="https://www.dazeddigital.com/life-culture/article/70441/1/youth-unemployment-crisis-alan-milburn-report-neets-brit-uk-bedroom-generation" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3" aria-hidden="true">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="https://images-prod.dazeddigital.com/1080/115-0-1080-720/azure/dazed-prod/1440/7/1447035.jpg" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/dazeddigital.com?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">Dazed Digital</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Britain's 'bedroom generation': inside the youth unemployment crisis</div>
+              <div class="text-[10px] text-ink-soft">2026</div>
+            </div>
+          </a>
+
+          <a href="https://www.bbc.co.uk/news/articles/cy026x9jpd0o" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3" aria-hidden="true">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="https://ichef.bbci.co.uk/news/1024/branded_news/3298/live/8a627ad0-5abb-11f1-89a3-d1f559421220.jpg" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/bbc.co.uk?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">BBC News</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Opportunities shrinking for too many young people, says major report on 'lost generation'</div>
+              <div class="text-[10px] text-ink-soft">2026</div>
+            </div>
+          </a>
+
+          <a href="https://news.sky.com/story/former-mands-boss-drafted-in-to-help-ministers-tackle-neet-crisis-13549430" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3" aria-hidden="true">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden flex items-center justify-center" style="background: linear-gradient(135deg, #0046be 0%, #00133d 100%);"><img loading="lazy" decoding="async" src="https://img.logo.dev/sky.com?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="h-7 object-contain opacity-95" alt=""></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/sky.com?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">Sky News</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Former M&amp;S boss drafted in to help ministers tackle NEET crisis</div>
+              <div class="text-[10px] text-ink-soft">2025</div>
+            </div>
+          </a>
+
+          <a href="https://www.theguardian.com/society/2026/may/28/a-record-of-failure-whats-in-the-first-part-of-alan-milburns-neet-report" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3" aria-hidden="true">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="https://i.guim.co.uk/img/media/66281b81367d255b075a5f242e6383361e33045c/752_0_3760_3008/master/3760.jpg?width=1200&amp;height=630&amp;quality=85&amp;auto=format&amp;fit=crop&amp;precrop=40:21,offset-x50,offset-y0&amp;overlay-align=bottom%2Cleft&amp;overlay-width=100p&amp;overlay-base64=L2ltZy9zdGF0aWMvb3ZlcmxheXMvdGctZGVmYXVsdC5wbmc&amp;enable=upscale&amp;s=07a6814a1336df698361e4d328697d7b" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/theguardian.com?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">The Guardian</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">'A record of failure': what's in the first part of Alan Milburn's NEET report</div>
+              <div class="text-[10px] text-ink-soft">May 2026</div>
+            </div>
+          </a>
+
+          <a href="https://www.thetimes.com/uk/politics/article/alan-milburn-report-review-neets-key-takeaways-5k5t83wgt" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3" aria-hidden="true">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="https://www.thetimes.com/imageserver/image/fc0347ae-35ff-472f-a3ba-16a0081d31d6.png?strip=all&amp;format=webp&amp;crop=1600px%2C900px%2C0px%2C0px&amp;resize=1200" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/thetimes.com?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">The Times</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Alan Milburn's NEET report review: the key takeaways</div>
+              <div class="text-[10px] text-ink-soft">2026</div>
+            </div>
+          </a>
+
+          <a href="https://www.manchester.ac.uk/about/news/young-people-in-uks-poorest-households-three-times-more-likely-to-be-neet/" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3" aria-hidden="true">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="https://content.presspage.com/uploads/1369/d99b13ca-28f1-4077-85b3-d3d1ef213e18/1920_poverty-2.jpg?10000" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/manchester.ac.uk?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">University of Manchester</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Young people in UK's poorest households three times more likely to be NEET</div>
+              <div class="text-[10px] text-ink-soft">Research</div>
+            </div>
+          </a>
+
+          <a href="https://www.ft.com/content/40080223-f5f6-4dba-976e-026127457355" target="_blank" rel="noopener" class="news-card bg-white border news-card-border rounded-lg p-3 flex items-center gap-3" aria-hidden="true">
+            <div class="w-16 h-16 shrink-0 rounded overflow-hidden bg-gray-100"><img loading="lazy" decoding="async" src="https://images.ft.com/v3/image/raw/https%3A%2F%2Fd1e00ek4ebabms.cloudfront.net%2Fproduction%2Fece47576-87e3-4fab-ac89-59f337fcbffd.jpg?source=next-article&amp;fit=scale-down&amp;quality=highest&amp;width=700&amp;dpr=1" class="w-full h-full object-cover" alt="" loading="lazy"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <img loading="lazy" decoding="async" src="https://img.logo.dev/ft.com?token=pk_Q7O4k099Tgitwp7yoycUjQ" class="w-4 h-4 rounded object-contain" alt="">
+                <span class="text-[11px] font-medium text-ink-soft">Financial Times</span>
+              </div>
+              <div class="font-semibold text-[13px] leading-snug text-ink mb-1">Employers must listen to young people if they want to help</div>
+              <div class="text-[10px] text-ink-soft">2026</div>
+            </div>
+          </a>
+
+        </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============ CTA STRIP ============ -->
+<section class="bg-white">
+  <div class="max-w-4xl mx-auto px-6 py-24 md:py-32 text-center">
+    <h2 class="font-display text-[2rem] md:text-[2.75rem] leading-[1.1] mb-6">
+      Ready to get involved?
+    </h2>
+    <p class="text-base text-ink-soft leading-[1.55] mb-10 max-w-xl mx-auto">
+      Whether you're a senior expert with knowledge to share, or a company looking to develop your team, we'd love to talk.
+    </p>
+    <div class="flex flex-wrap gap-3 justify-center">
+      <a href="index.html#cta" class="btn inline-flex items-center gap-2 bg-accent text-white px-5 py-3 rounded-lg font-medium text-sm">
+        Become a mentor
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+      <a href="for-companies.html" class="btn inline-flex items-center gap-2 bg-white border rule text-ink px-5 py-3 rounded-lg font-medium text-sm">
+        Mentor my team
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ FOOTER ============ -->
+<footer class="hidden border-t border-black/10 bg-white">
+  <div class="max-w-7xl mx-auto px-6 pt-16 pb-10 md:pt-20 md:pb-12">
+
+    <!-- Main grid: brand + 5 link columns -->
+    <div class="grid grid-cols-2 md:grid-cols-6 gap-10 md:gap-8 mb-14">
+
+      <!-- Brand column -->
+      <div class="col-span-2 md:col-span-1">
+        <a href="index.html" class="inline-flex items-center gap-2.5 mb-4">
+          <img loading="lazy" decoding="async" src="assets/logo/mantle-logo-black.svg" alt="" class="h-5 w-auto">
+          <span class="font-display text-2xl tracking-tight">Mantle</span>
+        </a>
+        <p class="text-sm text-ink-soft leading-relaxed mb-6 max-w-[220px]">
+          Career mentorship between generations.
+        </p>
+        <div class="flex gap-2">
+          <a href="#" aria-label="LinkedIn" class="w-9 h-9 rounded-md bg-black/5 hover:bg-black/10 flex items-center justify-center transition">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-ink"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.27 2.38 4.27 5.47v6.27zM5.34 7.43a2.06 2.06 0 0 1-2.06-2.06c0-1.13.92-2.06 2.06-2.06 1.13 0 2.06.92 2.06 2.06 0 1.13-.92 2.06-2.06 2.06zm1.78 13.02H3.56V9h3.56v11.45z"/></svg>
+          </a>
+          <a href="#" aria-label="X" class="w-9 h-9 rounded-md bg-black/5 hover:bg-black/10 flex items-center justify-center transition">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-ink"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-md bg-black/5 hover:bg-black/10 flex items-center justify-center transition">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-ink"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- For mentors -->
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">For mentors</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="index.html" class="hover:text-ink transition">Become a mentor</a></li>
+          <li><a href="#" class="hover:text-ink transition">How it works</a></li>
+          <li><a href="#" class="hover:text-ink transition">Founding cohort</a></li>
+          <li><a href="#" class="hover:text-ink transition">Events</a></li>
+        </ul>
+      </div>
+
+      <!-- For companies -->
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">For companies</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="for-companies.html" class="hover:text-ink transition">Mentor my team</a></li>
+          <li><a href="#" class="hover:text-ink transition">Pricing</a></li>
+          <li><a href="#" class="hover:text-ink transition">Programme details</a></li>
+          <li><a href="#" class="hover:text-ink transition">Case studies</a></li>
+        </ul>
+      </div>
+
+      <!-- For graduates -->
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">For graduates</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="for-graduates.html" class="hover:text-ink transition">Get a mentor</a></li>
+          <li><a href="#" class="hover:text-ink transition">Join the waitlist</a></li>
+          <li><a href="#" class="hover:text-ink transition">How it works</a></li>
+          <li><a href="#" class="hover:text-ink transition">The NEET principle</a></li>
+        </ul>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">Company</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="about.html" class="hover:text-ink transition">About us</a></li>
+          <li><a href="about.html#team" class="hover:text-ink transition">Our team</a></li>
+          <li><a href="mailto:benanthoney97@gmail.com" class="hover:text-ink transition">Contact</a></li>
+          <li><a href="#" class="hover:text-ink transition">Press</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">Legal</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="#" class="hover:text-ink transition">Terms of Use</a></li>
+          <li><a href="#" class="hover:text-ink transition">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-ink transition">Cookie Policy</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Bottom strip -->
+    <div class="border-t border-black/10 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs text-ink-soft">
+      <div>© 2026 Mantle Ltd. All rights reserved.</div>
+      <div class="flex gap-5">
+        <a href="#" class="hover:text-ink transition">Cookie Preferences</a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+</body>
+</html>

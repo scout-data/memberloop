@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mantle | Professional Mentorship</title>
+  <meta name="description" content="A platform connecting retired senior professionals with the next generation. Hand-matched mentorship, events, and community.">
+
+  <link rel="stylesheet" href="assets/styles.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #F1EFE9;
+      --cream-soft: #E8E4D8;
+      --ink: #1C1B18;
+      --ink-soft: #5C5950;
+      --accent: #2D5440;
+      --accent-soft: #D8D2BD;
+      --warm-1: #E8D5B7;
+      --warm-2: #BDD4C3;
+    }
+    html, body {
+      background-color: #FFFFFF !important;
+    }
+    body {
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .font-display {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+    }
+    .text-ink { color: var(--ink); }
+    .text-ink-soft { color: var(--ink-soft); }
+    .bg-accent { background-color: var(--accent); }
+    .text-accent { color: var(--accent); }
+    .bg-cream { background-color: var(--cream); }
+    .bg-cream-soft { background-color: var(--cream-soft); }
+    .bg-accent-soft { background-color: var(--accent-soft); }
+    .border-ink-soft\/10 { border-color: rgba(92, 89, 80, 0.1); }
+
+    /* Decorative atmospheric blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      z-index: 0;
+    }
+    .blob-warm  { background: var(--warm-1); opacity: 0.55; }
+    .blob-green { background: var(--warm-2); opacity: 0.5; }
+
+    /* Soft card shadow */
+    .card-shadow {
+      box-shadow:
+        0 1px 2px rgba(28, 27, 24, 0.04),
+        0 8px 24px rgba(28, 27, 24, 0.06),
+        0 24px 48px rgba(28, 27, 24, 0.04);
+    }
+
+    /* Subtle dotted line linking mentor to mentees */
+    .link-line {
+      stroke: var(--ink-soft);
+      stroke-width: 1.25;
+      stroke-dasharray: 3 4;
+      opacity: 0.35;
+    }
+
+    /* CTA button polish */
+    .btn-primary {
+      transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Hero background image + overlay */
+    .hero-bg {
+      background-image: url('assets/headshots/edwin-andrade-4V1dC_eoCwg-unsplash.webp');
+      background-size: cover;
+      background-position: center 65%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .hero-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      position: relative;
+      width: 100%;
+    }
+    .hero-nav {
+      position: relative;
+      z-index: 30;
+      width: 100%;
+      max-width: 80rem;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+    .hero-overlay {
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(10, 8, 6, 0.7) 0%,
+          rgba(10, 8, 6, 0.35) 12%,
+          rgba(10, 8, 6, 0) 25%
+        ),
+        linear-gradient(
+          to right,
+          rgba(10, 8, 6, 0.75) 0%,
+          rgba(10, 8, 6, 0.55) 35%,
+          rgba(10, 8, 6, 0.25) 70%,
+          rgba(10, 8, 6, 0.10) 100%
+        );
+    }
+
+    /* Rotating ring containers */
+    .ring-inner, .ring-outer {
+      position: absolute;
+      inset: 0;
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+    .ring-inner { animation: orbit-cw  80s  linear infinite; }
+    .ring-outer { animation: orbit-ccw 140s linear infinite; }
+
+    @keyframes orbit-cw  { to { transform: rotate(360deg); } }
+    @keyframes orbit-ccw { to { transform: rotate(-360deg); } }
+
+    /* Avatars counter-rotate so faces stay upright */
+    .avatar {
+      position: absolute;
+      border-radius: 9999px;
+      object-fit: cover;
+      box-shadow:
+        0 2px 4px rgba(28, 27, 24, 0.06),
+        0 10px 28px rgba(28, 27, 24, 0.10);
+      will-change: transform;
+    }
+    .ring-inner .avatar { animation: orbit-ccw 80s  linear infinite; }
+    .ring-outer .avatar { animation: orbit-cw  140s linear infinite; }
+
+    /* Center pill in the network */
+    .center-pill {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #F5F2EA;
+      padding: 14px 28px;
+      border-radius: 9999px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #1C1B18;
+      box-shadow: 0 1px 2px rgba(28, 27, 24, 0.04);
+      z-index: 5;
+      white-space: nowrap;
+    }
+
+    /* Infinity loop flowing dash (single dash, normalized path length = 100) */
+    .loop-flow {
+      animation: flow-dash 2s linear infinite;
+    }
+    @keyframes flow-dash {
+      to { stroke-dashoffset: -100; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .loop-flow { animation: none; }
+    }
+  </style>
+</head>
+
+<body class="bg-white" style="background-color: #FFFFFF;">
+
+<!-- ============ HERO (now contains nav so the image bleeds behind it) ============ -->
+<section class="relative overflow-hidden hero-bg">
+
+  <!-- Dark overlay for text readability (vertical at top for nav, horizontal for hero text) -->
+  <div class="absolute inset-0 hero-overlay"></div>
+
+  <!-- Nav sits on top of the same background -->
+  <nav class="hero-nav">
+    <a href="/" class="flex items-center gap-2.5">
+      <img loading="lazy" decoding="async" src="assets/logo/mantle-logo-white.svg" alt="" class="h-5 w-auto">
+      <span class="font-display text-2xl tracking-tight text-white">Mantle</span>
+    </a>
+
+    <div class="hidden md:flex items-center gap-9 text-sm" style="color: rgba(255,255,255,0.75);">
+      <a href="index.html" class="text-white font-medium">For mentors</a>
+      <a href="for-companies.html" class="hover:text-white transition">For companies</a>
+      <a href="about.html" class="hover:text-white transition">About us</a>
+    </div>
+
+    <a href="mailto:benanthoney97@gmail.com" class="btn-primary inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-white text-ink">
+      Talk to us
+      <span class="opacity-70">→</span>
+    </a>
+  </nav>
+
+  <div class="hero-content">
+    <div class="max-w-7xl mx-auto px-6 w-full grid md:grid-cols-2 gap-14">
+
+      <!-- LEFT: copy column -->
+      <div class="relative z-10">
+        <h1 class="font-display text-[2.25rem] md:text-[3.25rem] leading-[1.05] mb-8 text-white">
+          Mentor the industry's<br/>next generation.
+        </h1>
+
+        <p class="text-lg leading-[1.55] mb-10 max-w-lg" style="color: rgba(255,255,255,0.85);">
+          Graduate jobs are in crisis. Be part of the solution.<br/>Mentorship events, community and platform.
+        </p>
+
+        <div class="flex flex-col items-start gap-3">
+          <a href="mailto:benanthoney97@gmail.com" class="btn-primary inline-flex items-center gap-2 bg-white text-ink px-6 py-4 rounded-lg font-medium text-[15px]">
+            Learn more
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- RIGHT: intentionally empty so the audience peeks through -->
+      <div class="hidden md:block"></div>
+
+    </div>
+  </div>
+
+</section>
+
+
+<div class="hidden"><!-- ============ THE LOOP ============ -->
+<section class="bg-[#FBFBF9] py-24 md:py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- Section header -->
+    <div class="text-center mb-16 md:mb-20 max-w-3xl mx-auto">
+      <h2 class="font-display text-[2.25rem] md:text-[3.5rem] leading-[1.05] mb-6 text-ink">
+        Graduate jobs are in crisis.<br>Be part of the solution.
+      </h2>
+      <p class="text-lg text-ink-soft leading-[1.5]">
+        Mantle is a platform for you to share your expertise with young people, to help them find and thrive in their first job.
+      </p>
+    </div>
+
+    <!-- Infinity loop SVG -->
+    <div class="relative max-w-5xl mx-auto">
+      <svg viewBox="0 50 900 250" class="w-full" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Infinity loop showing knowledge flowing from senior experts through Mantle to young people, and back again.">
+
+        <defs>
+          <clipPath id="clip-left">
+            <circle cx="200" cy="180" r="60"/>
+          </clipPath>
+          <clipPath id="clip-right">
+            <circle cx="700" cy="180" r="60"/>
+          </clipPath>
+        </defs>
+
+        <!-- Faded base path -->
+        <path id="loop-path"
+              d="M 200,180 C 200,100 350,100 450,180 C 550,260 700,260 700,180 C 700,100 550,100 450,180 C 350,260 200,260 200,180 Z"
+              fill="none"
+              stroke="rgba(45,84,64,0.15)"
+              stroke-width="2"/>
+
+        <!-- Animated single dash on top (pathLength normalized to 100) -->
+        <path d="M 200,180 C 200,100 350,100 450,180 C 550,260 700,260 700,180 C 700,100 550,100 450,180 C 350,260 200,260 200,180 Z"
+              pathLength="100"
+              fill="none"
+              stroke="#2D5440"
+              stroke-width="3"
+              stroke-dasharray="2 98"
+              stroke-linecap="round"
+              opacity="0.85"
+              class="loop-flow"/>
+
+        <!-- Hidden motion paths: question goes young → expert (top-left + bottom-right). Answer goes expert → young (top-right + bottom-left). -->
+        <path id="path-question"
+              d="M 200,180 C 200,100 350,100 450,180 C 550,260 700,260 700,180"
+              fill="none" stroke="none"/>
+        <path id="path-answer"
+              d="M 700,180 C 700,100 550,100 450,180 C 350,260 200,260 200,180"
+              fill="none" stroke="none"/>
+
+        <!-- Left portrait: young person -->
+        <circle cx="200" cy="180" r="64" fill="white" stroke="#2D5440" stroke-width="3"/>
+        <image href="assets/headshots/mentees/tucker-tangeman-i1ZgRdaBe_A-unsplash.webp"
+               x="140" y="120" width="120" height="120"
+               clip-path="url(#clip-left)"
+               preserveAspectRatio="xMidYMid slice"/>
+
+        <!-- Right portrait: senior expert -->
+        <circle cx="700" cy="180" r="64" fill="white" stroke="#2D5440" stroke-width="3"/>
+        <image href="assets/headshots/mentors/christina-wocintechchat-com-m-SJvDxw0azqw-unsplash.webp"
+               x="640" y="120" width="120" height="120"
+               clip-path="url(#clip-right)"
+               preserveAspectRatio="xMidYMid slice"/>
+
+        <!-- Centre Mantle badge -->
+        <circle cx="450" cy="180" r="48" fill="#2D5440"/>
+        <text x="450" y="187"
+              text-anchor="middle"
+              fill="white"
+              font-family="Plus Jakarta Sans, sans-serif"
+              font-weight="600"
+              font-size="18"
+              letter-spacing="-0.5">Mantle</text>
+      </svg>
+
+      <!-- Labels under each side -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-12 md:gap-48 max-w-4xl mx-auto" style="margin-top: 0.75rem;">
+
+        <!-- Left side -->
+        <div class="text-center">
+          <div class="text-[11px] font-semibold tracking-[0.16em] text-accent uppercase mb-3">
+            Young people starting
+          </div>
+          <p class="text-base text-ink-soft leading-relaxed">
+            <strong class="text-ink font-semibold">The knowledge gap:</strong> A new career begins with no-one to ask.
+          </p>
+        </div>
+
+        <!-- Right side -->
+        <div class="text-center">
+          <div class="text-[11px] font-semibold tracking-[0.16em] text-accent uppercase mb-3">
+            You
+          </div>
+          <p class="text-base text-ink-soft leading-relaxed">
+            <strong class="text-ink font-semibold">The knowledge drain:</strong> A career of expertise leaves the workforce.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Footnote: nod to the full 4-stakeholder system without breaking the simple visual -->
+      <p class="text-center text-sm text-ink-soft max-w-2xl mx-auto leading-relaxed" style="margin-top: 6rem;">
+        Mantle pairs retired experts with young people. Funded by the companies who buy mentorship for their teams. <a href="for-graduates.html" class="text-accent hover:underline font-medium">Learn more about the Mantle Match.</a>
+      </p>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-black/10 bg-white">
+  <div class="max-w-7xl mx-auto px-6 pt-16 pb-10 md:pt-20 md:pb-12">
+
+    <!-- Main grid: brand + 5 link columns -->
+    <div class="grid grid-cols-2 md:grid-cols-6 gap-10 md:gap-8 mb-14">
+
+      <!-- Brand column -->
+      <div class="col-span-2 md:col-span-1">
+        <a href="index.html" class="inline-flex items-center gap-2.5 mb-4">
+          <img loading="lazy" decoding="async" src="assets/logo/mantle-logo-black.svg" alt="" class="h-5 w-auto">
+          <span class="font-display text-2xl tracking-tight">Mantle</span>
+        </a>
+        <p class="text-sm text-ink-soft leading-relaxed mb-6 max-w-[220px]">
+          Career mentorship between generations.
+        </p>
+        <div class="flex gap-2">
+          <a href="#" aria-label="LinkedIn" class="w-9 h-9 rounded-md bg-black/5 hover:bg-black/10 flex items-center justify-center transition">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-ink"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.27 2.38 4.27 5.47v6.27zM5.34 7.43a2.06 2.06 0 0 1-2.06-2.06c0-1.13.92-2.06 2.06-2.06 1.13 0 2.06.92 2.06 2.06 0 1.13-.92 2.06-2.06 2.06zm1.78 13.02H3.56V9h3.56v11.45z"/></svg>
+          </a>
+          <a href="#" aria-label="X" class="w-9 h-9 rounded-md bg-black/5 hover:bg-black/10 flex items-center justify-center transition">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-ink"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-md bg-black/5 hover:bg-black/10 flex items-center justify-center transition">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-ink"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- For mentors -->
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">For mentors</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="index.html" class="hover:text-ink transition">Become a mentor</a></li>
+          <li><a href="#" class="hover:text-ink transition">How it works</a></li>
+          <li><a href="#" class="hover:text-ink transition">Founding cohort</a></li>
+          <li><a href="#" class="hover:text-ink transition">Events</a></li>
+        </ul>
+      </div>
+
+      <!-- For companies -->
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">For companies</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="for-companies.html" class="hover:text-ink transition">Mentor my team</a></li>
+          <li><a href="#" class="hover:text-ink transition">Pricing</a></li>
+          <li><a href="#" class="hover:text-ink transition">Programme details</a></li>
+          <li><a href="#" class="hover:text-ink transition">Case studies</a></li>
+        </ul>
+      </div>
+
+      <!-- For graduates -->
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">For graduates</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="for-graduates.html" class="hover:text-ink transition">Get a mentor</a></li>
+          <li><a href="#" class="hover:text-ink transition">Join the waitlist</a></li>
+          <li><a href="#" class="hover:text-ink transition">How it works</a></li>
+          <li><a href="#" class="hover:text-ink transition">The NEET principle</a></li>
+        </ul>
+      </div>
+
+      <!-- Company -->
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">Company</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="about.html" class="hover:text-ink transition">About us</a></li>
+          <li><a href="about.html#team" class="hover:text-ink transition">Our team</a></li>
+          <li><a href="mailto:benanthoney97@gmail.com" class="hover:text-ink transition">Contact</a></li>
+          <li><a href="#" class="hover:text-ink transition">Press</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">Legal</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="#" class="hover:text-ink transition">Terms of Use</a></li>
+          <li><a href="#" class="hover:text-ink transition">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-ink transition">Cookie Policy</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Bottom strip -->
+    <div class="border-t border-black/10 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs text-ink-soft">
+      <div>© 2026 Mantle Ltd. All rights reserved.</div>
+      <div class="flex gap-5">
+        <a href="#" class="hover:text-ink transition">Cookie Preferences</a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+</div><!-- end hidden -->
+
+</body>
+</html>
