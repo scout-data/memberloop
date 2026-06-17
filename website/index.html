@@ -85,11 +85,14 @@
     .hero-bg {
       background-image: url('assets/headshots/edwin-andrade-4V1dC_eoCwg-unsplash.webp');
       background-size: cover;
-      background-position: center 65%;
+      background-position: center 45%;
       height: 100vh;
       height: 100dvh;
       display: flex;
       flex-direction: column;
+    }
+    @media (min-width: 768px) {
+      .hero-bg { background-position: center 65%; }
     }
     .hero-content {
       flex: 1;
