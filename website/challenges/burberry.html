@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Save Burberry. You're the new CEO. | Mantle</title>
+  <meta name="description" content="A Mantle challenge. Write the 100-day plan that returns Burberry to growth. FTSE 100, profit collapse, new CEO, new direction. Show what you can do.">
+
+  <link rel="stylesheet" href="../assets/styles.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #F1EFE9;
+      --cream-soft: #E8E4D8;
+      --ink: #1C1B18;
+      --ink-soft: #5C5950;
+      --accent: #2D5440;
+      --accent-soft: #D8D2BD;
+    }
+    html, body { background-color: #FFFFFF !important; }
+    html { scroll-padding-top: 130px; }
+    body {
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .font-display {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+    .text-ink { color: var(--ink); }
+    .text-ink-soft { color: var(--ink-soft); }
+    .bg-accent { background-color: var(--accent); }
+    .text-accent { color: var(--accent); }
+
+    /* Sticky site nav */
+    .site-nav-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+    }
+    .site-nav {
+      width: 100%;
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0.875rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+
+    /* Banner */
+    .ch-banner {
+      position: relative;
+      overflow: hidden;
+      padding-top: 84px;
+      padding-bottom: 36px;
+      background: #1C1B18;
+    }
+    .ch-banner-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('../assets/challenges/burberry.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.45;
+      z-index: 0;
+    }
+    .ch-banner-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(28,27,24,0.4) 0%, rgba(28,27,24,0.85) 70%, rgba(28,27,24,1) 100%);
+      z-index: 1;
+    }
+    .ch-banner-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 36px 1.5rem 12px;
+      color: white;
+    }
+    .ch-crumb {
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 16px;
+    }
+    .ch-crumb a { color: rgba(255,255,255,0.8); text-decoration: none; }
+    .ch-crumb a:hover { color: white; }
+    .ch-title-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .ch-logo-circle {
+      width: 64px;
+      height: 64px;
+      background: white;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    }
+    .ch-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      font-size: 28px;
+      line-height: 1.15;
+      margin: 0 0 8px 0;
+      color: white;
+    }
+    .ch-sub {
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.75);
+      max-width: 720px;
+      margin: 0;
+    }
+    .ch-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 18px;
+      margin-top: 18px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+    }
+    .ch-meta-row .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+      font-weight: 500;
+    }
+    .ch-cta-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .ch-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 11px 18px;
+      background: white;
+      color: var(--ink);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+    .ch-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    .ch-cta-secondary {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    @media (min-width: 768px) {
+      .ch-title { font-size: 40px; line-height: 1.1; }
+      .ch-sub { font-size: 16px; }
+      .ch-banner-inner { padding: 48px 1.5rem 16px; }
+    }
+
+    /* Sticky tabs */
+    .ch-tabs-wrap {
+      position: sticky;
+      top: 56px;
+      z-index: 40;
+      background: white;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .ch-tabs {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+    }
+    .ch-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 14px;
+      font-size: 14px;
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      cursor: pointer;
+      background: none;
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      font-family: inherit;
+    }
+    .ch-tab:hover { color: var(--ink); }
+    .ch-tab.active {
+      color: var(--ink);
+      border-bottom-color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Content layout */
+    .ch-content {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 36px 1.5rem 80px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+    @media (min-width: 1024px) {
+      .ch-content {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 48px;
+      }
+    }
+    .ch-panel { display: none; }
+    .ch-panel.active { display: block; }
+
+    /* Main content */
+    .ch-main { min-width: 0; }
+    .ch-section { margin-bottom: 44px; }
+    .ch-section:last-child { margin-bottom: 0; }
+    .ch-section h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      font-size: 24px;
+      line-height: 1.2;
+      margin: 0 0 16px;
+      color: var(--ink);
+    }
+    .ch-section h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 17px;
+      margin: 24px 0 8px;
+      color: var(--ink);
+    }
+    .ch-section p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+      margin: 0 0 14px;
+    }
+    .ch-section p:last-child { margin-bottom: 0; }
+    .ch-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 14px;
+    }
+    .ch-section ul li {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--ink-soft);
+      padding-left: 20px;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .ch-section ul li:before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: absolute;
+      left: 6px;
+      top: 10px;
+    }
+    .ch-section strong { color: var(--ink); font-weight: 600; }
+    .ch-section a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(45,84,64,0.3); }
+    .ch-section a:hover { border-bottom-color: var(--accent); }
+    .ch-callout {
+      background: #FBFBF9;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .ch-callout p { font-size: 14px; margin-bottom: 8px; }
+    .ch-callout p:last-child { margin-bottom: 0; }
+
+    /* Data table */
+    .ch-table-wrap {
+      overflow-x: auto;
+      margin: 16px 0;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 10px;
+    }
+    .ch-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 480px;
+    }
+    .ch-table th, .ch-table td {
+      padding: 11px 14px;
+      text-align: left;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .ch-table th {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      font-weight: 600;
+      background: #FBFBF9;
+    }
+    .ch-table td {
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .ch-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .ch-table th.num { text-align: right; }
+    .ch-table tr:last-child td { border-bottom: 0; }
+    .ch-table tr:hover td { background: #FBFBF9; }
+
+    /* Resource list */
+    .ch-res-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .ch-res {
+      display: block;
+      padding: 14px 16px;
+      background: white;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 10px;
+      text-decoration: none;
+      transition: border-color 150ms ease, transform 150ms ease;
+    }
+    .ch-res:hover {
+      border-color: rgba(45,84,64,0.4);
+      transform: translateY(-1px);
+    }
+    .ch-res-cat {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .ch-res-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0 0 3px;
+    }
+    .ch-res-desc {
+      font-size: 12px;
+      color: var(--ink-soft);
+      margin: 0;
+      line-height: 1.45;
+    }
+
+    /* Right info sidebar */
+    .ch-sidebar { min-width: 0; }
+    .ch-info-card {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
+      padding: 22px;
+      position: sticky;
+      top: 130px;
+    }
+    .ch-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      gap: 14px;
+    }
+    .ch-info-row:last-of-type { border-bottom: 0; }
+    .ch-info-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-soft);
+      font-weight: 600;
+    }
+    .ch-info-value {
+      font-size: 14px;
+      color: var(--ink);
+      text-align: right;
+      font-weight: 500;
+    }
+    .ch-info-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(45, 84, 64, 0.12);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .ch-info-status .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Burger / mobile nav */
+    .burger-btn {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .burger-btn span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 2px;
+    }
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(28, 27, 24, 0.97);
+      z-index: 100;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      color: rgba(255,255,255,0.85);
+      font-size: 1.25rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .mobile-nav-cta {
+      background: white;
+      color: #1C1B18 !important;
+      padding: 0.75rem 1.75rem;
+      border-radius: 0.5rem;
+    }
+    .mobile-nav-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 2rem;
+      cursor: pointer;
+    }
+    .nav-cta { display: none; }
+    @media (min-width: 768px) {
+      .burger-btn { display: none; }
+      .nav-cta { display: inline-flex; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Sticky nav -->
+<header class="site-nav-wrap">
+  <nav class="site-nav">
+    <a href="../index.html" class="flex items-center gap-2.5">
+      <img loading="lazy" decoding="async" src="../assets/logo/mantle-logo-white.svg" alt="" class="h-5 w-auto">
+      <span class="font-display text-2xl tracking-tight text-white">Mantle</span>
+    </a>
+    <div class="hidden md:flex items-center gap-9 text-sm" style="color: rgba(255,255,255,0.75);">
+      <a href="../index.html#challenges" class="hover:text-white transition">Challenges</a>
+    </div>
+    <a href="../contact.html" class="nav-cta btn-primary items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-white text-ink">
+      Talk to us
+      <span class="opacity-70">→</span>
+    </a>
+    <button class="burger-btn" onclick="document.getElementById('mobileNav').classList.add('open')" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<div id="mobileNav" class="mobile-nav">
+  <button class="mobile-nav-close" onclick="document.getElementById('mobileNav').classList.remove('open')" aria-label="Close menu">×</button>
+  <a href="../index.html#challenges">Challenges</a>
+  <a href="../contact.html" class="mobile-nav-cta">Talk to us →</a>
+</div>
+
+
+<!-- Banner -->
+<section class="ch-banner">
+  <div class="ch-banner-bg"></div>
+  <div class="ch-banner-overlay"></div>
+  <div class="ch-banner-inner">
+    <div class="ch-crumb">
+      <a href="../index.html#challenges">All challenges</a> · Fashion / Luxury
+    </div>
+    <div class="ch-title-row">
+      <div class="ch-logo-circle">
+        <img src="../assets/logo/mantle-logo-green.svg" alt="" style="width: 30px; height: 30px;">
+      </div>
+      <div style="flex: 1; min-width: 0;">
+        <h1 class="ch-title">Burberry brand challenge</h1>
+        <p class="ch-sub">Burberry's board has earmarked £100m for one strategic growth investment over the next 18 months. You're the new Chief Strategy Officer. Recommend the bet. 1,000 words.</p>
+      </div>
+    </div>
+    <div class="ch-meta-row">
+      <span class="pill">Strategy</span>
+      <span class="pill">Capital allocation</span>
+      <span class="pill">Luxury retail</span>
+      <span>1,000 words</span>
+      <span>·</span>
+      <span>112 submissions</span>
+      <span>·</span>
+      <span>Closes 30 Jul 2026</span>
+    </div>
+    <div class="ch-cta-row">
+      <a href="../submit.html?challenge=burberry" class="ch-cta">
+        Enter the challenge
+        <span>→</span>
+      </a>
+      <a href="#rules" class="ch-cta ch-cta-secondary" onclick="event.preventDefault(); switchTab('rules');">
+        Read the rules
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- Sticky tabs -->
+<div class="ch-tabs-wrap">
+  <nav class="ch-tabs">
+    <button class="ch-tab active" data-tab="overview" onclick="switchTab('overview')">Overview</button>
+    <button class="ch-tab" data-tab="brief" onclick="switchTab('brief')">Brief</button>
+    <button class="ch-tab" data-tab="brief-pack" onclick="switchTab('brief-pack')">Brief Pack</button>
+    <button class="ch-tab" data-tab="submissions" onclick="switchTab('submissions')">Submissions</button>
+    <button class="ch-tab" data-tab="rules" onclick="switchTab('rules')">Rules</button>
+  </nav>
+</div>
+
+
+<!-- Content -->
+<div class="ch-content">
+
+  <!-- Main panels -->
+  <main class="ch-main">
+
+    <!-- OVERVIEW PANEL -->
+    <div class="ch-panel active" data-panel="overview">
+      <section class="ch-section">
+        <h2>The question</h2>
+        <p>Burberry stabilised in 2026 after the worst trading year in a decade. Adjusted operating profit recovered from £26m to £160m. The board has signed off £100m of growth capital for the next 18 months. They have not yet decided where it goes.</p>
+        <p>You're the new Chief Strategy Officer. The CEO wants your recommendation, in 1,000 words. <strong>Where does the £100m go, and why this bet over the alternatives?</strong></p>
+      </section>
+
+      <section class="ch-section">
+        <h2>The shortlist the board has discussed</h2>
+        <p>You don't have to pick from this list, but the board has explicitly debated each. If you pick one of these, justify why over the others. If you pick something else, justify why over all of them.</p>
+        <ul>
+          <li><strong>A.</strong> Build leather goods at the €1,200-1,800 price band — the segment Burberry vacated.</li>
+          <li><strong>B.</strong> Reset US wholesale + open one US flagship.</li>
+          <li><strong>C.</strong> Owned-store expansion in tier-2 Mainland Chinese cities.</li>
+          <li><strong>D.</strong> Acquire or build a digital-first sister brand for under-30 customers.</li>
+          <li><strong>E.</strong> Hire a marquee creative talent + a relaunch collection.</li>
+          <li><strong>F.</strong> Return capital via buyback to support the share price during the recovery.</li>
+        </ul>
+      </section>
+
+      <section class="ch-section">
+        <h2>How it's judged</h2>
+        <p>Every submission is scored on a public rubric. Weights sum to 100%.</p>
+        <ul>
+          <li><strong>Diagnosis (25%).</strong> Have you identified the right problem this bet solves?</li>
+          <li><strong>Decisiveness (30%).</strong> Have you committed to one bet and explicitly rejected the alternatives?</li>
+          <li><strong>Rigour (25%).</strong> Do the numbers stack up? Have you used the Brief Pack data?</li>
+          <li><strong>Craft (20%).</strong> Is it tightly argued and well-written within 1,000 words?</li>
+        </ul>
+        <p>Scoring runs in two stages. A language model does a first pass against the rubric. The top 20 go to a live defence with three retired UK luxury and retail leaders, each candidate presenting for 30 minutes.</p>
+        <div class="ch-callout">
+          <p><strong>You can use AI. We expect you to.</strong> Use any tools. This isn't a test of whether you can write a memo without ChatGPT. It's a test of whether you can use AI well and add judgement on top.</p>
+        </div>
+      </section>
+
+      <section class="ch-section">
+        <h2>The prize</h2>
+        <p>Top performers are fast-tracked to interviews with launch partner employers across UK luxury retail, strategy consulting, and consumer-sector finance. Your published Writeup, with the panel's written verdict attached, sits permanently on your Mantle profile — a CV line you can link from LinkedIn or take into any interview.</p>
+      </section>
+
+      <section class="ch-section">
+        <h2>Timeline</h2>
+        <ul>
+          <li><strong>19 Jun 2026.</strong> Challenge opens.</li>
+          <li><strong>30 Jul 2026.</strong> Submissions close, 23:59 GMT.</li>
+          <li><strong>1 Aug 2026.</strong> Top 20 invited to live defence.</li>
+          <li><strong>11 Aug 2026.</strong> Live defence sessions.</li>
+          <li><strong>15 Aug 2026.</strong> Final rankings published. Top 20 Writeups go public on the Submissions tab.</li>
+        </ul>
+      </section>
+    </div>
+
+
+    <!-- BRIEF PANEL -->
+    <div class="ch-panel" data-panel="brief">
+      <section class="ch-section">
+        <h2>The brief</h2>
+        <p>You are the new Chief Strategy Officer of Burberry Group plc. The CEO has asked you a single question:</p>
+        <div class="ch-callout">
+          <p>"The board has signed off £100m of growth capital over the next 18 months. We've debated where it goes for two months and we still don't agree. I need your recommendation. One bet. Not a portfolio. Tell me where the £100m goes, why this and not the alternatives, and how it pays back. Be specific. 1,000 words on my desk by Monday."</p>
+        </div>
+        <p>You inherit a stable business: revenue around £2.4bn, operating margin recovering to ~7%, market cap of about £4.5bn, Daniel Lee still in the creative director seat. The Burberry Forward strategy is in the market and analyst-credible. This £100m is the first real bet of the post-Schulman era.</p>
+      </section>
+
+      <section class="ch-section">
+        <h2>The six options the board has discussed</h2>
+        <p>None of these is "right". Each has live arguments for and against. Pick one — or propose something else — and defend it.</p>
+        <ul>
+          <li><strong>A. Leather goods at the €1,200-1,800 sweet spot.</strong> Schulman publicly said pricing went "too high." Burberry vacated the €1,200-1,800 handbag band — where Coach, Polène, Mansur Gavriel, and the entry-luxury LVMH bags sit. Reclaim it. Capex on product development + targeted store merchandising + accessory-led marketing.</li>
+          <li><strong>B. US wholesale reset + one US flagship.</strong> Upgraded shop-in-shops at Saks, Bloomingdale's, Nordstrom, Galeries Lafayette have outperformed some Burberry-owned US doors. Double down: drive in-store environments at the top 8 wholesale partners and open a single statement US flagship (NYC SoHo or Beverly Hills).</li>
+          <li><strong>C. Tier-2 Mainland China owned-store expansion.</strong> Greater China is back to +4% growth. The Chinese luxury consumer is increasingly buying domestically (not just on travel). Build 12-15 new owned stores in Chengdu, Hangzhou, Xi'an, Nanjing, Suzhou. Capex-heavy but sticky local revenue.</li>
+          <li><strong>D. Acquire or build a digital-first sister brand.</strong> Burberry's customer base is older and getting older. £100m buys a small, hot DTC brand for under-30s (Reformation-scale) or builds one from scratch. Manage as a separate house, share supply chain.</li>
+          <li><strong>E. Marquee creative hire + relaunch collection.</strong> Lee is still creative director but persistent rumours link him to Jil Sander. £100m funds a Phoebe Philo, Daniel Roseberry, or similar — plus a fully-funded relaunch collection, runway show, marketing campaign. Reset the brand narrative.</li>
+          <li><strong>F. £100m buyback.</strong> Shares trade at ~10x forward earnings, well below LVMH's 22x. A buyback supports the price during the fragile recovery, signals confidence to the market, and protects the share count against the persistent Moncler/LVMH bid speculation. Boring but defensible.</li>
+        </ul>
+      </section>
+
+      <section class="ch-section">
+        <h2>Suggested structure (1,000 words)</h2>
+        <p>You aren't required to follow this, but submissions that hit each section tend to score higher. Word counts are guidance, not caps.</p>
+        <ul>
+          <li><strong>The bet (1 sentence, ~30 words).</strong> Your one-line recommendation.</li>
+          <li><strong>Why this, not the others (~300 words).</strong> Specifically why your pick beats two or three of the alternatives. Don't just argue for your bet — argue against the obvious counterproposal.</li>
+          <li><strong>How it pays back (~250 words).</strong> Where Burberry is in 36 months if you're right. Revenue lift, margin impact, market-cap re-rate. Numbers, not adjectives.</li>
+          <li><strong>What you'd stop doing to fund it (~200 words).</strong> Where does the £100m come from inside Burberry, and what gets cut, paused, or deprioritised.</li>
+          <li><strong>First 90 days (~200 words).</strong> The three or four specific moves you make in the first quarter to put the bet in motion.</li>
+        </ul>
+      </section>
+
+      <section class="ch-section">
+        <h2>What the panel will push you on</h2>
+        <p>The top 20 face a live defence. Expect questions like:</p>
+        <ul>
+          <li>"If your bet is right, why hasn't LVMH or Kering done the same with their adjacent brands?"</li>
+          <li>"What's the single number that would prove you wrong in 18 months?"</li>
+          <li>"Convince me why option [X] isn't actually the right answer."</li>
+        </ul>
+      </section>
+    </div>
+
+
+    <!-- BRIEF PACK PANEL (was Data + Resources combined) -->
+    <div class="ch-panel" data-panel="brief-pack">
+      <section class="ch-section">
+        <h2>Brief Pack contents</h2>
+        <p>The Brief Pack is everything you need to make the bet. A small set of numbers below, a curated reading list further down, and one anonymised exemplar submission to show the shape of a strong answer. You don't have to read every source — but a serious submission visibly uses the data and the panel will check.</p>
+        <ul>
+          <li><strong>Financial snapshot.</strong> Three-year P&amp;L trajectory and regional comp sales.</li>
+          <li><strong>Strategic facts.</strong> Cost programme, store estate, pricing position, FTSE timing, M&amp;A speculation.</li>
+          <li><strong>Industry context.</strong> Bain–Altagamma 2025 numbers on the global luxury market.</li>
+          <li><strong>Reading list.</strong> Burberry primary sources, BoF / WWD / FT coverage, comparable case material (Gucci, Coach, Bottega).</li>
+          <li><strong>Sample submission.</strong> An anonymised top-10 entry from a past Mantle challenge — shows the format, tone, and weight of evidence expected. <span style="color: var(--ink-soft); font-style: italic;">(Coming soon — first cohort exemplars publish after 15 Aug 2026.)</span></li>
+        </ul>
+      </section>
+
+      <section class="ch-section">
+        <h2>Financial snapshot</h2>
+        <p>Headline figures pulled from Burberry's own results announcements. The investor relations site has the full PDFs; read the FY26 prelims and the most recent interims directly. Numbers are rounded and may differ slightly from the underlying audited statements.</p>
+
+        <h3>Three-year financial trajectory</h3>
+        <div class="ch-table-wrap">
+          <table class="ch-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th class="num">FY24</th>
+                <th class="num">FY25</th>
+                <th class="num">FY26</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Revenue (£m)</td>
+                <td class="num">2,968</td>
+                <td class="num">2,461</td>
+                <td class="num">2,418</td>
+              </tr>
+              <tr>
+                <td>Adj. operating profit (£m)</td>
+                <td class="num">418</td>
+                <td class="num">26</td>
+                <td class="num">160</td>
+              </tr>
+              <tr>
+                <td>Adj. operating margin (%)</td>
+                <td class="num">14.1</td>
+                <td class="num">1.1</td>
+                <td class="num">6.6</td>
+              </tr>
+              <tr>
+                <td>Retail comp. sales (%)</td>
+                <td class="num">-1</td>
+                <td class="num">-12</td>
+                <td class="num">+2</td>
+              </tr>
+              <tr>
+                <td>Wholesale revenue change (%)</td>
+                <td class="num">-13</td>
+                <td class="num">-35</td>
+                <td class="num">flat</td>
+              </tr>
+              <tr>
+                <td>Dividend (p/share)</td>
+                <td class="num">61.0</td>
+                <td class="num">suspended</td>
+                <td class="num">suspended</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Regional comparable retail sales — FY26</h3>
+        <div class="ch-table-wrap">
+          <table class="ch-table">
+            <thead>
+              <tr>
+                <th>Region</th>
+                <th class="num">FY25 comp.</th>
+                <th class="num">FY26 comp.</th>
+                <th class="num">Q4 FY26</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Americas</td>
+                <td class="num">-13%</td>
+                <td class="num">+4%</td>
+                <td class="num">+10%</td>
+              </tr>
+              <tr>
+                <td>Greater China</td>
+                <td class="num">-15%</td>
+                <td class="num">+4%</td>
+                <td class="num">+10%</td>
+              </tr>
+              <tr>
+                <td>Asia Pacific (rest)</td>
+                <td class="num">-28%</td>
+                <td class="num">+2%</td>
+                <td class="num">+5%</td>
+              </tr>
+              <tr>
+                <td>EMEIA</td>
+                <td class="num">-7%</td>
+                <td class="num">flat</td>
+                <td class="num">+2%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="ch-section">
+        <h2>Strategic facts you can build on</h2>
+        <ul>
+          <li><strong>Market cap recovery.</strong> Trough ~£2.2bn (Sep 2024) at 575p. Recovery ~£4–5bn by mid-2026 after the +86% twelve-month run. Peak (post-COVID 2021) was above £10bn.</li>
+          <li><strong>Cost programme.</strong> £100m annualised cost savings targeted by 2027. £80m delivered in FY26. 1,700 role reductions announced FY25.</li>
+          <li><strong>Store estate.</strong> ~410 directly operated stores at end FY26. 21 closed, 9 opened in FY26.</li>
+          <li><strong>Pricing.</strong> Schulman publicly: pricing went "too high across the board"; €1,600 handbag sweet spot.</li>
+          <li><strong>Wholesale.</strong> Upgraded in-store environments at Saks, Bloomingdale's, Nordstrom, Galeries Lafayette outperforming some owned doors.</li>
+          <li><strong>FTSE.</strong> Demoted from FTSE 100 September 2024. Re-promoted September 2025.</li>
+          <li><strong>Chair succession.</strong> Gerry Murphy to be succeeded by William Jackson (Bridgepoint founder), effective November 2026.</li>
+          <li><strong>Acquisition speculation.</strong> Moncler-Burberry tie-up was floated by media late 2024. Moncler publicly denied. LVMH owns 15.8% of Moncler's controlling shareholder.</li>
+        </ul>
+      </section>
+
+      <section class="ch-section">
+        <h2>Industry context (Bain–Altagamma, 2025)</h2>
+        <ul>
+          <li>Global personal luxury market: ~$363bn in 2025, down on prior year.</li>
+          <li>Luxury consumer base: ~330m in 2025, down ~20m from prior year.</li>
+          <li>Volume growth across the category 2023–2025 was driven roughly 80% by price increases.</li>
+          <li>Hermès and LVMH widened the gap on the rest in the post-COVID cycle. Kering (Gucci) is the cleanest negative parallel to Burberry.</li>
+        </ul>
+        <p>Source: <a href="https://www.bain.com/about/media-center/press-releases/20252/global-luxury-stays-resilient-despite-economic-headwinds-and-shifting-consumer-trends-that-reshape-marketbain--company-and-altagamma/" target="_blank" rel="noopener">Bain–Altagamma Luxury Goods Worldwide Market Study 2025</a></p>
+      </section>
+
+      <section class="ch-section">
+        <h2>Reading list</h2>
+        <p>You don't have to read all of these. But a serious submission will be visibly informed by at least the Burberry filings, one of the industry reports, and a few of the analyst pieces. Citations are encouraged.</p>
+
+        <h3>Burberry primary sources</h3>
+        <div class="ch-res-grid">
+          <a class="ch-res" href="https://www.burberryplc.com/investors/financial-performance-kpis" target="_blank" rel="noopener">
+            <span class="ch-res-cat">Investor relations</span>
+            <p class="ch-res-title">Burberry plc Financial Performance and KPIs</p>
+            <p class="ch-res-desc">The single hub for all financial filings, results, presentations and investor communications.</p>
+          </a>
+          <a class="ch-res" href="https://www.burberryplc.com/investors/annual-report-25-26" target="_blank" rel="noopener">
+            <span class="ch-res-cat">Annual report</span>
+            <p class="ch-res-title">Burberry Annual Report 25/26</p>
+            <p class="ch-res-desc">The most authoritative single document. Read the CEO statement and the strategy section in full.</p>
+          </a>
+          <a class="ch-res" href="https://www.burberryplc.com/company/strategy" target="_blank" rel="noopener">
+            <span class="ch-res-cat">Strategy</span>
+            <p class="ch-res-title">Burberry Forward (official strategy page)</p>
+            <p class="ch-res-desc">The five-point plan in Burberry's own words. Engage with this, agree or disagree explicitly.</p>
+          </a>
+          <a class="ch-res" href="https://www.burberryplc.com/news/corporate/2026/burberry-announces-chair-succession" target="_blank" rel="noopener">
+            <span class="ch-res-cat">Press release</span>
+            <p class="ch-res-title">Chair succession announcement</p>
+            <p class="ch-res-desc">William Jackson succeeds Gerry Murphy as chair, effective November 2026.</p>
+          </a>
+        </div>
+
+        <h3>Industry data</h3>
+        <div class="ch-res-grid">
+          <a class="ch-res" href="https://www.bain.com/insights/luxury-is-ready-for-a-new-era-after-stabilizing-in-2025-snap-chart/" target="_blank" rel="noopener">
+            <span class="ch-res-cat">Industry report</span>
+            <p class="ch-res-title">Bain–Altagamma Luxury Goods Worldwide Market Study 2025</p>
+            <p class="ch-res-desc">The industry-standard reference on global luxury market size, growth and consumer dynamics. Free.</p>
+          </a>
+          <a class="ch-res" href="https://www.businessoffashion.com/articles/luxury/the-state-of-fashion-2026-report-luxury-category-outlook-consumers/" target="_blank" rel="noopener">
+            <span class="ch-res-cat">Industry report</span>
+            <p class="ch-res-title">BoF / McKinsey State of Fashion 2026 – Luxury chapter</p>
+            <p class="ch-res-desc">Annual luxury outlook. Use the consumer-shift and quiet-luxury sections.</p>
+          </a>
+        </div>
+
+        <h3>Analyst and press coverage</h3>
+        <div class="ch-res-grid">
+          <a class="ch-res" href="https://www.businessoffashion.com/people/joshua-schulman/" target="_blank" rel="noopener">
+            <span class="ch-res-cat">Profile</span>
+            <p class="ch-res-title">BoF on Joshua Schulman and the Burberry Forward plan</p>
+            <p class="ch-res-desc">The clearest single piece on what Schulman is trying to do and how it maps to his Coach playbook.</p>
+          </a>
+          <a class="ch-res" href="https://wwd.com/business-news/business-features/joshua-schulman-plan-restore-burberry-fortunes-win-back-customers-1236722399/" target="_blank" rel="noopener">
+            <span class="ch-res-cat">Analysis</span>
+            <p class="ch-res-title">WWD: Schulman's plan to restore Burberry</p>
+            <p class="ch-res-desc">Includes Schulman's public admission that pricing went "too high" and the €1,600 sweet spot.</p>
+          </a>
+          <a class="ch-res" href="https://www.cnbc.com/2025/09/04/burberry-to-return-to-ftse-100-after-a-years-absence-amid-overhaul.html" target="_blank" rel="noopener">
+            <span class="ch-res-cat">News</span>
+            <p class="ch-res-title">CNBC: Burberry returns to the FTSE 100</p>
+            <p class="ch-res-desc">Concise summary of the rebound and what drove it.</p>
+          </a>
+          <a class="ch-res" href="https://retailboss.co/retailboss-co-deep-dives-burberry-fy2026-results/" target="_blank" rel="noopener">
+            <span class="ch-res-cat">Deep-dive</span>
+            <p class="ch-res-title">RetailBoss deep-dive on FY26 results</p>
+            <p class="ch-res-desc">Granular numerical walk-through of the FY26 prelims by region and category.</p>
+          </a>
+          <a class="ch-res" href="https://www.businessoffashion.com/news/luxury/burberry-shares-rise-after-reports-moncler-is-considering-bid/" target="_blank" rel="noopener">
+            <span class="ch-res-cat">Speculation</span>
+            <p class="ch-res-title">BoF on the Moncler / LVMH speculation</p>
+            <p class="ch-res-desc">For the acquisition-optionality section of your plan.</p>
+          </a>
+        </div>
+
+        <h3>Comparables to learn from</h3>
+        <div class="ch-res-grid">
+          <a class="ch-res" href="https://www.businessoffashion.com/people/daniel-lee/" target="_blank" rel="noopener">
+            <span class="ch-res-cat">Creative director</span>
+            <p class="ch-res-title">BoF profile of Daniel Lee</p>
+            <p class="ch-res-desc">Includes his Bottega Veneta era — the quiet-luxury template you may want to argue Burberry should imitate (or reject).</p>
+          </a>
+          <a class="ch-res" href="https://wwd.com/business-news/financial/kering-q1-2025-sales-gucci-luxury-1237099131/" target="_blank" rel="noopener">
+            <span class="ch-res-cat">Comparable</span>
+            <p class="ch-res-title">WWD on Kering's Gucci turnaround</p>
+            <p class="ch-res-desc">The cleanest negative parallel to Burberry. Useful for "this is what not to do" arguments.</p>
+          </a>
+        </div>
+      </section>
+    </div>
+
+
+    <!-- SUBMISSIONS PANEL -->
+    <div class="ch-panel" data-panel="submissions">
+      <section class="ch-section">
+        <h2>Submissions go public on 15 Aug 2026</h2>
+        <p>While the challenge is open, submissions are private. You see your own status (Draft / Submitted) and the total number of submissions received. You do not see anyone else's work.</p>
+        <p>After judging closes, the top 20 Writeups are published on this page with the author's name, university or affiliation, score, and the judges' written verdict. Each Writeup gets a permanent URL on Mantle — link it from your LinkedIn, your CV, or the cover letter of your next application.</p>
+
+        <div class="ch-callout">
+          <p><strong>This page is the credential.</strong> Mantle's value is not the certificate — it's the published submission, judged on a public rubric by named industry leaders, that you carry into the rest of your career.</p>
+        </div>
+      </section>
+
+      <section class="ch-section">
+        <h2>What gets published</h2>
+        <ul>
+          <li><strong>Author.</strong> Your name, university or current role (your choice, set at submission).</li>
+          <li><strong>Writeup.</strong> The full 1,000-word submission, rendered as a permanent page.</li>
+          <li><strong>Score.</strong> Total / 100, plus the four sub-scores (Diagnosis, Decisiveness, Rigour, Craft).</li>
+          <li><strong>Panel verdict.</strong> A 100-150 word written response from the judging panel, attached to your Writeup.</li>
+          <li><strong>Position on the leaderboard.</strong> Where your submission ranked among the top 20.</li>
+        </ul>
+      </section>
+
+      <section class="ch-section">
+        <h2>Previous Mantle challenge winners</h2>
+        <p style="color: var(--ink-soft); font-style: italic;">This is Mantle's first published challenge. The top 20 Burberry submissions become the inaugural set of published Writeups on 15 Aug 2026 — and the visible body of work for future challenges that follow.</p>
+      </section>
+
+      <section class="ch-section">
+        <h2>Opt-out</h2>
+        <p>You can ask for your submission to be unpublished or anonymised at any point, before or after results. The default is published; the opt-out is a checkbox at submission.</p>
+      </section>
+    </div>
+
+
+    <!-- RULES PANEL -->
+    <div class="ch-panel" data-panel="rules">
+      <section class="ch-section">
+        <h2>Eligibility</h2>
+        <ul>
+          <li>You must be 18 or over.</li>
+          <li>You must have the right to work in the UK (we cannot guarantee employer interviews if you do not).</li>
+          <li>You must be currently looking for graduate-level employment. Final-year students and people in their first three years of work both qualify.</li>
+          <li>No prior fashion or luxury experience required. Mantle is about ability, not background.</li>
+        </ul>
+      </section>
+
+      <section class="ch-section">
+        <h2>Use of AI</h2>
+        <p>You can and should use AI tools. ChatGPT, Claude, Gemini, any of them. AI is part of how modern analytical work gets done and the test is whether you can use it well.</p>
+        <p>You will be asked, at the live defence stage, to talk through your process. If you cannot explain or defend your own submission, you will not advance. That is the only AI-use rule that actually matters.</p>
+      </section>
+
+      <section class="ch-section">
+        <h2>Submission format</h2>
+        <ul>
+          <li><strong>1,000 words maximum.</strong> Submissions over the limit are penalised. The word count includes everything in the body — exclude footnotes, source citations, and chart captions.</li>
+          <li><strong>One Writeup, single document.</strong> PDF or Markdown, no larger than 10 MB.</li>
+          <li><strong>Up to 4 charts or tables.</strong> Embedded inline. Cover image required at the top of the Writeup.</li>
+          <li><strong>No appendix.</strong> 1,000 words is the test. If it doesn't fit, cut.</li>
+          <li><strong>Deadline.</strong> 23:59 GMT on 30 Jul 2026.</li>
+          <li><strong>One submission per person.</strong> You can save versions until the deadline. Only the most recent submitted version counts.</li>
+        </ul>
+      </section>
+
+      <section class="ch-section">
+        <h2>Originality and authorship</h2>
+        <p>The Writeup must be your own work. You can use AI freely as a tool. You cannot pay or ask another human to write it for you. If you cannot defend the contents at the live panel, you fail out regardless of leaderboard position.</p>
+      </section>
+
+      <section class="ch-section">
+        <h2>Public submissions</h2>
+        <p>The top 20 submissions are published publicly with the author's name and the panel's written verdict, unless the author opts out. This is the credential. The judges' verdict on your work is what you carry into the rest of your career. See the Submissions tab for full detail on what gets published.</p>
+      </section>
+    </div>
+
+  </main>
+
+
+  <!-- Right info sidebar -->
+  <aside class="ch-sidebar">
+    <div class="ch-info-card">
+      <div class="ch-info-status">
+        <span class="dot"></span>
+        Live
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Status</span>
+        <span class="ch-info-value">Accepting submissions</span>
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Closes</span>
+        <span class="ch-info-value">30 Jul 2026</span>
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Word limit</span>
+        <span class="ch-info-value">1,000 words</span>
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Submissions</span>
+        <span class="ch-info-value">112</span>
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Prize</span>
+        <span class="ch-info-value">Employer interview + published Writeup</span>
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Judging panel</span>
+        <span class="ch-info-value">3 retired UK luxury / retail leaders</span>
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Organiser</span>
+        <span class="ch-info-value">Mantle</span>
+      </div>
+      <a href="../submit.html?challenge=burberry" class="ch-cta" style="margin-top: 18px; width: 100%; justify-content: center; background: var(--accent); color: white;">
+        Enter the challenge
+        <span>→</span>
+      </a>
+    </div>
+  </aside>
+
+</div>
+
+
+<script>
+  function switchTab(name) {
+    document.querySelectorAll('.ch-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.ch-panel').forEach(p => p.classList.remove('active'));
+    const tab = document.querySelector(`.ch-tab[data-tab="${name}"]`);
+    const panel = document.querySelector(`.ch-panel[data-panel="${name}"]`);
+    if (tab) tab.classList.add('active');
+    if (panel) panel.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

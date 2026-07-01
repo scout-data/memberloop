@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Britain's heat pump plan is failing. Fix it. | Mantle</title>
+  <meta name="description" content="A Mantle challenge. Write the strategy that closes the gap between the UK government's 600,000 heat pumps a year target and the current 55,000 reality.">
+
+  <link rel="stylesheet" href="../assets/styles.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #F1EFE9;
+      --cream-soft: #E8E4D8;
+      --ink: #1C1B18;
+      --ink-soft: #5C5950;
+      --accent: #2D5440;
+      --accent-soft: #D8D2BD;
+    }
+    html, body { background-color: #FFFFFF !important; }
+    html { scroll-padding-top: 130px; }
+    body {
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .font-display {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+    .text-ink { color: var(--ink); }
+    .text-ink-soft { color: var(--ink-soft); }
+    .bg-accent { background-color: var(--accent); }
+    .text-accent { color: var(--accent); }
+
+    /* Sticky site nav */
+    .site-nav-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      border-bottom: 1px solid transparent;
+      transition: background-color 200ms ease, border-color 200ms ease;
+    }
+    .site-nav {
+      width: 100%;
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0.875rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+
+    /* Default state (over dark banner) */
+    .nav-brand { color: #FFFFFF; transition: color 200ms ease; }
+    .nav-links a { color: rgba(255,255,255,0.75); transition: color 200ms ease; }
+    .nav-links a:hover,
+    .nav-links a.active-link { color: #FFFFFF; }
+    .nav-logo-light { display: block; }
+    .nav-logo-dark { display: none; }
+
+    /* Scrolled state */
+    .site-nav-wrap.scrolled {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: saturate(140%) blur(14px);
+      -webkit-backdrop-filter: saturate(140%) blur(14px);
+      border-bottom-color: rgba(28, 27, 24, 0.08);
+    }
+    .site-nav-wrap.scrolled .nav-brand { color: var(--ink); }
+    .site-nav-wrap.scrolled .nav-links a { color: var(--ink-soft); }
+    .site-nav-wrap.scrolled .nav-links a:hover,
+    .site-nav-wrap.scrolled .nav-links a.active-link { color: var(--ink); }
+    .site-nav-wrap.scrolled .nav-logo-light { display: none; }
+    .site-nav-wrap.scrolled .nav-logo-dark { display: block; }
+    .site-nav-wrap.scrolled .nav-cta {
+      background-color: var(--accent);
+      color: #FFFFFF;
+    }
+    .site-nav-wrap.scrolled .burger-btn span { background: var(--ink); }
+
+    /* Banner */
+    .ch-banner {
+      position: relative;
+      overflow: hidden;
+      padding-top: 84px;
+      padding-bottom: 36px;
+      background: #1C1B18;
+    }
+    .ch-banner-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('../assets/challenges/heat-pump.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.45;
+      z-index: 0;
+    }
+    .ch-banner-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(28,27,24,0.4) 0%, rgba(28,27,24,0.85) 70%, rgba(28,27,24,1) 100%);
+      z-index: 1;
+    }
+    .ch-banner-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 36px 1.5rem 12px;
+      color: white;
+    }
+    .ch-crumb {
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 16px;
+    }
+    .ch-crumb a { color: rgba(255,255,255,0.8); text-decoration: none; }
+    .ch-crumb a:hover { color: white; }
+    .ch-title-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .ch-logo-circle {
+      width: 64px;
+      height: 64px;
+      background: white;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    }
+    .ch-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      font-size: 28px;
+      line-height: 1.15;
+      margin: 0 0 8px 0;
+      color: white;
+    }
+    .ch-sub {
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.75);
+      max-width: 720px;
+      margin: 0;
+    }
+    .ch-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 18px;
+      margin-top: 18px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+    }
+    .ch-meta-row .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+      font-weight: 500;
+    }
+    .ch-cta-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .ch-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 11px 18px;
+      background: white;
+      color: var(--ink);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+    .ch-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    .ch-cta-secondary {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    @media (min-width: 768px) {
+      .ch-title { font-size: 40px; line-height: 1.1; }
+      .ch-sub { font-size: 16px; }
+      .ch-banner-inner { padding: 48px 1.5rem 16px; }
+    }
+
+    /* Sticky tabs */
+    .ch-tabs-wrap {
+      position: sticky;
+      top: 56px;
+      z-index: 40;
+      background: white;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .ch-tabs {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+    }
+    .ch-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 14px;
+      font-size: 14px;
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      cursor: pointer;
+      background: none;
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      font-family: inherit;
+    }
+    .ch-tab:hover { color: var(--ink); }
+    .ch-tab.active {
+      color: var(--ink);
+      border-bottom-color: var(--accent);
+      font-weight: 600;
+    }
+    .ch-tab-count {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.07);
+      color: var(--ink-soft);
+      font-weight: 600;
+    }
+
+    /* Content layout */
+    .ch-content {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 36px 1.5rem 80px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+    @media (min-width: 1024px) {
+      .ch-content {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 48px;
+      }
+    }
+    .ch-panel { display: none; }
+    .ch-panel.active { display: block; }
+
+    /* Main content */
+    .ch-main { min-width: 0; }
+    .ch-section { margin-bottom: 44px; }
+    .ch-section:last-child { margin-bottom: 0; }
+    .ch-section h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      font-size: 24px;
+      line-height: 1.2;
+      margin: 0 0 16px;
+      color: var(--ink);
+    }
+    .ch-section h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 17px;
+      margin: 24px 0 8px;
+      color: var(--ink);
+    }
+    .ch-section p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+      margin: 0 0 14px;
+    }
+    .ch-section p:last-child { margin-bottom: 0; }
+    .ch-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 14px;
+    }
+    .ch-section ul li {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--ink-soft);
+      padding-left: 20px;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .ch-section ul li:before { top: 10px; }
+    .ch-section ul li:before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: absolute;
+      left: 6px;
+      top: 11px;
+    }
+    .ch-section strong { color: var(--ink); font-weight: 600; }
+    .ch-callout {
+      background: #FBFBF9;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin: 24px 0;
+    }
+    .ch-callout p { font-size: 13px; margin-bottom: 8px; }
+    .ch-callout p:last-child { margin-bottom: 0; }
+
+    /* Right info sidebar */
+    .ch-sidebar { min-width: 0; }
+    .ch-info-card {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
+      padding: 22px;
+      position: sticky;
+      top: 130px;
+    }
+    .ch-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      gap: 14px;
+    }
+    .ch-info-row:last-of-type { border-bottom: 0; }
+    .ch-info-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-soft);
+      font-weight: 600;
+    }
+    .ch-info-value {
+      font-size: 14px;
+      color: var(--ink);
+      text-align: right;
+      font-weight: 500;
+    }
+    .ch-info-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(45, 84, 64, 0.12);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .ch-info-status .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Judges */
+    .ch-judges {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .ch-judge {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .ch-judge-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.06);
+      margin: 0 auto 12px;
+    }
+    .ch-judge h4 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      margin: 0 0 4px;
+      color: var(--ink);
+    }
+    .ch-judge p {
+      font-size: 12px;
+      color: var(--ink-soft);
+      margin: 0;
+      line-height: 1.45;
+    }
+
+    /* Leaderboard empty state */
+    .ch-empty {
+      background: #FBFBF9;
+      border: 1px dashed rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 56px 24px;
+      text-align: center;
+    }
+    .ch-empty h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 17px;
+      color: var(--ink);
+      margin: 0 0 8px;
+    }
+    .ch-empty p {
+      font-size: 14px;
+      color: var(--ink-soft);
+      margin: 0;
+    }
+
+    /* Burger menu (mobile) */
+    .burger-btn {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .burger-btn span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 2px;
+    }
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(28, 27, 24, 0.97);
+      z-index: 100;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      color: rgba(255,255,255,0.85);
+      font-size: 1.25rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .mobile-nav-cta {
+      background: white;
+      color: #1C1B18 !important;
+      padding: 0.75rem 1.75rem;
+      border-radius: 0.5rem;
+    }
+    .mobile-nav-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 2rem;
+      cursor: pointer;
+    }
+    .nav-cta { display: none; }
+    @media (min-width: 768px) {
+      .burger-btn { display: none; }
+      .nav-cta { display: inline-flex; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Sticky nav -->
+<header class="site-nav-wrap">
+  <nav class="site-nav">
+    <a href="../index.html" class="flex items-center gap-2.5">
+      <img loading="lazy" decoding="async" src="../assets/logo/mantle-logo-white.svg" alt="" class="nav-logo-light h-5 w-auto">
+      <img loading="lazy" decoding="async" src="../assets/logo/mantle-logo-black.svg" alt="" class="nav-logo-dark h-5 w-auto">
+      <span class="nav-brand font-display text-2xl tracking-tight">Mantle</span>
+    </a>
+    <div class="nav-links hidden md:flex items-center gap-9 text-sm">
+      <a href="../index.html#challenges">Challenges</a>
+      <a href="../for-companies.html">For companies</a>
+    </div>
+    <a href="../signin.html" class="nav-cta btn-primary items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-white text-ink">
+      Hire from us
+      <span class="opacity-70">→</span>
+    </a>
+    <button class="burger-btn" onclick="document.getElementById('mobileNav').classList.add('open')" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<div id="mobileNav" class="mobile-nav">
+  <button class="mobile-nav-close" onclick="document.getElementById('mobileNav').classList.remove('open')" aria-label="Close menu">×</button>
+  <a href="../index.html#challenges">Challenges</a>
+  <a href="../for-companies.html">For companies</a>
+  <a href="../signin.html" class="mobile-nav-cta">Hire from us →</a>
+</div>
+
+
+<!-- Banner -->
+<section class="ch-banner">
+  <div class="ch-banner-bg"></div>
+  <div class="ch-banner-overlay"></div>
+  <div class="ch-banner-inner">
+    <div class="ch-crumb">
+      <a href="../index.html#challenges">All challenges</a> · Energy
+    </div>
+    <div class="ch-title-row">
+      <div class="ch-logo-circle">
+        <img src="../assets/logo/mantle-logo-green.svg" alt="" style="width: 30px; height: 30px;">
+      </div>
+      <div style="flex: 1; min-width: 0;">
+        <h1 class="ch-title">Britain's heat pump plan is failing. Fix it.</h1>
+        <p class="ch-sub">The UK government targets 600,000 heat pump installations per year by 2028. The current rate is about 55,000. Write the strategy that closes the gap.</p>
+      </div>
+    </div>
+    <div class="ch-meta-row">
+      <span class="pill">Energy</span>
+      <span class="pill">Strategy</span>
+      <span class="pill">Policy</span>
+      <span>112 submissions</span>
+      <span>·</span>
+      <span>Closes 30 Jul 2026</span>
+    </div>
+    <div class="ch-cta-row">
+      <a href="mailto:benanthoney97@gmail.com?subject=I want to enter the heat pump challenge" class="ch-cta">
+        Enter the challenge
+        <span>→</span>
+      </a>
+      <a href="#rules" class="ch-cta ch-cta-secondary" onclick="event.preventDefault(); switchTab('rules');">
+        Read the rules
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- Sticky tabs -->
+<div class="ch-tabs-wrap">
+  <nav class="ch-tabs">
+    <button class="ch-tab active" data-tab="overview" onclick="switchTab('overview')">Overview</button>
+    <button class="ch-tab" data-tab="brief" onclick="switchTab('brief')">Brief</button>
+    <button class="ch-tab" data-tab="rules" onclick="switchTab('rules')">Rules</button>
+  </nav>
+</div>
+
+
+<!-- Content -->
+<div class="ch-content">
+
+  <!-- Main panels -->
+  <main class="ch-main">
+
+    <!-- OVERVIEW PANEL -->
+    <div class="ch-panel active" data-panel="overview">
+      <section class="ch-section">
+        <h2>The problem</h2>
+        <p>The UK has committed to installing 600,000 heat pumps a year by 2028 as a cornerstone of its net-zero plan. Heat pumps replace gas boilers, cut household emissions, and shift heating demand onto a cleaner electricity grid. Without them, the UK does not get to net zero by 2050.</p>
+        <p>In 2024 the actual install rate was approximately 55,000 a year. To hit the 2028 target, the rate has to more than 10x in less than two and a half years. The current trajectory does not get there. The economics are off, the installer base is too small, the supply chain is shallow, and households do not know what a heat pump is.</p>
+        <p>This is a market failure with public-good consequences. It is also a strategy problem that takes the kind of thinking a junior analyst in a top consulting firm would be asked to do.</p>
+      </section>
+
+      <section class="ch-section">
+        <h2>What you need to produce</h2>
+        <p>A clear, well-argued strategy memo that proposes how to close the gap between 55,000 and 600,000 installs a year by 2028. The memo should:</p>
+        <ul>
+          <li>Diagnose the binding constraints honestly (not generically)</li>
+          <li>Propose three to five specific interventions, ranked by impact</li>
+          <li>Show how the interventions add up to the target, with rough numbers</li>
+          <li>Acknowledge what could go wrong and what you would do about it</li>
+        </ul>
+        <h3>Format</h3>
+        <ul>
+          <li>One-page executive summary (PDF)</li>
+          <li>Five-page main memo (PDF)</li>
+          <li>Optional one-page appendix with model or back-of-envelope maths</li>
+        </ul>
+      </section>
+
+      <section class="ch-section">
+        <h2>How it is judged</h2>
+        <p>Every submission is scored on a public rubric across four criteria:</p>
+        <ul>
+          <li><strong>Diagnosis.</strong> Have you correctly identified what is actually broken?</li>
+          <li><strong>Originality.</strong> Are your proposed interventions specific, not generic?</li>
+          <li><strong>Rigour.</strong> Do the numbers stack up? Is the reasoning honest about uncertainty?</li>
+          <li><strong>Craft.</strong> Is the memo well-structured, well-written, well-argued?</li>
+        </ul>
+        <p>Scoring is a two-stage process. First-pass scoring uses a language model against the public rubric. The top 20 submissions go to a live defence panel where each candidate presents their memo to three retired industry leaders and answers their questions for 30 minutes.</p>
+        <div class="ch-callout">
+          <p><strong>You can use AI.</strong> We expect you to. Use any tools you want. We are not testing whether you can write a memo without ChatGPT. We are testing whether you can use AI well and apply judgement on top of it.</p>
+        </div>
+      </section>
+
+      <section class="ch-section">
+        <h2>The prize</h2>
+        <p>Top performers from the live defence are fast-tracked to interviews with our launch partner employers in the energy and climate sector. Your leaderboard position and the panel's written verdict are yours to take into any other interview process. The leaderboard is public.</p>
+      </section>
+
+      <section class="ch-section">
+        <h2>Timeline</h2>
+        <ul>
+          <li><strong>19 Jun 2026.</strong> Challenge opens. Submissions accepted.</li>
+          <li><strong>30 Jul 2026.</strong> Submissions close at 23:59 GMT.</li>
+          <li><strong>1 Aug 2026.</strong> Leaderboard published. Top 20 invited to live defence.</li>
+          <li><strong>11 Aug 2026.</strong> Live defence panel sessions.</li>
+          <li><strong>15 Aug 2026.</strong> Final rankings published. Top performers introduced to employers.</li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- BRIEF PANEL -->
+    <div class="ch-panel" data-panel="brief">
+      <section class="ch-section">
+        <h2>The brief</h2>
+        <p>Imagine you have just joined the team at the UK Department for Energy Security and Net Zero (DESNZ) as a senior policy analyst. The Secretary of State has asked you the following question:</p>
+        <div class="ch-callout">
+          <p>"We are committed to 600,000 heat pump installations a year by 2028. We are nowhere near that. I do not want another summary of the problem. I want a strategy that gets us there. Five pages. On my desk in two weeks."</p>
+        </div>
+        <p>You have a free hand. Public money is on the table but not unlimited. You can propose changes to regulation, subsidy, planning law, training, supply chain policy, public messaging, or anything else. You should assume the political will exists to do unpopular things if you can argue them well.</p>
+      </section>
+
+      <section class="ch-section">
+        <h2>Suggested structure</h2>
+        <p>You are not required to use this structure but submissions that hit each of these elements tend to score higher.</p>
+        <ul>
+          <li><strong>One-line thesis.</strong> Your core argument in a sentence.</li>
+          <li><strong>The honest diagnosis.</strong> What is actually constraining the install rate today.</li>
+          <li><strong>The interventions.</strong> Three to five concrete moves, in priority order.</li>
+          <li><strong>The numbers.</strong> A rough quantification of how the moves add up to the target.</li>
+          <li><strong>Risks and trade-offs.</strong> What could derail this and what you would do.</li>
+          <li><strong>What you would do first.</strong> The 90-day kickoff.</li>
+        </ul>
+      </section>
+
+      <section class="ch-section">
+        <h2>Data and sources</h2>
+        <p>You are encouraged to use public data. Useful starting points:</p>
+        <ul>
+          <li>DESNZ official statistics on heat pump installations (gov.uk)</li>
+          <li>MCS Certified installation data (mcscertified.com)</li>
+          <li>Climate Change Committee progress reports</li>
+          <li>Resolution Foundation, IPPR, E3G analyses on heating decarbonisation</li>
+          <li>Octopus Energy, Aira, Heatio public commentary and reports</li>
+          <li>Nesta's heat pump research programme</li>
+        </ul>
+        <p>You are not required to cite every claim, but specific numbers from real sources are stronger than generic claims.</p>
+      </section>
+    </div>
+
+    <!-- RULES PANEL -->
+    <div class="ch-panel" data-panel="rules">
+      <section class="ch-section">
+        <h2>Eligibility</h2>
+        <ul>
+          <li>You must be 18 or over.</li>
+          <li>You must have the right to work in the UK (we cannot guarantee employer interviews if you do not).</li>
+          <li>You must be currently looking for graduate-level employment. Final-year students and people in their first three years of work both qualify.</li>
+          <li>No prior heat pump knowledge required. Mantle is about ability, not background.</li>
+        </ul>
+      </section>
+
+      <section class="ch-section">
+        <h2>Use of AI</h2>
+        <p>You can and should use AI tools. ChatGPT, Claude, Gemini, any of them. We are not policing this. AI is part of how modern analytical work gets done and the test is whether you can use it well.</p>
+        <p>You will be asked, at the live defence stage, to talk through your process. If you cannot explain or defend your own submission, you will not advance. That is the only AI-use rule that actually matters.</p>
+      </section>
+
+      <section class="ch-section">
+        <h2>Submission format</h2>
+        <ul>
+          <li>One PDF, no larger than 10 MB.</li>
+          <li>One-page exec summary, five-page main memo, optional one-page appendix.</li>
+          <li>Submit by 23:59 GMT on 30 Jul 2026.</li>
+          <li>One submission per person. You can update your submission until the deadline; only the last version counts.</li>
+        </ul>
+      </section>
+
+      <section class="ch-section">
+        <h2>Originality and authorship</h2>
+        <p>The memo must be your own work. You can use AI freely as a tool. You cannot pay or ask another human to write it for you. If you cannot defend the contents at the live panel, you fail out regardless of leaderboard position.</p>
+      </section>
+
+      <section class="ch-section">
+        <h2>Public submissions</h2>
+        <p>The top 20 submissions are published publicly with the author's name and the panel's written verdict, unless the author asks to be anonymous. This is the credential. The judges' verdict on your work is what you carry into the rest of your career.</p>
+      </section>
+    </div>
+
+  </main>
+
+
+  <!-- Right info sidebar -->
+  <aside class="ch-sidebar">
+    <div class="ch-info-card">
+      <div class="ch-info-status">
+        <span class="dot"></span>
+        Live
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Status</span>
+        <span class="ch-info-value">Accepting submissions</span>
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Closes</span>
+        <span class="ch-info-value">30 Jul 2026</span>
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Submissions</span>
+        <span class="ch-info-value">112</span>
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Prize</span>
+        <span class="ch-info-value">Employer interview</span>
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Judges</span>
+        <span class="ch-info-value">3 retired leaders</span>
+      </div>
+      <div class="ch-info-row">
+        <span class="ch-info-label">Organiser</span>
+        <span class="ch-info-value">Mantle</span>
+      </div>
+      <a href="mailto:benanthoney97@gmail.com?subject=I want to enter the heat pump challenge" class="ch-cta" style="margin-top: 18px; width: 100%; justify-content: center; background: var(--accent); color: white;">
+        Enter the challenge
+        <span>→</span>
+      </a>
+    </div>
+  </aside>
+
+</div>
+
+
+<script>
+  function switchTab(name) {
+    document.querySelectorAll('.ch-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.ch-panel').forEach(p => p.classList.remove('active'));
+    const tab = document.querySelector(`.ch-tab[data-tab="${name}"]`);
+    const panel = document.querySelector(`.ch-panel[data-panel="${name}"]`);
+    if (tab) tab.classList.add('active');
+    if (panel) panel.classList.add('active');
+  }
+
+  (function () {
+    var nav = document.querySelector('.site-nav-wrap');
+    if (!nav) return;
+    function update() {
+      if (window.scrollY > 24) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  })();
+</script>
+
+</body>
+</html>

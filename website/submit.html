@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit your entry | Mantle</title>
+  <meta name="description" content="Submit your Mantle challenge entry. Name, email, link to your Writeup. No account required.">
+
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #1C1B18;
+      --ink-soft: #5C5950;
+      --accent: #2D5440;
+      --bg: #FAFAF7;
+    }
+    html, body { background-color: var(--bg) !important; }
+    body {
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      margin: 0;
+    }
+    .font-display {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-weight: 500;
+      letter-spacing: -0.025em;
+    }
+
+    /* Sticky nav (transparent on the form bg) */
+    .site-nav-wrap {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      background: transparent;
+      transition: background 200ms ease, box-shadow 200ms ease;
+    }
+    .site-nav-wrap.scrolled {
+      background: rgba(250,250,247,0.85);
+      backdrop-filter: saturate(180%) blur(14px);
+      -webkit-backdrop-filter: saturate(180%) blur(14px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+    }
+    .site-nav {
+      width: 100%;
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0.875rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+    .site-nav a.brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .site-nav a.brand span {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+    .nav-links {
+      display: none;
+      gap: 36px;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+    .nav-links a { color: inherit; text-decoration: none; transition: color 150ms ease; }
+    .nav-links a:hover { color: var(--ink); }
+    @media (min-width: 768px) {
+      .nav-links { display: flex; }
+    }
+
+    /* Page layout */
+    .submit-wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 120px 24px 80px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--ink-soft);
+      text-decoration: none;
+      margin-bottom: 28px;
+      transition: color 150ms ease;
+    }
+    .back-link:hover { color: var(--ink); }
+    .back-link span { font-size: 11px; }
+
+    h1.submit-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 500;
+      letter-spacing: -0.025em;
+      font-size: 2rem;
+      line-height: 1.1;
+      margin: 0 0 8px;
+      color: var(--ink);
+    }
+    .submit-meta {
+      font-size: 14px;
+      color: var(--ink-soft);
+      margin: 0 0 36px;
+    }
+
+    /* Form */
+    form { display: flex; flex-direction: column; gap: 22px; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .field input,
+    .field textarea {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.10);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: var(--ink);
+      font-family: inherit;
+      font-weight: 500;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+      box-sizing: border-box;
+    }
+    .field input:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(45,84,64,0.08);
+    }
+    .field textarea {
+      resize: vertical;
+      min-height: 96px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    .field .hint {
+      font-size: 12px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+      margin: 4px 0 0;
+    }
+
+    .submit-btn {
+      background: var(--accent);
+      color: white;
+      border: 0;
+      border-radius: 8px;
+      padding: 14px 22px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+      align-self: flex-start;
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(45,84,64,0.22);
+    }
+    .submit-btn:disabled { opacity: 0.6; cursor: wait; transform: none; box-shadow: none; }
+
+    .legal {
+      font-size: 12px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+      margin-top: 10px;
+    }
+
+    /* Success state */
+    .success-card {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
+      padding: 32px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 12px 32px rgba(0,0,0,0.05);
+    }
+    .success-card h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 500;
+      font-size: 1.5rem;
+      letter-spacing: -0.025em;
+      margin: 0 0 12px;
+    }
+    .success-card p {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--ink-soft);
+      margin: 0 0 12px;
+    }
+    .success-card p:last-child { margin-bottom: 0; }
+    .success-card a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Sticky nav -->
+<header class="site-nav-wrap">
+  <nav class="site-nav">
+    <a href="index.html" class="brand">
+      <img src="assets/logo/mantle-logo-black.svg" alt="" style="height: 20px; width: auto;">
+      <span>Mantle</span>
+    </a>
+    <div class="nav-links">
+      <a href="challenges.html">Challenges</a>
+      <a href="for-companies.html">For companies</a>
+    </div>
+  </nav>
+</header>
+
+
+<main class="submit-wrap">
+
+  <a href="javascript:history.back()" class="back-link" id="back-link"><span>←</span> Back to challenge</a>
+
+  <h1 class="submit-title" id="page-title">Submit your entry</h1>
+  <p class="submit-meta" id="page-meta">Burberry brand challenge · Closes 30 Jul 2026 · 1,000 words</p>
+
+  <form id="submit-form" novalidate>
+
+    <div class="field">
+      <label for="f-name">Your name</label>
+      <input type="text" id="f-name" name="name" required autocomplete="name">
+    </div>
+
+    <div class="field">
+      <label for="f-email">Email</label>
+      <input type="email" id="f-email" name="email" required autocomplete="email">
+    </div>
+
+    <div class="field">
+      <label for="f-affiliation">University or current role <span style="text-transform: none; letter-spacing: 0; font-weight: 500; color: rgba(92,89,80,0.7);">— optional</span></label>
+      <input type="text" id="f-affiliation" name="affiliation" placeholder="e.g. LSE, final year · or junior analyst at McKinsey">
+    </div>
+
+    <div class="field">
+      <label for="f-url">Link to your Writeup</label>
+      <input type="url" id="f-url" name="url" required placeholder="https://docs.google.com/...">
+      <p class="hint">Paste a public link to a Google Doc, Notion page, or PDF on Drive. Make sure "anyone with the link can view".</p>
+    </div>
+
+    <div class="field">
+      <label for="f-note">Cover note <span style="text-transform: none; letter-spacing: 0; font-weight: 500; color: rgba(92,89,80,0.7);">— optional</span></label>
+      <textarea id="f-note" name="note" placeholder="Anything you want the judges to know before reading. Max 2 sentences."></textarea>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">
+      Submit entry
+      <span>→</span>
+    </button>
+
+    <p class="legal">By submitting, you confirm the Writeup is your own work and you accept the <a href="challenges/burberry.html" onclick="event.preventDefault(); window.location.href = 'challenges/' + currentChallenge + '.html#rules'; return false;" style="color: inherit; text-decoration: underline;">challenge rules</a>. We email you a confirmation. We do not create an account on your behalf.</p>
+
+  </form>
+
+  <div class="success-card" id="success" hidden>
+    <h2>Thanks — your entry is on its way.</h2>
+    <p>Your email client just opened with the submission details. Send the email and we'll confirm receipt within 24 hours.</p>
+    <p>Judging closes after 30 Jul 2026. The top 20 are invited to a live defence on 11 Aug, and final rankings are published 15 Aug with your Writeup on the Submissions tab of the challenge page.</p>
+    <p><a href="challenges.html">Browse other challenges →</a></p>
+  </div>
+
+</main>
+
+
+<script>
+  // Read challenge from ?challenge=burberry
+  const params = new URLSearchParams(window.location.search);
+  const currentChallenge = params.get('challenge') || 'burberry';
+
+  // Challenge metadata (extend as more challenges launch)
+  const CHALLENGES = {
+    burberry: {
+      title: 'Burberry brand challenge',
+      meta: 'Closes 30 Jul 2026 · 1,000 words',
+      backUrl: 'challenges/burberry.html'
+    }
+  };
+
+  const meta = CHALLENGES[currentChallenge] || CHALLENGES.burberry;
+  document.getElementById('page-meta').textContent = `${meta.title} · ${meta.meta}`;
+  document.getElementById('back-link').href = meta.backUrl;
+  window.currentChallenge = currentChallenge;
+
+  // Form submission — opens a mailto: with the data prefilled. No backend required.
+  // When you wire a real backend (Formspree, Web3Forms, Supabase), replace this handler.
+  document.getElementById('submit-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const affiliation = form.affiliation.value.trim();
+    const url = form.url.value.trim();
+    const note = form.note.value.trim();
+
+    if (!name || !email || !url) {
+      alert('Please fill in your name, email, and the link to your Writeup.');
+      return;
+    }
+
+    const subject = `Mantle submission · ${meta.title} · ${name}`;
+    const lines = [
+      `Challenge: ${meta.title}`,
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Affiliation: ${affiliation || '(not provided)'}`,
+      `Writeup link: ${url}`,
+      '',
+      'Cover note:',
+      note || '(none)'
+    ];
+    const body = lines.join('\n');
+
+    const mailto = `mailto:benanthoney97@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // Disable button to prevent double-submit
+    document.getElementById('submit-btn').disabled = true;
+
+    // Open email client
+    window.location.href = mailto;
+
+    // Show confirmation
+    setTimeout(() => {
+      form.hidden = true;
+      document.getElementById('success').hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 300);
+  });
+
+  // Sticky nav scroll state
+  (function () {
+    var nav = document.querySelector('.site-nav-wrap');
+    if (!nav) return;
+    function update() {
+      if (window.scrollY > 16) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  })();
+</script>
+
+</body>
+</html>

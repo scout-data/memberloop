@@ -2,3 +2,6 @@
 node_modules/
 *.log
 config.local.js
+.env
+.env.local
+community-health/data/seeds/

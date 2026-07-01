@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mantle | Hire the graduates the system filters out</title>
+  <meta name="description" content="Real briefs. Real submissions. Real work in front of you before the first interview. Mantle helps companies find the graduates who'd make outsized impact but get screened out by traditional hiring.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://passthemantle.com/for-companies.html">
+  <meta property="og:title" content="Mantle | Hire the graduates the system filters out">
+  <meta property="og:description" content="Real briefs. Real submissions. Real work in front of you before the first interview.">
+  <meta property="og:image" content="https://passthemantle.com/assets/hero-companies-a.jpg">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mantle | Hire the graduates the system filters out">
+  <meta name="twitter:description" content="Real briefs. Real submissions. Real work in front of you before the first interview.">
+  <meta name="twitter:image" content="https://passthemantle.com/assets/hero-companies-a.jpg">
+
+  <link rel="stylesheet" href="assets/styles.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #F1EFE9;
+      --cream-soft: #E8E4D8;
+      --ink: #1C1B18;
+      --ink-soft: #5C5950;
+      --accent: #2D5440;
+      --accent-soft: #D8D2BD;
+      --warm-1: #E8D5B7;
+      --warm-2: #BDD4C3;
+    }
+    html, body { background-color: #FFFFFF !important; }
+    body {
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .font-display {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+    }
+    .text-ink { color: var(--ink); }
+    .text-ink-soft { color: var(--ink-soft); }
+    .bg-accent { background-color: var(--accent); }
+    .text-accent { color: var(--accent); }
+    .bg-cream { background-color: var(--cream); }
+    .bg-cream-soft { background-color: var(--cream-soft); }
+
+    .btn-primary {
+      transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Hero background image + overlay */
+    .hero-bg {
+      background-image: url('assets/hero-companies-a.jpg');
+      background-size: cover;
+      background-position: center 25%;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+    @media (min-width: 768px) {
+      .hero-bg { background-position: center 30%; }
+    }
+    .hero-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      position: relative;
+      width: 100%;
+    }
+    .hero-overlay {
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(10, 8, 6, 0.7) 0%,
+          rgba(10, 8, 6, 0.35) 12%,
+          rgba(10, 8, 6, 0) 25%
+        ),
+        linear-gradient(
+          to right,
+          rgba(10, 8, 6, 0.78) 0%,
+          rgba(10, 8, 6, 0.58) 35%,
+          rgba(10, 8, 6, 0.30) 70%,
+          rgba(10, 8, 6, 0.12) 100%
+        );
+    }
+
+    /* Burger menu */
+    .burger-btn {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .burger-btn span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 2px;
+    }
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 8, 6, 0.97);
+      z-index: 100;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      color: rgba(255,255,255,0.85);
+      font-size: 1.25rem;
+      font-weight: 500;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .mobile-nav-cta {
+      background: white;
+      color: #1C1B18 !important;
+      padding: 0.75rem 1.75rem;
+      border-radius: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .mobile-nav-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 2rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+    }
+    .nav-cta { display: none; }
+    @media (min-width: 768px) {
+      .burger-btn { display: none; }
+      .nav-cta { display: inline-flex; }
+    }
+
+    /* Sticky site nav */
+    html { scroll-padding-top: 72px; }
+    .site-nav-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      border-bottom: 1px solid transparent;
+      transition: background-color 200ms ease, border-color 200ms ease;
+    }
+    .site-nav {
+      width: 100%;
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0.875rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+
+    /* Default state (over dark hero) — explicit so the scroll transition reads */
+    .nav-brand { color: #FFFFFF; transition: color 200ms ease; }
+    .nav-links a { color: rgba(255,255,255,0.75); transition: color 200ms ease; }
+    .nav-links a:hover,
+    .nav-links a.active-link { color: #FFFFFF; }
+    .nav-logo-light { display: block; }
+    .nav-logo-dark { display: none; }
+
+    /* Scrolled state (white glass over content) */
+    .site-nav-wrap.scrolled {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: saturate(140%) blur(14px);
+      -webkit-backdrop-filter: saturate(140%) blur(14px);
+      border-bottom-color: rgba(28, 27, 24, 0.08);
+    }
+    .site-nav-wrap.scrolled .nav-brand { color: var(--ink); }
+    .site-nav-wrap.scrolled .nav-links a { color: var(--ink-soft); }
+    .site-nav-wrap.scrolled .nav-links a:hover,
+    .site-nav-wrap.scrolled .nav-links a.active-link { color: var(--ink); }
+    .site-nav-wrap.scrolled .nav-logo-light { display: none; }
+    .site-nav-wrap.scrolled .nav-logo-dark { display: block; }
+    .site-nav-wrap.scrolled .nav-cta {
+      background-color: var(--accent);
+      color: #FFFFFF;
+    }
+    .site-nav-wrap.scrolled .burger-btn span { background: var(--ink); }
+
+    /* Hero typography */
+    .hero-h1 {
+      font-size: 2.5rem;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      font-weight: 600;
+    }
+    .hero-sub {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    @media (min-width: 768px) {
+      .hero-h1 { font-size: 4.25rem; }
+      .hero-sub { font-size: 1.125rem; line-height: 1.5; }
+    }
+
+    /* Leaderboard mock styles */
+    .lb-row {
+      display: grid;
+      grid-template-columns: 32px 1fr 90px 80px;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 18px;
+      border-top: 1px solid rgba(28, 27, 24, 0.06);
+    }
+    .lb-row:first-of-type { border-top: 0; }
+    .lb-rank {
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+    .lb-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .lb-meta {
+      font-size: 12px;
+      color: var(--ink-soft);
+      margin-top: 2px;
+    }
+    .lb-score {
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--ink);
+      text-align: right;
+    }
+    .lb-status {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-align: right;
+    }
+    .lb-status.shortlist { color: var(--accent); }
+    .lb-status.review { color: var(--ink-soft); }
+
+    /* Comparison table */
+    .cmp {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .cmp th, .cmp td {
+      text-align: left;
+      padding: 18px 20px;
+      border-top: 1px solid rgba(28, 27, 24, 0.08);
+      vertical-align: top;
+    }
+    .cmp thead th {
+      border-top: 0;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      padding-bottom: 10px;
+    }
+    .cmp thead th.col-mantle { color: var(--accent); }
+    .cmp .dim {
+      font-weight: 600;
+      color: var(--ink);
+      font-size: 15px;
+      width: 30%;
+    }
+    .cmp .old {
+      color: var(--ink-soft);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .cmp .new {
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    @media (max-width: 720px) {
+      .cmp, .cmp tbody, .cmp tr, .cmp td, .cmp th { display: block; width: 100%; }
+      .cmp thead { display: none; }
+      .cmp tr { border-top: 1px solid rgba(28, 27, 24, 0.08); padding: 16px 0; }
+      .cmp td { padding: 4px 0; border: 0; }
+      .cmp .dim { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); margin-bottom: 4px; }
+      .cmp .old::before { content: "Old way · "; color: var(--ink-soft); font-weight: 600; }
+      .cmp .new::before { content: "Mantle · "; color: var(--accent); font-weight: 600; }
+    }
+  </style>
+</head>
+
+<body class="bg-white" style="background-color: #FFFFFF;">
+
+<!-- ============ STICKY NAV ============ -->
+<header class="site-nav-wrap">
+  <nav class="site-nav">
+    <a href="index.html" class="flex items-center gap-2.5">
+      <img loading="lazy" decoding="async" src="assets/logo/mantle-logo-white.svg" alt="" class="nav-logo-light h-5 w-auto">
+      <img loading="lazy" decoding="async" src="assets/logo/mantle-logo-black.svg" alt="" class="nav-logo-dark h-5 w-auto">
+      <span class="nav-brand font-display text-2xl tracking-tight">Mantle</span>
+    </a>
+
+    <div class="nav-links hidden md:flex items-center gap-9 text-sm">
+      <a href="index.html#challenges">Challenges</a>
+      <a href="for-companies.html" class="active-link font-medium">For companies</a>
+    </div>
+
+    <a href="contact.html" class="nav-cta btn-primary items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-white text-ink">
+      Talk to us
+      <span class="opacity-70">→</span>
+    </a>
+    <button class="burger-btn" onclick="document.getElementById('mobileNav').classList.add('open')" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<!-- Mobile nav overlay -->
+<div id="mobileNav" class="mobile-nav">
+  <button class="mobile-nav-close" onclick="document.getElementById('mobileNav').classList.remove('open')" aria-label="Close menu">×</button>
+  <a href="index.html#challenges">Challenges</a>
+  <a href="for-companies.html">For companies</a>
+  <a href="contact.html" class="mobile-nav-cta">Talk to us →</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="relative overflow-hidden hero-bg">
+  <div class="absolute inset-0 hero-overlay"></div>
+
+  <div class="hero-content">
+    <div class="max-w-7xl mx-auto px-6 w-full grid md:grid-cols-2 gap-14">
+
+      <div class="relative z-10">
+        <h1 class="hero-h1 font-display mb-8 text-white">
+          Find the outliers.
+        </h1>
+
+        <p class="hero-sub mb-10 max-w-xl" style="color: rgba(255,255,255,0.85);">
+          Graduate jobs are broken. Mantle challenges are a way for you to find the most capable, ambitious graduates for your company.
+        </p>
+
+        <div class="flex flex-row flex-wrap items-start gap-3">
+          <a href="contact.html?interest=sponsor" class="btn-primary inline-flex items-center gap-2 bg-white text-ink px-6 py-4 rounded-lg font-medium text-[15px]">
+            Sponsor a challenge
+            <span>→</span>
+          </a>
+          <a href="#how-it-works" class="inline-flex items-center gap-2 text-white px-6 py-4 rounded-lg font-medium text-[15px] border" style="border-color: rgba(255,255,255,0.25);">
+            Learn more
+          </a>
+        </div>
+      </div>
+
+      <div class="hidden md:block"></div>
+
+    </div>
+  </div>
+</section>
+
+
+<div style="display: none;">
+
+<!-- ============ THE PROBLEM (manifesto) ============ -->
+<section class="bg-white py-24 md:py-32 border-t border-black/5">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="max-w-3xl">
+      <div class="text-[11px] font-semibold tracking-[0.18em] text-accent uppercase mb-6">
+        Problem
+      </div>
+      <h2 class="font-display text-[2rem] md:text-[3rem] leading-[1.05] mb-10 text-ink tracking-tight">
+        Your funnel selects against<br/>
+        <span style="color: var(--ink-soft);">the people you actually want.</span>
+      </h2>
+
+      <div class="space-y-6 text-[18px] text-ink-soft leading-[1.6]">
+      <p>
+        140 graduates apply for every junior role. You can't read 140 applications. So the pile gets cut by signals that have nothing to do with the job: which university, which internship, which name on the CV. AI screeners have made it worse, not better. They strip out anyone who didn't write their CV with the right keywords.
+      </p>
+      <p>
+        The graduates who'd transform a small team are not the ones with the polished application. They're the ones who'd absorb a real brief in a weekend, push back on the question, and ship something better than you asked for. That doesn't show up on a CV. It can't.
+      </p>
+      <p>
+        Meanwhile entry-level hiring in law, consulting, finance, marketing, and journalism is down up to <strong class="text-ink font-semibold">35% in 18 months</strong>. The roles that remain are more important than ever. Every hire has to count. And the funnel you've inherited is optimised for the opposite, throughput, not signal.
+      </p>
+      <p class="text-ink font-medium">
+        You need to see the work before you see the CV.
+      </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- ============ A LIVE BRIEF (Block 2: Burberry feature) ============ -->
+<section class="bg-white py-24 md:py-32 border-t border-black/5">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="max-w-3xl mb-12 md:mb-16">
+      <div class="text-[11px] font-semibold tracking-[0.18em] text-accent uppercase mb-4">
+        A live brief
+      </div>
+      <h2 class="font-display text-[2rem] md:text-[2.75rem] leading-[1.05] text-ink tracking-tight mb-5">
+        This is what one looks like.
+      </h2>
+      <p class="text-[17px] text-ink-soft leading-[1.55] max-w-2xl">
+        Genuine problems, real constraints, public scrutiny. Co-designed with senior figures who've sat in the seat.
+      </p>
+    </div>
+
+    <a href="challenges/burberry.html" class="group block bg-white rounded-2xl border border-black/8 overflow-hidden hover:-translate-y-0.5 transition-all" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(28,27,24,0.06);">
+      <div class="grid md:grid-cols-[1fr_1.4fr]">
+
+        <!-- Banner image -->
+        <div class="relative" style="min-height: 240px;">
+          <img src="assets/challenges/burberry.jpg" alt="" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover">
+        </div>
+
+        <!-- Brief body -->
+        <div class="p-7 md:p-10 flex flex-col">
+          <div class="flex items-center gap-2 mb-4" style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <span>Strategy</span>
+            <span style="color: rgba(0,0,0,0.2);">·</span>
+            <span>Live now</span>
+          </div>
+
+          <h3 class="font-display text-[1.6rem] md:text-[1.9rem] text-ink tracking-tight leading-[1.1] mb-3">
+            Save Burberry. You're the new CEO.
+          </h3>
+
+          <p class="text-[15px] text-ink-soft leading-[1.55] mb-6 max-w-xl">
+            Britain's only global luxury house nearly fell out of the FTSE 100 in 2024. The new CEO is mid-turnaround. The board wants your 100-day plan on the next steps.
+          </p>
+
+          <!-- Meta row -->
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-[12px] text-ink-soft">
+            <div class="flex items-center gap-1.5">
+              <span class="font-semibold text-ink">4</span>
+              <span>retired sector leads judging</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-semibold text-ink">10 Aug</span>
+              <span>submissions close</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-semibold text-ink">Top 20</span>
+              <span>defend live</span>
+            </div>
+          </div>
+
+          <span class="inline-flex items-center gap-2 text-accent font-medium text-[14px] mt-auto">
+            View the challenge
+            <span class="transition-transform group-hover:translate-x-0.5">→</span>
+          </span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+
+<!-- ============ WHY THE LEADERBOARD MEANS SOMETHING (Block 3) ============ -->
+<section class="bg-[#FBFBF9] py-24 md:py-32 border-t border-black/5">
+  <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+
+    <div>
+      <div class="text-[11px] font-semibold tracking-[0.18em] text-accent uppercase mb-6">
+        Why the leaderboard means something
+      </div>
+      <h2 class="font-display text-[2rem] md:text-[2.75rem] leading-[1.05] mb-8 text-ink tracking-tight">
+        Output, ranked.<br/>
+        <span style="color: var(--ink-soft);">Not pedigree, sorted.</span>
+      </h2>
+      <p class="text-[17px] text-ink-soft leading-[1.55] mb-8 max-w-xl">
+        The whole point of Mantle is that the top of the leaderboard is the top of the cohort. Three things keep it honest.
+      </p>
+
+      <ul class="space-y-5 max-w-xl">
+        <li>
+          <div class="text-[15px] font-semibold text-ink mb-1">AI is allowed, and tested.</div>
+          <p class="text-[14px] text-ink-soft leading-[1.55]">Candidates can use any tool. The live defence is where ghost-written work falls apart.</p>
+        </li>
+        <li>
+          <div class="text-[15px] font-semibold text-ink mb-1">The rubric is public.</div>
+          <p class="text-[14px] text-ink-soft leading-[1.55]">Every submission is scored against the same criteria, published before the challenge opens.</p>
+        </li>
+        <li>
+          <div class="text-[15px] font-semibold text-ink mb-1">Judges are independent.</div>
+          <p class="text-[14px] text-ink-soft leading-[1.55]">Retired sector leads with no commercial relationship to the hiring company.</p>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Mock leaderboard card -->
+    <div class="bg-white rounded-2xl border border-black/8 overflow-hidden" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(28,27,24,0.06);">
+
+      <div class="px-5 py-4 flex items-center justify-between border-b border-black/8">
+        <div>
+          <div class="text-[11px] font-semibold tracking-[0.08em] uppercase text-ink-soft">Leaderboard</div>
+          <div class="text-[15px] font-semibold text-ink tracking-tight mt-0.5">Britain's heat pump plan is failing. Fix it.</div>
+        </div>
+        <div class="text-[12px] text-ink-soft">112 submissions</div>
+      </div>
+
+      <div>
+        <div class="lb-row">
+          <div class="lb-rank">01</div>
+          <div>
+            <div class="lb-name">Priya R.</div>
+            <div class="lb-meta">Self-taught · Manchester · independent submission</div>
+          </div>
+          <div class="lb-score">94.2</div>
+          <div class="lb-status shortlist">Shortlist</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">02</div>
+          <div>
+            <div class="lb-name">Daniel O.</div>
+            <div class="lb-meta">Engineering apprentice · Bristol</div>
+          </div>
+          <div class="lb-score">92.8</div>
+          <div class="lb-status shortlist">Shortlist</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">03</div>
+          <div>
+            <div class="lb-name">Amara K.</div>
+            <div class="lb-meta">Geography graduate · Leeds</div>
+          </div>
+          <div class="lb-score">91.5</div>
+          <div class="lb-status shortlist">Shortlist</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">04</div>
+          <div>
+            <div class="lb-name">Tom W.</div>
+            <div class="lb-meta">PPE · Oxford</div>
+          </div>
+          <div class="lb-score">89.1</div>
+          <div class="lb-status shortlist">Shortlist</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">05</div>
+          <div>
+            <div class="lb-name">Sara M.</div>
+            <div class="lb-meta">Mechanical engineering · Strathclyde</div>
+          </div>
+          <div class="lb-score">87.6</div>
+          <div class="lb-status review">In review</div>
+        </div>
+      </div>
+
+      <div class="px-5 py-3 border-t border-black/8 text-[12px] text-ink-soft flex items-center justify-between">
+        <span>Judged by 4 retired sector leads</span>
+        <span class="text-ink font-medium">Live defence · Thu 6pm</span>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============ WHERE IT FITS (Block 4) ============ -->
+<section class="bg-white py-24 md:py-32 border-t border-black/5">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="max-w-3xl mb-12 md:mb-16">
+      <div class="text-[11px] font-semibold tracking-[0.18em] text-accent uppercase mb-4">
+        Where it fits
+      </div>
+      <h2 class="font-display text-[2rem] md:text-[2.75rem] leading-[1.05] text-ink tracking-tight mb-5">
+        Plugs into the hiring you<br/>already run.
+      </h2>
+      <p class="text-[17px] text-ink-soft leading-[1.55] max-w-2xl">
+        Mantle doesn't replace your ATS or your interview process. It replaces the top of your funnel, the bit you currently outsource to a CV pile.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+
+      <!-- Before -->
+      <div class="rounded-2xl border border-black/8 p-7 md:p-8 bg-[#FBFBF9]">
+        <div class="text-[11px] font-semibold tracking-[0.12em] uppercase text-ink-soft mb-5">
+          Before
+        </div>
+        <ol class="space-y-4">
+          <li class="flex items-start gap-3 text-[15px] text-ink-soft leading-[1.5]">
+            <span class="shrink-0 w-6 h-6 rounded-full bg-black/8 text-ink-soft text-[12px] font-semibold inline-flex items-center justify-center">1</span>
+            <span>140 applicants drop CVs into a portal</span>
+          </li>
+          <li class="flex items-start gap-3 text-[15px] text-ink-soft leading-[1.5]">
+            <span class="shrink-0 w-6 h-6 rounded-full bg-black/8 text-ink-soft text-[12px] font-semibold inline-flex items-center justify-center">2</span>
+            <span>An AI screener or junior recruiter cuts to 20 on credentials</span>
+          </li>
+          <li class="flex items-start gap-3 text-[15px] text-ink-soft leading-[1.5]">
+            <span class="shrink-0 w-6 h-6 rounded-full bg-black/8 text-ink-soft text-[12px] font-semibold inline-flex items-center justify-center">3</span>
+            <span>First-round interview with the 20. Six weeks in.</span>
+          </li>
+          <li class="flex items-start gap-3 text-[15px] text-ink-soft leading-[1.5]">
+            <span class="shrink-0 w-6 h-6 rounded-full bg-black/8 text-ink-soft text-[12px] font-semibold inline-flex items-center justify-center">4</span>
+            <span>You guess.</span>
+          </li>
+        </ol>
+      </div>
+
+      <!-- After -->
+      <div class="rounded-2xl border border-accent/30 p-7 md:p-8" style="background-color: #F2F6F3;">
+        <div class="text-[11px] font-semibold tracking-[0.12em] uppercase text-accent mb-5">
+          With Mantle
+        </div>
+        <ol class="space-y-4">
+          <li class="flex items-start gap-3 text-[15px] text-ink leading-[1.5]">
+            <span class="shrink-0 w-6 h-6 rounded-full bg-accent text-white text-[12px] font-semibold inline-flex items-center justify-center">1</span>
+            <span>200+ graduates submit real work on your brief</span>
+          </li>
+          <li class="flex items-start gap-3 text-[15px] text-ink leading-[1.5]">
+            <span class="shrink-0 w-6 h-6 rounded-full bg-accent text-white text-[12px] font-semibold inline-flex items-center justify-center">2</span>
+            <span>Rubric-scored, ranked, published. Top 20 defend live to industry veterans.</span>
+          </li>
+          <li class="flex items-start gap-3 text-[15px] text-ink leading-[1.5]">
+            <span class="shrink-0 w-6 h-6 rounded-full bg-accent text-white text-[12px] font-semibold inline-flex items-center justify-center">3</span>
+            <span>Shortlist + verdicts land in your inbox. You pick who to interview.</span>
+          </li>
+          <li class="flex items-start gap-3 text-[15px] text-ink leading-[1.5]">
+            <span class="shrink-0 w-6 h-6 rounded-full bg-accent text-white text-[12px] font-semibold inline-flex items-center justify-center">4</span>
+            <span>You hire someone you've already seen do the job.</span>
+          </li>
+        </ol>
+      </div>
+
+    </div>
+
+    <div class="mt-12 flex flex-col sm:flex-row gap-3">
+      <a href="contact.html?interest=sponsor" class="btn-primary inline-flex items-center gap-2 bg-ink text-white px-6 py-4 rounded-lg font-medium text-[15px]">
+        Sponsor a challenge
+        <span class="opacity-70">→</span>
+      </a>
+      <a href="contact.html" class="inline-flex items-center gap-2 text-ink px-6 py-4 rounded-lg font-medium text-[15px] border border-black/15">
+        Talk to us
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============ COMPARISON TABLE ============ -->
+<section class="bg-[#FBFBF9] py-24 md:py-32 border-t border-black/5">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-[11px] font-semibold tracking-[0.18em] text-accent uppercase mb-6">
+      Vs the funnel you've inherited
+    </div>
+    <h2 class="font-display text-[2rem] md:text-[3rem] leading-[1.05] mb-12 text-ink tracking-tight">
+      Same role. Different filter.
+    </h2>
+
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th></th>
+          <th>The graduate scheme</th>
+          <th class="col-mantle">Mantle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="dim">What you screen on</td>
+          <td class="old">University, internships, the right CV keywords.</td>
+          <td class="new">A piece of real work on a real brief, judged against a rubric.</td>
+        </tr>
+        <tr>
+          <td class="dim">Who gets through</td>
+          <td class="old">The applicants who knew how to apply, often the ones who already had the network.</td>
+          <td class="new">The ones who actually did the best work. Background is incidental.</td>
+        </tr>
+        <tr>
+          <td class="dim">Time before signal</td>
+          <td class="old">First-round interview, six weeks in. Still mostly guessing.</td>
+          <td class="new">Before the first call. The submission and the defence already tell you.</td>
+        </tr>
+        <tr>
+          <td class="dim">Who decides</td>
+          <td class="old">An HR screen, an AI screener, a partner who didn't read the file.</td>
+          <td class="new">A panel of retired industry veterans, plus a public rubric.</td>
+        </tr>
+        <tr>
+          <td class="dim">What you get</td>
+          <td class="old">A hire who can pass interviews.</td>
+          <td class="new">A hire who can do the job, because you've already seen them do it.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- ============ CLOSING CTA ============ -->
+<section class="bg-ink py-24 md:py-32 text-white border-t border-black/5">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="text-[11px] font-semibold tracking-[0.18em] uppercase mb-6" style="color: #BDD4C3;">
+      Get started
+    </div>
+    <h2 class="font-display text-[2rem] md:text-[3rem] leading-[1.05] mb-8 text-white tracking-tight">
+      See the work before you see the CV.
+    </h2>
+    <p class="text-[18px] leading-[1.55] mb-10 max-w-2xl" style="color: rgba(255,255,255,0.8);">
+      Tell us what you're hiring for, or what you'd love to see a hundred sharp graduates take a swing at. We'll come back within 48 hours with what a Mantle challenge would look like for you.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-3">
+      <a href="contact.html?interest=sponsor" class="btn-primary inline-flex items-center gap-2 bg-white text-ink px-6 py-4 rounded-lg font-medium text-[15px]">
+        Sponsor a challenge
+        <span>→</span>
+      </a>
+      <a href="contact.html?interest=hire" class="inline-flex items-center gap-2 text-white px-6 py-4 rounded-lg font-medium text-[15px] border" style="border-color: rgba(255,255,255,0.25);">
+        Hire from the leaderboard
+      </a>
+    </div>
+  </div>
+</section>
+
+</div><!-- end hidden -->
+
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-black/10 bg-white" style="display: none;">
+  <div class="max-w-7xl mx-auto px-6 pt-16 pb-10 md:pt-20 md:pb-12">
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8 mb-14">
+
+      <div class="col-span-2 md:col-span-1">
+        <a href="index.html" class="inline-flex items-center gap-2.5 mb-4">
+          <img loading="lazy" decoding="async" src="assets/logo/mantle-logo-black.svg" alt="" class="h-5 w-auto">
+          <span class="font-display text-2xl tracking-tight">Mantle</span>
+        </a>
+        <p class="text-sm text-ink-soft leading-relaxed mb-6 max-w-[220px]">
+          Get hired for what you can do.
+        </p>
+      </div>
+
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">For graduates</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="index.html#challenges" class="hover:text-ink transition">Open challenges</a></li>
+          <li><a href="index.html#how-it-works" class="hover:text-ink transition">How it works</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">For companies</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="for-companies.html" class="hover:text-ink transition">Hire from us</a></li>
+          <li><a href="contact.html?interest=sponsor" class="hover:text-ink transition">Sponsor a challenge</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="font-semibold text-sm text-ink mb-4">Company</div>
+        <ul class="space-y-3 text-sm text-ink-soft">
+          <li><a href="about.html" class="hover:text-ink transition">About us</a></li>
+          <li><a href="contact.html" class="hover:text-ink transition">Contact</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="border-t border-black/10 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs text-ink-soft">
+      <div>© 2026 Mantle Ltd. All rights reserved.</div>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var nav = document.querySelector('.site-nav-wrap');
+    if (!nav) return;
+    function update() {
+      if (window.scrollY > 24) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  })();
+</script>
+
+</body>
+</html>

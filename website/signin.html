@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in | Mantle</title>
+  <meta name="description" content="Create a Mantle account. No CV. No cover letter. Just the work.">
+
+  <link rel="stylesheet" href="assets/styles.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink:       #1C1B18;
+      --ink-soft:  #5C5950;
+      --accent:    #2D5440;
+      --cream:     #F1EFE9;
+    }
+    html, body { background-color: #FFFFFF !important; }
+    body {
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      margin: 0;
+    }
+    .font-display {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+    }
+    .text-ink { color: var(--ink); }
+    .text-ink-soft { color: var(--ink-soft); }
+    .text-accent { color: var(--accent); }
+    .bg-accent { background-color: var(--accent); }
+
+    /* Layout */
+    .signin-shell {
+      min-height: 100vh;
+      min-height: 100dvh;
+      width: 100%;
+      display: flex;
+    }
+
+    /* LHS visual */
+    .signin-visual {
+      position: relative;
+      width: 50%;
+      background-color: var(--ink);
+      overflow: hidden;
+      display: none;
+    }
+    @media (min-width: 768px) {
+      .signin-visual { display: flex; }
+    }
+    .signin-visual-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 55%;
+      opacity: 0.6;
+    }
+    .signin-visual-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg,
+        rgba(10, 8, 6, 0.55) 0%,
+        rgba(10, 8, 6, 0.35) 35%,
+        rgba(10, 8, 6, 0.85) 100%);
+    }
+    .signin-logo {
+      position: absolute;
+      top: 2rem;
+      left: 2.5rem;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+    }
+    .signin-logo img { height: 20px; width: auto; }
+    .signin-logo span {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      font-size: 24px;
+      color: #FFFFFF;
+    }
+    .signin-welcome {
+      position: relative;
+      z-index: 2;
+      margin-top: auto;
+      padding: 2.5rem 2.5rem 3.5rem;
+      color: #FFFFFF;
+      align-self: flex-end;
+      width: 100%;
+    }
+    .signin-welcome-eyebrow {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.6);
+      margin: 0 0 0.5rem;
+    }
+    .signin-welcome h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      font-size: 3rem;
+      line-height: 1.05;
+      margin: 0 0 1.25rem;
+    }
+    @media (min-width: 1024px) {
+      .signin-welcome h2 { font-size: 3.75rem; }
+    }
+    .signin-welcome p {
+      color: rgba(255,255,255,0.7);
+      max-width: 24rem;
+      line-height: 1.55;
+      margin: 0;
+      font-size: 0.95rem;
+    }
+    .signin-welcome a.know-more {
+      display: inline-block;
+      margin-top: 1rem;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: color 120ms ease;
+    }
+    .signin-welcome a.know-more:hover { color: rgba(255,255,255,0.85); text-decoration: underline; text-underline-offset: 4px; }
+
+    /* RHS form */
+    .signin-form-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+    }
+    .signin-mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+    }
+    .signin-mobile-header a {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+    }
+    .signin-mobile-header img { height: 20px; width: auto; }
+    .signin-mobile-header span {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      font-size: 24px;
+      color: var(--ink);
+    }
+    @media (min-width: 768px) {
+      .signin-mobile-header { display: none; }
+    }
+    .signin-form-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+    .signin-form {
+      width: 100%;
+      max-width: 22rem;
+    }
+    .signin-form h1, .signin-form h2.title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      color: var(--ink);
+      line-height: 1.15;
+      margin: 0;
+    }
+    .signin-form h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.4rem;
+    }
+    .signin-form h2.title {
+      font-size: 1.6rem;
+      margin-bottom: 0.85rem;
+    }
+    @media (min-width: 768px) {
+      .signin-form h1, .signin-form h2.title { font-size: 1.85rem; }
+    }
+    .signin-form > p.lede {
+      color: var(--ink-soft);
+      font-size: 0.875rem;
+      margin: 0 0 1.75rem;
+    }
+    .signin-input {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 8px;
+      background: #FFFFFF;
+      padding: 0.875rem 1rem;
+      font-size: 15px;
+      color: var(--ink);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 120ms ease, box-shadow 120ms ease;
+    }
+    .signin-input::placeholder { color: rgba(92, 89, 80, 0.7); }
+    .signin-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(45, 84, 64, 0.15);
+    }
+    .signin-btn {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 0.75rem;
+      padding: 0.875rem 1rem;
+      border: 0;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #FFFFFF;
+      font-family: inherit;
+      font-weight: 500;
+      font-size: 15px;
+      cursor: pointer;
+      transition: opacity 120ms ease, transform 120ms ease;
+    }
+    .signin-btn:hover:not(:disabled) { opacity: 0.95; transform: translateY(-1px); }
+    .signin-btn:disabled {
+      background: rgba(0,0,0,0.15);
+      color: rgba(255,255,255,0.8);
+      cursor: not-allowed;
+    }
+    .signin-error {
+      color: #B8533D;
+      font-size: 13px;
+      margin: 0.5rem 0 0;
+    }
+    .signin-terms {
+      margin-top: 1rem;
+      font-size: 12px;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+    .signin-terms a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .signin-terms a:hover { text-decoration: underline; text-underline-offset: 4px; }
+    .signin-alt {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+    .signin-alt a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .signin-alt a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+    /* Sent state */
+    .signin-sent h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      font-size: 2rem;
+      line-height: 1.15;
+      color: var(--ink);
+      margin: 0 0 0.75rem;
+    }
+    .signin-sent p {
+      color: var(--ink-soft);
+      font-size: 15px;
+      line-height: 1.55;
+      margin: 0 0 2.5rem;
+    }
+    .signin-sent .email-shown {
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .signin-sent .use-different {
+      background: none;
+      border: 0;
+      padding: 0;
+      color: var(--ink-soft);
+      font-size: 14px;
+      cursor: pointer;
+      font-family: inherit;
+      text-underline-offset: 4px;
+    }
+    .signin-sent .use-different:hover { color: var(--ink); text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<main class="signin-shell">
+
+  <!-- ============ LHS: Mantle visual ============ -->
+  <aside class="signin-visual">
+    <img src="assets/headshots/edwin-andrade-4V1dC_eoCwg-unsplash.webp" alt="" class="signin-visual-img">
+    <div class="signin-visual-overlay"></div>
+
+    <a href="index.html" class="signin-logo">
+      <img src="assets/logo/mantle-logo-white.svg" alt="">
+      <span>Mantle</span>
+    </a>
+
+    <div class="signin-welcome">
+      <p class="signin-welcome-eyebrow">Welcome to</p>
+      <h2>Mantle</h2>
+      <p>Real briefs. Real judges. Real interviews on the line.</p>
+      <a href="index.html" class="know-more">Know more</a>
+    </div>
+  </aside>
+
+
+  <!-- ============ RHS: form ============ -->
+  <section class="signin-form-side">
+
+    <!-- Mobile-only header (LHS hidden on mobile) -->
+    <header class="signin-mobile-header">
+      <a href="index.html">
+        <img src="assets/logo/mantle-logo-black.svg" alt="">
+        <span>Mantle</span>
+      </a>
+    </header>
+
+    <div class="signin-form-wrap">
+      <div class="signin-form" id="signin-form">
+        <h1>Join us</h1>
+        <h2 class="title">Create a Mantle account</h2>
+        <p class="lede">Be part of the new ladder. No CV. No cover letter. Just the work.</p>
+
+        <form id="signin-email-form" novalidate>
+          <input
+            type="email"
+            id="signin-email"
+            class="signin-input"
+            placeholder="Email"
+            required
+            autofocus
+            autocomplete="email"
+          >
+          <p class="signin-error" id="signin-error" style="display:none;"></p>
+          <button type="submit" class="signin-btn" id="signin-submit" disabled>Send magic link</button>
+        </form>
+
+        <p class="signin-terms">
+          By continuing you agree to Mantle's
+          <a href="#">Terms of Service</a> and
+          <a href="#">Privacy Policy</a>.
+        </p>
+
+        <p class="signin-alt">
+          Already have an account?
+          <a href="signin.html">Log in</a>
+        </p>
+      </div>
+
+      <!-- Sent confirmation, hidden until submitted -->
+      <div class="signin-form signin-sent" id="signin-sent" style="display:none;">
+        <h1>Check your inbox.</h1>
+        <p>We sent a link to <span class="email-shown" id="signin-sent-email"></span>. Click it on this device to sign in.</p>
+        <button type="button" class="use-different" id="signin-use-different">Use a different email</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  (function () {
+    var form = document.getElementById('signin-email-form');
+    var emailInput = document.getElementById('signin-email');
+    var submitBtn = document.getElementById('signin-submit');
+    var errorEl = document.getElementById('signin-error');
+    var formCard = document.getElementById('signin-form');
+    var sentCard = document.getElementById('signin-sent');
+    var sentEmail = document.getElementById('signin-sent-email');
+    var useDifferent = document.getElementById('signin-use-different');
+
+    emailInput.addEventListener('input', function () {
+      submitBtn.disabled = !emailInput.value || !emailInput.checkValidity();
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!emailInput.checkValidity()) return;
+      errorEl.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+
+      // TODO: replace with Supabase signInWithOtp() once project is wired:
+      //   supabase.auth.signInWithOtp({
+      //     email: emailInput.value,
+      //     options: { emailRedirectTo: window.location.origin + '/auth/callback' }
+      //   });
+      setTimeout(function () {
+        sentEmail.textContent = emailInput.value;
+        formCard.style.display = 'none';
+        sentCard.style.display = '';
+      }, 600);
+    });
+
+    useDifferent.addEventListener('click', function () {
+      emailInput.value = '';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Send magic link';
+      sentCard.style.display = 'none';
+      formCard.style.display = '';
+      setTimeout(function () { emailInput.focus(); }, 0);
+    });
+  })();
+</script>
+
+</body>
+</html>

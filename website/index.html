@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mantle | Mentor a Young Person</title>
-  <meta name="description" content="Graduate jobs are in crisis. Be part of the solution with Mantle's mentorship platform and events.">
+  <title>Mantle | Get hired for what you can do</title>
+  <meta name="description" content="The graduate scheme was built for kids whose parents went to Oxbridge. AI made it worse. Mantle is the new ladder. Real briefs, real judges, real interviews on the line.">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://passthemantle.com/">
-  <meta property="og:title" content="Mantle | Mentor a Young Person">
-  <meta property="og:description" content="Graduate jobs are in crisis. Be part of the solution with Mantle's mentorship platform and events.">
+  <meta property="og:title" content="Mantle | Get hired for what you can do">
+  <meta property="og:description" content="The graduate scheme was built for kids whose parents went to Oxbridge. AI made it worse. Mantle is the new ladder. Real briefs, real judges, real interviews on the line.">
   <meta property="og:image" content="https://passthemantle.com/assets/headshots/edwin-andrade-4V1dC_eoCwg-unsplash.webp">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Mantle | Mentor a Young Person">
-  <meta name="twitter:description" content="Graduate jobs are in crisis. Be part of the solution with Mantle's mentorship platform and events.">
+  <meta name="twitter:title" content="Mantle | Get hired for what you can do">
+  <meta name="twitter:description" content="The graduate scheme was built for kids whose parents went to Oxbridge. AI made it worse. Mantle is the new ladder. Real briefs, real judges, real interviews on the line.">
   <meta name="twitter:image" content="https://passthemantle.com/assets/headshots/edwin-andrade-4V1dC_eoCwg-unsplash.webp">
 
   <link rel="stylesheet" href="assets/styles.css">
@@ -47,7 +47,7 @@
     }
     .font-display {
       font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-      font-weight: 600;
+      font-weight: 500;
       letter-spacing: -0.035em;
     }
     .text-ink { color: var(--ink); }
@@ -94,19 +94,332 @@
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
     }
 
-    /* Hero background image + overlay */
+    /* Hero (white background, full viewport height) */
     .hero-bg {
-      background-image: url('assets/headshots/edwin-andrade-4V1dC_eoCwg-unsplash.webp');
-      background-size: cover;
-      background-position: center 45%;
-      height: 100vh;
-      height: 100dvh;
+      background: #FFFFFF;
+      min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
     }
-    @media (min-width: 768px) {
-      .hero-bg { background-position: center 65%; }
+
+    /* Graduate Skills grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
     }
+    @media (min-width: 640px) {
+      .skills-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1024px) {
+      .skills-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1280px) {
+      .skills-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    .skills-grid > .marquee-card {
+      width: auto !important;
+      margin-right: 0 !important;
+    }
+
+    
+    /* Shared visual slot — guarantees both visuals render at identical width */
+    .visual-slot {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+    .visual-slot > * {
+      width: 540px !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      flex-shrink: 1;
+    }
+
+    /* Mantle Engage — challenge creation UI mock */
+    .engage-mock-wrap {
+      width: 100%;
+    }
+    .engage-mock {
+      width: 540px !important;
+      min-width: 540px !important;
+      max-width: 540px !important;
+      margin: 0 auto;
+      height: 340px;
+      background: white;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+    .engage-mock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+    .engage-mock-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .engage-mock-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #1A3D5E, #2C5A85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+    .engage-mock-company {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+    .engage-mock-meta {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 1px;
+    }
+    .engage-mock-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      background: rgba(0,0,0,0.04);
+      padding: 5px 10px;
+      border-radius: 999px;
+    }
+    .engage-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #C8A100;
+      animation: engage-pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes engage-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    .engage-mock-body {
+      flex: 1;
+      padding: 18px 20px 6px;
+      overflow: hidden;
+    }
+    .engage-field { margin-bottom: 18px; }
+    .engage-field:last-child { margin-bottom: 0; }
+    .engage-field-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+    }
+    .engage-field-input {
+      background: #FBFBF9;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 14px;
+      color: var(--ink);
+      font-weight: 500;
+      min-height: 18px;
+    }
+    .engage-typing-input {
+      display: flex;
+      align-items: center;
+    }
+    .engage-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 16px;
+      background: var(--accent);
+      margin-left: 2px;
+      border-radius: 1px;
+      animation: engage-cursor-blink 1s steps(1) infinite;
+    }
+    @keyframes engage-cursor-blink {
+      50% { opacity: 0; }
+    }
+
+    .engage-checklist {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .engage-checklist li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--ink);
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 320ms ease, transform 320ms ease;
+    }
+    .engage-checklist li.engage-skill-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .engage-check {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .engage-check::after {
+      content: "";
+      width: 7px;
+      height: 4px;
+      border-left: 1.75px solid white;
+      border-bottom: 1.75px solid white;
+      transform: rotate(-45deg) translate(1px, -1px);
+      display: block;
+    }
+
+    .engage-mock-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 14px 20px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      background: #FBFBF9;
+      flex-shrink: 0;
+    }
+    .engage-btn {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: 8px;
+      border: 0;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .engage-btn-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 1px 2px rgba(45,84,64,0.18);
+    }
+
+    /* Ink chip pill */
+    .ink-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      background: var(--ink);
+      color: white;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    /* Cycling card stack */
+    .cycle-wrap {
+      width: 100%;
+    }
+    .cycle-container {
+      position: relative;
+      width: 540px !important;
+      min-width: 540px !important;
+      max-width: 540px !important;
+      margin: 0 auto;
+      height: 340px;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    .cycle-card {
+      position: absolute;
+      inset: 0;
+      transform: translate(105%, 0);
+      transition: transform 700ms cubic-bezier(0.65, 0.05, 0.36, 1);
+      pointer-events: none;
+    }
+    .cycle-card.cycle-card-active {
+      pointer-events: auto;
+    }
+    .cycle-card .marquee-card {
+      width: 100% !important;
+      margin-right: 0 !important;
+      box-shadow: none !important;
+    }
+
+    /* Marquee carousel */
+    .marquee-wrap {
+      overflow: hidden;
+      width: 100%;
+      mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+    }
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee-scroll 80s linear infinite;
+    }
+    .marquee-card {
+      flex-shrink: 0;
+      width: 300px;
+      margin-right: 20px;
+    }
+    @keyframes marquee-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-track { animation: none; }
+    }
+    @media (min-width: 768px) {
+      .marquee-card { width: 320px; }
+    }
+
+    /* Compact marquee variant (used in hero only — keeps the standard marquee-card size for reuse elsewhere) */
+    .hero-marquee .marquee-card { width: 240px !important; margin-right: 56px !important; }
+    @media (min-width: 768px) {
+      .hero-marquee .marquee-card { width: 260px !important; margin-right: 72px !important; }
+    }
+    .hero-marquee .marquee-card > div:first-child { height: 96px !important; }
+    .hero-marquee .marquee-card > div:first-child > div.absolute {
+      bottom: -14px !important; left: 12px !important; width: 36px !important; height: 36px !important;
+    }
+    .hero-marquee .marquee-card > div:first-child > div.absolute img { width: 18px !important; height: 18px !important; }
+    .hero-marquee .marquee-card > .flex-1 { padding: 22px 12px 12px !important; }
+    .hero-marquee .marquee-card > .flex-1 > div:first-child { font-size: 9px !important; margin-bottom: 4px !important; }
+    .hero-marquee .marquee-card > .flex-1 > div:first-child svg { width: 10px !important; height: 10px !important; }
+    .hero-marquee .marquee-card > .flex-1 > h3 { font-size: 13px !important; line-height: 1.22 !important; margin-bottom: 4px !important; }
+    .hero-marquee .marquee-card > .flex-1 > p { font-size: 11px !important; line-height: 1.4 !important; margin-bottom: 3px !important; }
+    .hero-marquee .marquee-card > .flex-1 > div:last-child { font-size: 10px !important; }
+    .hero-marquee .marquee-card > div:last-child { padding: 10px 12px !important; }
+    .hero-marquee .marquee-card > div:last-child > span:first-child { font-size: 13px !important; }
+    .hero-marquee .marquee-card > div:last-child > span:last-child { font-size: 11px !important; }
     .hero-content {
       flex: 1;
       display: flex;
@@ -143,7 +456,7 @@
       display: block;
       width: 22px;
       height: 2px;
-      background: rgba(255,255,255,0.9);
+      background: rgba(28,27,24,0.85);
       border-radius: 2px;
     }
     .mobile-nav {
@@ -250,6 +563,105 @@
       white-space: nowrap;
     }
 
+    /* Challenges grid (xl:grid-cols-4 isn't in compiled Tailwind) */
+    .challenges-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+    @media (min-width: 640px) {
+      .challenges-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1024px) {
+      .challenges-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1280px) {
+      .challenges-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
+    /* Sticky site nav (visible across all sections) */
+    html { scroll-padding-top: 72px; }
+    .site-nav-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      border-bottom: 1px solid transparent;
+      transition: background-color 200ms ease, border-color 200ms ease;
+    }
+    .site-nav-wrap.scrolled {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: saturate(140%) blur(14px);
+      -webkit-backdrop-filter: saturate(140%) blur(14px);
+      border-bottom-color: rgba(28, 27, 24, 0.08);
+    }
+    .site-nav {
+      width: 100%;
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0.875rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+
+    /* Hero typography (arbitrary Tailwind values aren't compiled in styles.css) */
+    .hero-h1 {
+      font-size: 2.5rem;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      font-weight: 500;
+    }
+    .hero-sub {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    @media (min-width: 768px) {
+      .hero-h1 { font-size: 4.25rem; }
+      .hero-sub { font-size: 1.125rem; line-height: 1.5; }
+    }
+    /* Rotating headline word (typewriter) */
+    .rotating-word {
+      color: var(--accent);
+      display: inline-block;
+      vertical-align: baseline;
+      min-width: 1ch;
+    }
+    .typing-caret {
+      display: inline-block;
+      width: 4px;
+      height: 0.85em;
+      background: var(--accent);
+      margin-left: 4px;
+      vertical-align: -0.05em;
+      animation: caret-blink 1s steps(1) infinite;
+      border-radius: 2px;
+    }
+    @keyframes caret-blink {
+      50% { opacity: 0; }
+    }
+
+    /* Hero bottom-up accent fade — pushed down, smoother multi-stop transition */
+    .hero-bottom-fade {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 380px;
+      background: linear-gradient(to top,
+        var(--accent) 0%,
+        var(--accent) 6%,
+        rgba(45, 84, 64, 0.55) 22%,
+        rgba(45, 84, 64, 0.28) 42%,
+        rgba(45, 84, 64, 0.10) 62%,
+        rgba(45, 84, 64, 0.03) 82%,
+        transparent 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
     /* Infinity loop flowing dash (single dash, normalized path length = 100) */
     .loop-flow {
       animation: flow-dash 2s linear infinite;
@@ -263,70 +675,823 @@
   </style>
 </head>
 
-<body class="bg-white" style="background-color: #FFFFFF; overflow: hidden;">
+<body class="bg-white" style="background-color: #FFFFFF;">
 
-<!-- ============ HERO (now contains nav so the image bleeds behind it) ============ -->
-<section class="relative overflow-hidden hero-bg">
-
-  <!-- Dark overlay for text readability (vertical at top for nav, horizontal for hero text) -->
-  <div class="absolute inset-0 hero-overlay"></div>
-
-  <!-- Nav sits on top of the same background -->
-  <nav class="hero-nav">
+<!-- ============ STICKY NAV (visible across all sections) ============ -->
+<header class="site-nav-wrap">
+  <nav class="site-nav">
     <a href="/" class="flex items-center gap-2.5">
-      <img loading="lazy" decoding="async" src="assets/logo/mantle-logo-white.svg" alt="" class="h-5 w-auto">
-      <span class="font-display text-2xl tracking-tight text-white">Mantle</span>
+      <img loading="lazy" decoding="async" src="assets/logo/mantle-logo-black.svg" alt="" class="h-5 w-auto">
+      <span class="font-display text-2xl tracking-tight text-ink">Mantle</span>
     </a>
 
-    <div class="hidden md:flex items-center gap-9 text-sm" style="color: rgba(255,255,255,0.75);">
-      <a href="index.html" class="text-white font-medium">For mentors</a>
-      <a href="about.html" class="hover:text-white transition">About us</a>
+    <div class="hidden md:flex items-center gap-9 text-sm text-ink-soft">
+      <a href="challenges.html" class="hover:text-ink transition">Challenges</a>
+      <a href="for-companies.html" class="hover:text-ink transition">For companies</a>
     </div>
 
-    <a href="mailto:benanthoney97@gmail.com" class="nav-cta btn-primary items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-white text-ink">
+    <a href="contact.html" class="nav-cta btn-primary items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-accent text-white">
       Talk to us
-      <span class="opacity-70">→</span>
+      <span class="opacity-80">→</span>
     </a>
     <button class="burger-btn" onclick="document.getElementById('mobileNav').classList.add('open')" aria-label="Open menu">
       <span></span><span></span><span></span>
     </button>
   </nav>
+</header>
 
-  <!-- Mobile nav overlay -->
-  <div id="mobileNav" class="mobile-nav">
-    <button class="mobile-nav-close" onclick="document.getElementById('mobileNav').classList.remove('open')" aria-label="Close menu">×</button>
-    <a href="index.html">For mentors</a>
-    <a href="about.html">About us</a>
-    <a href="mailto:benanthoney97@gmail.com" class="mobile-nav-cta">Talk to us →</a>
-  </div>
+<!-- Mobile nav overlay -->
+<div id="mobileNav" class="mobile-nav">
+  <button class="mobile-nav-close" onclick="document.getElementById('mobileNav').classList.remove('open')" aria-label="Close menu">×</button>
+  <a href="challenges.html">Challenges</a>
+  <a href="for-companies.html">For companies</a>
+  <a href="contact.html" class="mobile-nav-cta">Talk to us →</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="relative overflow-hidden hero-bg">
 
   <div class="hero-content">
-    <div class="max-w-7xl mx-auto px-6 w-full grid md:grid-cols-2 gap-14">
+    <div class="max-w-7xl mx-auto px-6 w-full" style="padding-top: 100px; padding-bottom: 100px;">
 
-      <!-- LEFT: copy column -->
-      <div class="relative z-10">
-        <h1 class="font-display text-[2.25rem] md:text-[3.25rem] leading-[1.05] mb-8 text-white">
-          Mentor the industry's<br/>next generation.
-        </h1>
+      <div class="grid md:grid-cols-2 items-center" style="gap: 48px;">
 
-        <p class="text-lg leading-[1.55] mb-10 max-w-lg" style="color: rgba(255,255,255,0.85);">
-          Graduate jobs are in crisis. Be part of the solution with Mantle's mentorship platform.
-        </p>
+        <!-- LEFT: copy -->
+        <div class="relative z-10" style="text-align: left;">
+          <h1 class="hero-h1 font-display mb-6 text-ink">
+            The Graduate<br/>Skills Platform.
+          </h1>
 
-        <div class="flex flex-col items-start gap-3">
-          <a href="mailto:benanthoney97@gmail.com" class="btn-primary inline-flex items-center gap-2 bg-white text-ink px-6 py-4 rounded-lg font-medium text-[15px]">
-            Learn more
-            <span>→</span>
-          </a>
+          <p class="hero-sub mb-10 text-ink-soft" style="max-width: 32rem;">
+            We help companies find outlier graduates through public problem-solving challenges.
+          </p>
+
+          <div class="flex flex-row flex-wrap gap-3">
+            <a href="challenges.html" class="btn-primary inline-flex items-center gap-2 bg-accent text-white px-6 py-4 rounded-lg font-medium text-[15px]">
+              I'm a graduate
+              <span>→</span>
+            </a>
+            <a href="for-companies.html" class="inline-flex items-center gap-2 text-ink px-6 py-4 rounded-lg font-medium text-[15px] border" style="border-color: rgba(0,0,0,0.15);">
+              I'm an employer
+            </a>
+          </div>
+        </div>
+
+        <!-- RIGHT: cycling card -->
+        <div class="visual-slot">
+        <div class="cycle-container">
+            <div class="cycle-card cycle-card-active"><a href="challenges/burberry.html" class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: none;">
+            <div class="relative" style="height: 130px;">
+              <img src="assets/challenges/burberry.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+              <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+                <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+              </div>
+            </div>
+            <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+              <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                <span>Challenge</span>
+              </div>
+              <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Burberry brand challenge</h3>
+              <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Write the 100-day turnaround plan for the British luxury house.</p>
+              <div class="text-ink-soft" style="font-size: 11px;">112 submissions</div>
+            </div>
+            <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+              <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+              <span class="text-ink-soft" style="font-size: 13px;">Closes 30 Jul 2026</span>
+            </div>
+          </a></div>
+            <div class="cycle-card"><a href="#" class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: none;">
+            <div class="relative" style="height: 130px;">
+              <img src="assets/challenges/nhs.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+              <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+                <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+              </div>
+            </div>
+            <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+              <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                <span>Challenge</span>
+              </div>
+              <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">NHS innovation challenge</h3>
+              <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Find £10bn of efficiency without cutting services.</p>
+              <div class="text-ink-soft" style="font-size: 11px;">56 submissions</div>
+            </div>
+            <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+              <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+              <span class="text-ink-soft" style="font-size: 13px;">Ongoing</span>
+            </div>
+          </a></div>
+            <div class="cycle-card"><a href="#" class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: none;">
+            <div class="relative" style="height: 130px;">
+              <img src="assets/challenges/octopus.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+              <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+                <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+              </div>
+            </div>
+            <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+              <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                <span>Challenge</span>
+              </div>
+              <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Octopus Energy expansion challenge</h3>
+              <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Take Octopus into a new European market.</p>
+              <div class="text-ink-soft" style="font-size: 11px;">38 submissions</div>
+            </div>
+            <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+              <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+              <span class="text-ink-soft" style="font-size: 13px;">Closes 31 Jul 2026</span>
+            </div>
+          </a></div>
+            <div class="cycle-card"><a href="#" class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: none;">
+            <div class="relative" style="height: 130px;">
+              <img src="assets/challenges/anthropic.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+              <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+                <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+              </div>
+            </div>
+            <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+              <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                <span>Challenge</span>
+              </div>
+              <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Anthropic deployment challenge</h3>
+              <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Design the launch policy for a frontier AI model.</p>
+              <div class="text-ink-soft" style="font-size: 11px;">45 submissions</div>
+            </div>
+            <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+              <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+              <span class="text-ink-soft" style="font-size: 13px;">Opens 1 Sep 2026</span>
+            </div>
+          </a></div>
+            <div class="cycle-card"><a href="#" class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: none;">
+            <div class="relative" style="height: 130px;">
+              <img src="assets/challenges/liquid-death.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+              <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+                <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+              </div>
+            </div>
+            <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+              <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                <span>Challenge</span>
+              </div>
+              <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Liquid Death market entry challenge</h3>
+              <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Plan the UK launch for the American drinks brand.</p>
+              <div class="text-ink-soft" style="font-size: 11px;">71 submissions</div>
+            </div>
+            <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+              <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+              <span class="text-ink-soft" style="font-size: 13px;">Closes 14 Aug 2026</span>
+            </div>
+          </a></div>
+            <div class="cycle-card"><a href="#" class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: none;">
+            <div class="relative" style="height: 130px;">
+              <img src="assets/challenges/fa-cup.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+              <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+                <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+              </div>
+            </div>
+            <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+              <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                <span>Challenge</span>
+              </div>
+              <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">FA Cup strategy challenge</h3>
+              <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Revive the world's oldest football cup competition.</p>
+              <div class="text-ink-soft" style="font-size: 11px;">33 submissions</div>
+            </div>
+            <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+              <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+              <span class="text-ink-soft" style="font-size: 13px;">Ongoing</span>
+            </div>
+          </a></div>
         </div>
       </div>
 
-      <!-- RIGHT: intentionally empty so the audience peeks through -->
-      <div class="hidden md:block"></div>
+      </div>
 
     </div>
   </div>
 
+  <!-- Soft accent fade at the bottom of the hero (hidden while page is hero-only) -->
+  <div class="hero-bottom-fade" style="display: none;"></div>
+
+</section>
+
+
+<div style="display: none;">
+
+<!-- ============ THE INVERSION (mission statement) ============ -->
+<section class="bg-accent py-20 md:py-28" style="min-height: 100vh; min-height: 100dvh; display: flex; align-items: center;">
+  <div class="max-w-4xl mx-auto px-6 w-full">
+
+    <!-- Title -->
+    <h2 class="mb-6" style="font-size: 18px; line-height: 1.65; font-weight: 600; color: white;">
+      Jobs have changed.
+    </h2>
+
+    <!-- Body -->
+    <div class="space-y-6 max-w-3xl">
+      <p style="font-size: 18px; line-height: 1.65; color: rgba(255,255,255,0.78);">
+        We've entered a new era of work where human and AI collaborate together. This changes the skills you need as a graduate, and the way companies engage, hire, and upskill junior talent. In short, everything has changed.
+      </p>
+      <p style="font-size: 18px; line-height: 1.65; color: rgba(255,255,255,0.78);">
+        We're helping graduates and companies embrace these changes. Refocusing what matters, from outdated CVs and work experience to one question: <strong style="color: white; font-weight: 600;">who can solve problems?</strong>
+      </p>
+    </div>
+
+    <!-- Closing statement -->
+    <div class="mt-8 max-w-3xl">
+      <p style="font-size: 18px; line-height: 1.65; color: white; font-weight: 600;">
+        Mantle creates challenges that help graduates prove themselves as outliers, and companies find those outliers.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ PROVE YOUR PROBLEM SOLVING ABILITY ============ -->
+<section class="bg-white" style="padding-top: 100px; padding-bottom: 48px;">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- Section heading: The Graduate Skills Platform -->
+    <div class="text-center mb-16 md:mb-20">
+      <h2 class="font-display text-ink tracking-tight" style="font-size: 3.5rem; line-height: 1.05; font-weight: 500;">
+        The Graduate Skills Platform
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 items-center" style="gap: 40px;">
+
+      <!-- LEFT: copy -->
+      <div>
+        <div class="ink-chip">Mantle Challenges</div>
+        <h2 class="font-display text-ink tracking-tight" style="font-size: 2.5rem; line-height: 1.1; font-weight: 500; margin-top: 32px; margin-bottom: 32px;">
+          Prove your problem solving ability
+        </h2>
+        <p class="text-ink-soft" style="font-size: 18px; line-height: 1.6; max-width: 32rem; margin-bottom: 32px;">
+          Complete real world challenges created by Mantle and employers. Get your submissions reviewed by employers looking for ambitious grads.
+        </p>
+        <a href="#challenges" class="inline-flex items-center gap-2 text-ink font-semibold" style="font-size: 16px;">
+          Learn more
+          <span>→</span>
+        </a>
+      </div>
+
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ MANTLE ENGAGE (find outlier graduates) ============ -->
+<section class="bg-white" style="padding-top: 48px; padding-bottom: 100px;">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 items-center" style="gap: 40px;">
+
+      <!-- LEFT: Visual — challenge creation UI mock -->
+      <div class="visual-slot">
+        <div class="engage-mock">
+
+          <!-- Header -->
+          <div class="engage-mock-header">
+            <div class="engage-mock-brand">
+              <div class="engage-mock-logo">C</div>
+              <div>
+                <div class="engage-mock-company">Capstone Strategy</div>
+                <div class="engage-mock-meta">New challenge</div>
+              </div>
+            </div>
+            <div class="engage-mock-badge">
+              <span class="engage-badge-dot"></span>
+              Draft
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="engage-mock-body">
+
+            <!-- Animated typing title -->
+            <div class="engage-field">
+              <div class="engage-field-label">Challenge title</div>
+              <div class="engage-field-input engage-typing-input">
+                <span id="engage-typing"></span><span class="engage-cursor"></span>
+              </div>
+            </div>
+
+            <!-- Skills checklist (each row fades in with the rotating title) -->
+            <div class="engage-field">
+              <div class="engage-field-label">Skills tested</div>
+              <ul class="engage-checklist" id="engage-skills">
+                <li><span class="engage-check"></span><span class="engage-skill-text"></span></li>
+                <li><span class="engage-check"></span><span class="engage-skill-text"></span></li>
+                <li><span class="engage-check"></span><span class="engage-skill-text"></span></li>
+              </ul>
+            </div>
+
+          </div>
+
+          <!-- Footer (single primary action) -->
+          <div class="engage-mock-footer">
+            <button class="engage-btn engage-btn-primary">
+              Publish challenge
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Copy -->
+      <div>
+        <div class="ink-chip">Mantle Engage</div>
+        <h2 class="font-display text-ink tracking-tight" style="font-size: 2.5rem; line-height: 1.1; font-weight: 500; margin-top: 32px; margin-bottom: 32px;">
+          Find outlier graduates to hire
+        </h2>
+        <p class="text-ink-soft" style="font-size: 18px; line-height: 1.6; max-width: 32rem; margin-bottom: 32px;">
+          Sponsor and create challenges for graduates to complete. Review submissions, engage the best problem solvers.
+        </p>
+        <a href="for-companies.html" class="inline-flex items-center gap-2 text-ink font-semibold" style="font-size: 16px;">
+          Learn more
+          <span>→</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ THE GRADUATE SKILLS PLATFORM (cards grid) ============ -->
+<section class="bg-white" style="padding-top: 100px; padding-bottom: 100px; display: none;">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="skills-grid">
+<!-- 1. BURBERRY (live, real image, links to page) -->
+      <a href="challenges/burberry.html" class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/burberry.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Burberry brand challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Write the 100-day turnaround plan for the British luxury house.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">112 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Closes 30 Jul 2026</span>
+        </div>
+      </a>
+
+      <!-- 2. BBC -->
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/bbc.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">BBC communications challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Pitch the next century of British public broadcasting.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">47 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Ongoing</span>
+        </div>
+      </div>
+
+      <!-- 3. SOCIAL MEDIA BAN -->
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/social-media.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Online safety policy challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Draft the bill that bans social media for under-16s.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">89 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Closes 24 Jul 2026</span>
+        </div>
+      </div>
+
+      <!-- 4. GYMSHARK IPO -->
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/gymshark.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Gymshark IPO challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Write the IPO pitch for the British sportswear brand.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">64 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Closes 7 Aug 2026</span>
+        </div>
+      </div>
+
+      <!-- 5. FA CUP -->
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/fa-cup.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">FA Cup strategy challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Revive the world's oldest football cup competition.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">33 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Ongoing</span>
+        </div>
+      </div>
+
+      <!-- 6. LIQUID DEATH -->
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/liquid-death.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Liquid Death market entry challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Plan the UK launch for the American drinks brand.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">71 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Closes 14 Aug 2026</span>
+        </div>
+      </div>
+    
+
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/spotify.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Spotify pricing challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Defend the premium tier against Apple Music's price hike.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">89 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Closes 17 Jul 2026</span>
+        </div>
+      </div>
+
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/nhs.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">NHS innovation challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Find £10bn of efficiency without cutting services.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">56 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Ongoing</span>
+        </div>
+      </div>
+
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/octopus.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Octopus Energy expansion challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Take Octopus into a new European market.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">38 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Closes 31 Jul 2026</span>
+        </div>
+      </div>
+
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/premier-league.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Premier League broadcast challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Restructure the TV deal for the streaming era.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">71 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Closes 21 Aug 2026</span>
+        </div>
+      </div>
+
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/anthropic.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Anthropic deployment challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Design the launch policy for a frontier AI model.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">45 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Opens 1 Sep 2026</span>
+        </div>
+      </div>
+
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/john-lewis.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">John Lewis turnaround challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Restore the partnership model for modern retail.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">22 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Ongoing</span>
+        </div>
+      </div>
+
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/greggs.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Greggs international challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Take Greggs to America without ruining it.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">41 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Closes 28 Aug 2026</span>
+        </div>
+      </div>
+
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/boots.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Boots reinvention challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Rebuild Boots' role on the British high street.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">28 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Ongoing</span>
+        </div>
+      </div>
+
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/shell.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Shell energy transition challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Map a credible path to net zero by 2050.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">33 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Opens 15 Sep 2026</span>
+        </div>
+      </div>
+
+      <div class="marquee-card bg-white rounded-2xl border border-black/8 overflow-hidden flex flex-col" style="box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+        <div class="relative" style="height: 130px;">
+          <img src="assets/challenges/uber.jpg" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          <div class="absolute" style="bottom: -18px; left: 16px; width: 44px; height: 44px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center;">
+            <img src="assets/logo/mantle-logo-green.svg" alt="" style="width: 22px; height: 22px;">
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col" style="padding: 30px 18px 18px;">
+          <div class="flex items-center gap-1.5 mb-2" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Challenge</span>
+          </div>
+          <h3 class="font-display text-ink tracking-tight mb-2" style="font-size: 17px; font-weight: 700; line-height: 1.25;">Uber UK growth challenge</h3>
+          <p class="text-ink-soft mb-1.5" style="font-size: 13px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Beat Bolt and the black cabs in London.</p>
+          <div class="text-ink-soft" style="font-size: 11px;">67 submissions</div>
+        </div>
+        <div class="flex items-center justify-between border-t border-black/8" style="padding: 14px 18px;">
+          <span class="text-ink" style="font-size: 15px; font-weight: 700;">Interview</span>
+          <span class="text-ink-soft" style="font-size: 13px;">Closes 4 Sep 2026</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- ============ BURBERRY CHALLENGE SPOTLIGHT ============ -->
+<section id="challenges" class="bg-white pt-16 md:pt-24 pb-12 md:pb-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+
+      <!-- LEFT: Banner image -->
+      <div class="relative">
+        <img src="assets/challenges/burberry.jpg" alt="Burberry flagship store" loading="lazy" decoding="async" class="rounded-2xl w-full" style="aspect-ratio: 4/3; object-fit: cover; box-shadow: 0 24px 48px rgba(0,0,0,0.10);">
+        <div class="absolute" style="top: 18px; left: 18px; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(255,255,255,0.95); border-radius: 999px; backdrop-filter: blur(8px);">
+          <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent);"></span>
+          <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; color: var(--accent);">Live now</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: Content -->
+      <div>
+        <h2 class="font-display leading-[1.1] mb-5 text-ink tracking-tight" style="font-size: 2rem; font-weight: 500;">
+          Burberry brand challenge
+        </h2>
+        <p class="text-ink-soft mb-8" style="font-size: 16px; line-height: 1.6;">
+          Write the 100-day turnaround plan for Britain's only global luxury house. Five pages. Top 20 defend live to a panel of retired industry leaders. Top performers fast-tracked to interviews.
+        </p>
+
+        <!-- Key facts row -->
+        <div class="grid grid-cols-3 gap-4 mb-8" style="border-top: 1px solid rgba(0,0,0,0.08); border-bottom: 1px solid rgba(0,0,0,0.08); padding: 18px 0;">
+          <div>
+            <div style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--ink-soft); margin-bottom: 4px;">Closes</div>
+            <div style="font-size: 14px; font-weight: 700; color: var(--ink);">30 Jul 2026</div>
+          </div>
+          <div>
+            <div style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--ink-soft); margin-bottom: 4px;">Submissions</div>
+            <div style="font-size: 14px; font-weight: 700; color: var(--ink);">112</div>
+          </div>
+          <div>
+            <div style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: var(--ink-soft); margin-bottom: 4px;">Prize</div>
+            <div style="font-size: 14px; font-weight: 700; color: var(--ink);">Interview</div>
+          </div>
+        </div>
+
+        <!-- CTAs -->
+        <div class="flex flex-wrap gap-3">
+          <a href="challenges/burberry.html" class="btn-primary inline-flex items-center gap-2 bg-accent text-white px-6 py-4 rounded-lg font-medium text-[15px]">
+            Enter the challenge
+            <span>→</span>
+          </a>
+          <a href="challenges/burberry.html" class="inline-flex items-center gap-2 text-ink px-6 py-4 rounded-lg font-medium text-[15px] border" style="border-color: rgba(0,0,0,0.15);">
+            Read the brief
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how-it-works" class="bg-[#FBFBF9] py-24 md:py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="max-w-3xl mb-16 md:mb-20">
+      <div class="text-[11px] font-semibold tracking-[0.18em] text-accent uppercase mb-4">
+        How it works
+      </div>
+      <h2 class="font-display text-[2rem] md:text-[2.75rem] leading-[1.05] text-ink tracking-tight">
+        Three steps. No CV.<br/>No cover letter. No introductions.
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+
+      <!-- Step 1 -->
+      <div class="bg-white rounded-xl border border-black/8 p-7">
+        <div class="text-[42px] font-display font-semibold text-accent leading-none mb-5">01</div>
+        <h3 class="font-display text-[22px] text-ink mb-3 tracking-tight">Pick a challenge</h3>
+        <p class="text-[15px] text-ink-soft leading-relaxed">
+          Real briefs set by Mantle or sponsored by companies hiring. Pick one you can do. Use any tools you want, including AI. Submit your work before the deadline.
+        </p>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="bg-white rounded-xl border border-black/8 p-7">
+        <div class="text-[42px] font-display font-semibold text-accent leading-none mb-5">02</div>
+        <h3 class="font-display text-[22px] text-ink mb-3 tracking-tight">Make the leaderboard</h3>
+        <p class="text-[15px] text-ink-soft leading-relaxed">
+          Submissions are rubric-scored. The leaderboard is public. The top 20 are invited to defend their work live to a panel of retired industry veterans.
+        </p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="bg-white rounded-xl border border-black/8 p-7">
+        <div class="text-[42px] font-display font-semibold text-accent leading-none mb-5">03</div>
+        <h3 class="font-display text-[22px] text-ink mb-3 tracking-tight">Get the interview</h3>
+        <p class="text-[15px] text-ink-soft leading-relaxed">
+          Top performers from the live defence go straight to employer interviews. The leaderboard is your portfolio. The judges' verdict is your reference.
+        </p>
+      </div>
+
+    </div>
+  </div>
 </section>
 
 
@@ -444,6 +1609,8 @@
 </section>
 
 
+</div>
+
 <!-- ============ FOOTER ============ -->
 <footer class="border-t border-black/10 bg-white">
   <div class="max-w-7xl mx-auto px-6 pt-16 pb-10 md:pt-20 md:pb-12">
@@ -501,7 +1668,7 @@
         <ul class="space-y-3 text-sm text-ink-soft">
           <li><a href="about.html" class="hover:text-ink transition">About us</a></li>
           <li><a href="about.html#team" class="hover:text-ink transition">Our team</a></li>
-          <li><a href="mailto:benanthoney97@gmail.com" class="hover:text-ink transition">Contact</a></li>
+          <li><a href="contact.html" class="hover:text-ink transition">Contact</a></li>
           <li><a href="#" class="hover:text-ink transition">Press</a></li>
         </ul>
       </div>
@@ -530,6 +1697,186 @@
 </footer>
 
 </div><!-- end hidden -->
+
+<script>
+  // Typewriter rotation: Become → Upskill → Hire
+  (function() {
+    const words = ['Become', 'Upskill', 'Hire'];
+    const el = document.getElementById('rotating-word');
+    if (!el) return;
+    const TYPE_SPEED = 130;
+    const ERASE_SPEED = 80;
+    const HOLD_MS = 3200;
+    const BETWEEN_MS = 450;
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+    let wordIndex = 0;
+    async function typeIn(word) {
+      for (let i = 1; i <= word.length; i++) {
+        el.textContent = word.slice(0, i);
+        await sleep(TYPE_SPEED);
+      }
+    }
+    async function eraseOut() {
+      let txt = el.textContent;
+      while (txt.length > 0) {
+        txt = txt.slice(0, -1);
+        el.textContent = txt;
+        await sleep(ERASE_SPEED);
+      }
+    }
+    async function loop() {
+      // Start by erasing the prefilled word, then type from blank
+      await sleep(900);
+      await eraseOut();
+      await sleep(BETWEEN_MS);
+      while (true) {
+        const word = words[wordIndex];
+        await typeIn(word);
+        await sleep(HOLD_MS);
+        await eraseOut();
+        await sleep(BETWEEN_MS);
+        wordIndex = (wordIndex + 1) % words.length;
+      }
+    }
+    loop();
+  })();
+</script>
+
+<script>
+  (function () {
+    var nav = document.querySelector('.site-nav-wrap');
+    if (!nav) return;
+    function update() {
+      if (window.scrollY > 24) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  })();
+</script>
+
+
+<script>
+  // Engage mock — rotating typewriter title + skills checklist
+  (function() {
+    const titleEl = document.getElementById('engage-typing');
+    const skillsList = document.getElementById('engage-skills');
+    if (!titleEl || !skillsList) return;
+
+    const BRIEFS = [
+      { title: "UK pet insurance market sizing", skills: ["Market sizing", "Financial modelling", "Strategic thinking"] },
+      { title: "Premium gym membership pricing", skills: ["Pricing strategy", "Consumer research", "Competitive analysis"] },
+      { title: "Greggs market entry into the US", skills: ["Market entry", "Brand strategy", "Operational planning"] },
+    ];
+
+    const TYPE_SPEED = 55;
+    const ERASE_SPEED = 28;
+    const HOLD_MS = 2200;
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    const skillItems = skillsList.querySelectorAll('li');
+
+    function setSkillText(idx, text) {
+      skillItems[idx].querySelector('.engage-skill-text').textContent = text;
+    }
+    function hideSkills() {
+      skillItems.forEach(li => li.classList.remove('engage-skill-visible'));
+    }
+    async function showSkills(skills) {
+      skills.forEach((s, i) => setSkillText(i, s));
+      for (let i = 0; i < skillItems.length; i++) {
+        await sleep(180);
+        skillItems[i].classList.add('engage-skill-visible');
+      }
+    }
+
+    async function typeIn(text) {
+      for (let i = 1; i <= text.length; i++) {
+        titleEl.textContent = text.slice(0, i);
+        await sleep(TYPE_SPEED);
+      }
+    }
+    async function eraseOut() {
+      let txt = titleEl.textContent;
+      while (txt.length > 0) {
+        txt = txt.slice(0, -1);
+        titleEl.textContent = txt;
+        await sleep(ERASE_SPEED);
+      }
+    }
+
+    async function loop() {
+      let i = 0;
+      while (true) {
+        const brief = BRIEFS[i % BRIEFS.length];
+        await typeIn(brief.title);
+        await showSkills(brief.skills);
+        await sleep(HOLD_MS);
+        hideSkills();
+        await sleep(200);
+        await eraseOut();
+        await sleep(280);
+        i++;
+      }
+    }
+    loop();
+  })();
+
+  // Cycling card swipe — direction rotates: left → up → right → down → ...
+  (function() {
+    const cards = document.querySelectorAll('.cycle-card');
+    if (cards.length < 2) return;
+
+    const OUTGOING = {
+      left:  'translate(-105%, 0)',
+      up:    'translate(0, -105%)',
+      right: 'translate(105%, 0)',
+      down:  'translate(0, 105%)',
+    };
+    const INCOMING_START = {
+      left:  'translate(105%, 0)',
+      up:    'translate(0, 105%)',
+      right: 'translate(-105%, 0)',
+      down:  'translate(0, -105%)',
+    };
+    const DIRECTIONS = ['left', 'up', 'right', 'down'];
+
+    // Initialise: card 0 active centred, others parked off-screen right
+    cards.forEach((c, i) => {
+      if (i === 0) {
+        c.style.transform = 'translate(0, 0)';
+        c.classList.add('cycle-card-active');
+      } else {
+        c.style.transform = 'translate(105%, 0)';
+      }
+    });
+
+    let current = 0;
+    let step = 0;
+
+    setInterval(() => {
+      const dir = DIRECTIONS[step % DIRECTIONS.length];
+      const prev = current;
+      const next = (current + 1) % cards.length;
+
+      // Pre-position incoming card on the opposite edge (no transition)
+      cards[next].style.transition = 'none';
+      cards[next].style.transform = INCOMING_START[dir];
+      // Force reflow so the no-transition placement takes effect
+      void cards[next].offsetWidth;
+      cards[next].style.transition = '';
+
+      // Animate: outgoing slides away in chosen direction, incoming slides to centre
+      cards[prev].classList.remove('cycle-card-active');
+      cards[prev].style.transform = OUTGOING[dir];
+      cards[next].style.transform = 'translate(0, 0)';
+      cards[next].classList.add('cycle-card-active');
+
+      current = next;
+      step++;
+    }, 4500);
+  })();
+</script>
 
 </body>
 </html>

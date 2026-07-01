@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Talk to Mantle | For companies</title>
+  <meta name="description" content="Sponsor a challenge, hire from the leaderboard, or ask us anything. We reply within 24 hours.">
+
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #1C1B18;
+      --ink-soft: #5C5950;
+      --accent: #2D5440;
+      --bg: #FAFAF7;
+    }
+    html, body { background-color: var(--bg) !important; }
+    body {
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      margin: 0;
+    }
+    .font-display {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-weight: 500;
+      letter-spacing: -0.025em;
+    }
+
+    .text-ink { color: var(--ink); }
+    .text-ink-soft { color: var(--ink-soft); }
+    .bg-accent { background-color: var(--accent); }
+    .text-accent { color: var(--accent); }
+
+    /* Sticky site nav */
+    .site-nav-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: transparent;
+      transition: background 200ms ease, box-shadow 200ms ease;
+    }
+    .site-nav-wrap.scrolled {
+      background: rgba(250,250,247,0.85);
+      backdrop-filter: saturate(180%) blur(14px);
+      -webkit-backdrop-filter: saturate(180%) blur(14px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+    }
+    .site-nav {
+      width: 100%;
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0.875rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+
+    /* Burger menu (mobile) */
+    .burger-btn { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .burger-btn span { display: block; width: 22px; height: 2px; background: rgba(28,27,24,0.85); border-radius: 2px; }
+    .mobile-nav { display: none; position: fixed; inset: 0; background: rgba(250,250,247,0.98); z-index: 100; flex-direction: column; align-items: center; justify-content: center; gap: 2.5rem; }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a { color: var(--ink); font-size: 1.25rem; font-weight: 500; text-decoration: none; }
+    .mobile-nav-cta { background: var(--accent); color: white !important; padding: 0.75rem 1.75rem; border-radius: 0.5rem; }
+    .mobile-nav-close { position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; color: var(--ink-soft); font-size: 2rem; cursor: pointer; }
+    .nav-cta { display: none; }
+    @media (min-width: 768px) {
+      .burger-btn { display: none; }
+      .nav-cta { display: inline-flex; }
+    }
+
+    /* Page layout */
+    .contact-wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 120px 24px 80px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--ink-soft);
+      text-decoration: none;
+      margin-bottom: 28px;
+      transition: color 150ms ease;
+    }
+    .back-link:hover { color: var(--ink); }
+    .back-link span { font-size: 11px; }
+
+    h1.contact-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 500;
+      letter-spacing: -0.025em;
+      font-size: 2rem;
+      line-height: 1.1;
+      margin: 0 0 8px;
+      color: var(--ink);
+    }
+    .contact-meta {
+      font-size: 14px;
+      color: var(--ink-soft);
+      margin: 0 0 36px;
+      line-height: 1.55;
+    }
+
+    /* Form */
+    form { display: flex; flex-direction: column; gap: 22px; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .field input,
+    .field textarea,
+    .field select {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.10);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: var(--ink);
+      font-family: inherit;
+      font-weight: 500;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+      box-sizing: border-box;
+    }
+    .field select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%235C5950' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(45,84,64,0.08);
+    }
+    .field textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    .field .hint {
+      font-size: 12px;
+      color: var(--ink-soft);
+      line-height: 1.4;
+      margin: 4px 0 0;
+    }
+
+    .row-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 540px) {
+      .row-two { grid-template-columns: 1fr; }
+    }
+
+    .submit-btn {
+      background: var(--accent);
+      color: white;
+      border: 0;
+      border-radius: 8px;
+      padding: 14px 22px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+      align-self: flex-start;
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(45,84,64,0.22);
+    }
+    .submit-btn:disabled { opacity: 0.6; cursor: wait; transform: none; box-shadow: none; }
+
+    .legal {
+      font-size: 12px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+      margin-top: 10px;
+    }
+
+    /* Success state */
+    .success-card {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
+      padding: 32px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 12px 32px rgba(0,0,0,0.05);
+    }
+    .success-card h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 500;
+      font-size: 1.5rem;
+      letter-spacing: -0.025em;
+      margin: 0 0 12px;
+    }
+    .success-card p {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--ink-soft);
+      margin: 0 0 12px;
+    }
+    .success-card p:last-child { margin-bottom: 0; }
+    .success-card a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Sticky nav -->
+<header class="site-nav-wrap">
+  <nav class="site-nav">
+    <a href="index.html" class="flex items-center gap-2.5">
+      <img loading="lazy" decoding="async" src="assets/logo/mantle-logo-black.svg" alt="" class="h-5 w-auto">
+      <span class="font-display text-2xl tracking-tight text-ink">Mantle</span>
+    </a>
+    <div class="hidden md:flex items-center gap-9 text-sm text-ink-soft">
+      <a href="challenges.html" class="hover:text-ink transition">Challenges</a>
+      <a href="for-companies.html" class="hover:text-ink transition">For companies</a>
+    </div>
+    <a href="contact.html" class="nav-cta btn-primary items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg bg-accent text-white">
+      Talk to us
+      <span class="opacity-80">&rarr;</span>
+    </a>
+    <button class="burger-btn" onclick="document.getElementById('mobileNav').classList.add('open')" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<div id="mobileNav" class="mobile-nav">
+  <button class="mobile-nav-close" onclick="document.getElementById('mobileNav').classList.remove('open')" aria-label="Close menu">&times;</button>
+  <a href="challenges.html">Challenges</a>
+  <a href="for-companies.html">For companies</a>
+  <a href="contact.html" class="mobile-nav-cta">Talk to us &rarr;</a>
+</div>
+
+
+<main class="contact-wrap">
+
+  <a href="for-companies.html" class="back-link"><span>←</span> Back to For companies</a>
+
+  <h1 class="contact-title" id="page-title">Talk to Mantle</h1>
+  <p class="contact-meta" id="page-meta">Sponsor a challenge, hire from the leaderboard, or ask us anything. We reply within 24 hours.</p>
+
+  <form id="contact-form" novalidate>
+
+    <div class="row-two">
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input type="text" id="f-name" name="name" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="f-company">Company</label>
+        <input type="text" id="f-company" name="company" required autocomplete="organization">
+      </div>
+    </div>
+
+    <div class="row-two">
+      <div class="field">
+        <label for="f-email">Work email</label>
+        <input type="email" id="f-email" name="email" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="f-role">Role <span style="text-transform: none; letter-spacing: 0; font-weight: 500; color: rgba(92,89,80,0.7);">— optional</span></label>
+        <input type="text" id="f-role" name="role" placeholder="e.g. Head of Talent">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="f-interest">What are you interested in?</label>
+      <select id="f-interest" name="interest" required>
+        <option value="">Choose one</option>
+        <option value="Sponsor a challenge">Sponsoring a challenge</option>
+        <option value="Hire from the leaderboard">Hiring from the leaderboard</option>
+        <option value="Both">Both</option>
+        <option value="Other">Something else</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="f-message">Message</label>
+      <textarea id="f-message" name="message" placeholder="Tell us about the role you're hiring for, the brief you'd want to set, or what you'd like to know." required></textarea>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">
+      Send message
+      <span>→</span>
+    </button>
+
+    <p class="legal">We only use your details to reply to this enquiry. No newsletters, no sharing with third parties.</p>
+
+  </form>
+
+  <div class="success-card" id="success" hidden>
+    <h2>Thanks — your message is on its way.</h2>
+    <p>Your email client just opened with the details. Send the email and we'll reply within 24 hours.</p>
+    <p>In the meantime, you can <a href="challenges.html">browse open challenges →</a></p>
+  </div>
+
+</main>
+
+
+<script>
+  // Form submission — opens a mailto: with the data prefilled. No backend required.
+  // When you wire a real backend (Formspree, Web3Forms, Supabase), replace this handler.
+  document.getElementById('contact-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const name = form.name.value.trim();
+    const company = form.company.value.trim();
+    const email = form.email.value.trim();
+    const role = form.role.value.trim();
+    const interest = form.interest.value.trim();
+    const message = form.message.value.trim();
+
+    if (!name || !company || !email || !interest || !message) {
+      alert('Please fill in your name, company, email, what you\'re interested in, and a short message.');
+      return;
+    }
+
+    const subject = `Mantle enquiry · ${interest} · ${company}`;
+    const lines = [
+      `Interest: ${interest}`,
+      `Name: ${name}`,
+      `Company: ${company}`,
+      `Role: ${role || '(not provided)'}`,
+      `Email: ${email}`,
+      '',
+      'Message:',
+      message
+    ];
+    const body = lines.join('\n');
+
+    const mailto = `mailto:benanthoney97@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    document.getElementById('submit-btn').disabled = true;
+    window.location.href = mailto;
+
+    setTimeout(() => {
+      form.hidden = true;
+      document.getElementById('success').hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 300);
+  });
+
+  // Pre-select interest from ?interest=sponsor / hire / both
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    const map = {
+      sponsor: 'Sponsor a challenge',
+      hire: 'Hire from the leaderboard',
+      both: 'Both'
+    };
+    const pre = map[(params.get('interest') || '').toLowerCase()];
+    if (pre) {
+      const sel = document.getElementById('f-interest');
+      for (const opt of sel.options) {
+        if (opt.value === pre) { sel.value = pre; break; }
+      }
+    }
+  })();
+
+  // Sticky nav scroll state
+  (function () {
+    var nav = document.querySelector('.site-nav-wrap');
+    if (!nav) return;
+    function update() {
+      if (window.scrollY > 16) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  })();
+</script>
+
+</body>
+</html>
