@@ -2,7 +2,7 @@ services:
 
   # crowdloop.co — Next.js marketing site + AI demo
   - type: web
-    name: crowdloop
+    name: memberloop
     runtime: node
     rootDir: whatsapp-feedback
     buildCommand: npm install && npm run build
