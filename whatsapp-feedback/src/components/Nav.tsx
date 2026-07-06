@@ -62,12 +62,12 @@ export function Nav({ active, transparent }: { active?: Page; transparent?: bool
       {/* Mobile drawer */}
       <div className={`lg:hidden fixed inset-x-0 top-[60px] bottom-0 z-40 bg-surface-primary flex flex-col px-6 pt-8 pb-12 transition-all duration-200 ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
         <div className="flex flex-col gap-1">
-          {[
+          {([
             { label: "How it works", href: "/#how-it-works" },
             { label: "Try it", href: "/demo"          },
             { label: "Pricing", href: "/pricing"      },
             { label: "Contact", href: "/contact"      },
-          ].map(({ label, href, onClick: extraOnClick }) => (
+          ] as { label: string; href: string; onClick?: (e: React.MouseEvent) => void }[]).map(({ label, href, onClick: extraOnClick }) => (
             <a
               key={label}
               href={href}
