@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300&amp;display=swap');
+    </style>
+    <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="1.2" cy="1.2" r="1.2" fill="rgba(255,255,255,0.12)"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="500" height="500" fill="#003014"/>
+
+  <!-- Dot grid (top-left, like footer) -->
+  <rect width="500" height="500" fill="url(#dots)" opacity="0.6"/>
+
+  <!-- Wordmark -->
+  <text
+    x="250"
+    y="278"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-weight="300"
+    font-size="96"
+    letter-spacing="-4"
+    fill="#ffffff"
+  >Scout</text>
+</svg>

@@ -1,0 +1,78 @@
+services:
+
+  # crowdloop.co — Next.js marketing site + AI demo
+  - type: web
+    name: crowdloop
+    runtime: node
+    rootDir: whatsapp-feedback
+    buildCommand: npm install && npm run build
+    startCommand: npx next start
+    plan: starter
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: NEXT_PUBLIC_WHATSAPP_NUMBER
+        value: "447463589130"
+
+
+  # Remote MCP server — Claude Desktop and other MCP clients connect here
+  - type: web
+    name: dialogue-mcp
+    runtime: node
+    rootDir: community-health
+    buildCommand: npm install && npx puppeteer browsers install chrome
+    startCommand: node scripts/remote-mcp-server.mjs
+    plan: starter
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: DIALOGUE_API_KEY
+        sync: false
+      - key: PUPPETEER_SKIP_DOWNLOAD
+        value: "false"
+
+  # REST API server — direct API access and ChatGPT Actions
+  - type: web
+    name: dialogue-api
+    runtime: node
+    rootDir: community-health
+    buildCommand: npm install && npx puppeteer browsers install chrome
+    startCommand: node scripts/api-server.mjs
+    plan: starter
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: DIALOGUE_API_KEY
+        sync: false
+      - key: API_BASE_URL
+        value: https://api.dialogue-ai.co
+      - key: PUPPETEER_SKIP_DOWNLOAD
+        value: "false"
+
+  # Chat/demo server — demo.dialogue-ai.co
+  - type: web
+    name: dialogue-demo
+    runtime: node
+    rootDir: community-health
+    buildCommand: npm install
+    startCommand: node scripts/chat-server.mjs
+    plan: starter
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
