@@ -22,7 +22,7 @@ export function Nav({ active, transparent }: { active?: Page; transparent?: bool
 
   return (
     <>
-      <nav className={`w-full px-6 lg:px-10 h-[60px] flex items-center sticky top-0 z-50 transition-colors ${transparent ? "bg-transparent" : "bg-surface-primary/90 backdrop-blur-sm"}`}>
+      <nav className={`w-full px-6 lg:px-10 h-[80px] flex items-center sticky top-0 z-50 transition-colors ${transparent ? "bg-transparent" : "bg-surface-primary/90 backdrop-blur-sm"}`}>
         <a href="/" className={`font-light text-[22px] tracking-[-0.04em] ${transparent ? "text-white" : "text-text-primary"}`}>
           crowdloop
         </a>
@@ -60,7 +60,7 @@ export function Nav({ active, transparent }: { active?: Page; transparent?: bool
       </nav>
 
       {/* Mobile drawer */}
-      <div className={`lg:hidden fixed inset-x-0 top-[60px] bottom-0 z-40 bg-surface-primary flex flex-col px-6 pt-8 pb-12 transition-all duration-200 ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+      <div className={`lg:hidden fixed inset-x-0 top-[80px] bottom-0 z-40 bg-surface-primary flex flex-col px-6 pt-8 pb-12 transition-all duration-200 ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
         <div className="flex flex-col gap-1">
           {([
             { label: "How it works", href: "/#how-it-works" },
