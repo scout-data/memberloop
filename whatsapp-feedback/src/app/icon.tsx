@@ -18,7 +18,7 @@ const MIN = 5.5, MAX = 26.5, RANGE = MAX - MIN;
 
 export default function Icon() {
   return new ImageResponse(
-    <div style={{ width: 32, height: 32, position: "relative", background: "transparent" }}>
+    <div style={{ width: 32, height: 32, position: "relative", display: "flex", background: "transparent" }}>
       {CIRCLES.map(([cx, cy], i) => {
         const x = ((cx - MIN) / RANGE) * 32;
         const y = ((cy - MIN) / RANGE) * 32;
