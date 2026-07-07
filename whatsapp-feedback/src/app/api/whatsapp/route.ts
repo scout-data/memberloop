@@ -22,8 +22,6 @@ Rules:
 - Never use bullet points, numbered lists, or long paragraphs
 - Never break character`;
 
-const GREETING = "Hi! Thanks for coming to Tastemakers Festival. Hope you had an amazing time — we'd love to hear how it was for you. What was the highlight?";
-
 // Per-number conversation history (resets on server restart — fine for demo)
 type Message = { role: "user" | "assistant"; content: string };
 const conversations = new Map<string, Message[]>();
@@ -70,13 +68,9 @@ export async function POST(req: NextRequest) {
     const from = message.from as string;
     const text = message.text.body as string;
 
-    // Build history — send greeting on first contact
-    const isNew = !conversations.has(from);
-    if (isNew) {
-      conversations.set(from, [{ role: "assistant", content: GREETING }]);
-      await sendWhatsApp(from, GREETING);
-    }
+    console.log(`[WA IN]  ${from}: ${text}`);
 
+    if (!conversations.has(from)) conversations.set(from, []);
     const history = conversations.get(from)!;
     history.push({ role: "user", content: text });
 
@@ -94,11 +88,13 @@ export async function POST(req: NextRequest) {
     // Cap history at 30 messages
     if (history.length > 30) conversations.set(from, history.slice(-30));
 
+    console.log(`[WA OUT] ${from}: ${reply}`);
+
     await sendWhatsApp(from, reply);
     return NextResponse.json({ ok: true });
 
   } catch (err) {
-    console.error("WhatsApp webhook error:", err);
+    console.error("[WA ERR]", err);
     // Always return 200 to Meta — otherwise it retries endlessly
     return NextResponse.json({ ok: true });
   }
@@ -107,7 +103,7 @@ export async function POST(req: NextRequest) {
 // ─── Send via WhatsApp Cloud API ──────────────────────────────────────────────
 
 async function sendWhatsApp(to: string, text: string) {
-  await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
+  const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${ACCESS_TOKEN}`,
@@ -120,4 +116,8 @@ async function sendWhatsApp(to: string, text: string) {
       text: { body: text },
     }),
   });
+  if (!res.ok) {
+    const err = await res.text();
+    console.error("[WA SEND ERR]", res.status, err);
+  }
 }
