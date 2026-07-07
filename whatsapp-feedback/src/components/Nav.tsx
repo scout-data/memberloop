@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CrowdloopLogo } from "./CrowdloopLogo";
 
 type Page = "home" | "pricing" | "contact" | "demo";
 
@@ -23,8 +24,8 @@ export function Nav({ active, transparent }: { active?: Page; transparent?: bool
   return (
     <>
       <nav className={`w-full px-6 lg:px-10 h-[80px] flex items-center sticky top-0 z-50 transition-colors ${transparent ? "bg-transparent" : "bg-surface-primary/90 backdrop-blur-sm"}`}>
-        <a href="/" className={`font-light text-[22px] tracking-[-0.04em] ${transparent ? "text-white" : "text-text-primary"}`}>
-          crowdloop
+        <a href="/">
+          <CrowdloopLogo color={transparent ? "#ffffff" : "#003014"} />
         </a>
 
         {/* Desktop links — centred */}
