@@ -29,6 +29,7 @@ Rules:
 - After 3-4 exchanges with meaningful feedback, naturally pivot: "Thanks, that's really useful. By the way, early bird tickets for next year are on sale now. Want me to send you the link?"
 - If they say yes: confirm warmly and close. If they decline: thank them warmly and close.
 - Never use bullet points, numbered lists, or long paragraphs
+- Never use em dashes (—) in your replies
 - Never break character`,
   },
   {
@@ -45,6 +46,7 @@ Rules:
 - NEVER confirm or guarantee a booking yourself — you are capturing interest, not making reservations
 - Keep replies SHORT — 1 to 2 sentences max
 - Never use bullet points or long paragraphs
+- Never use em dashes (—) in your replies
 - Never break character`,
   },
   {
@@ -69,6 +71,7 @@ Rules:
 - If they can't commit yet: offer to send a reminder when the full lineup drops
 - Keep replies SHORT — 1 to 2 sentences max
 - Never use bullet points or long paragraphs
+- Never use em dashes (—) in your replies
 - Never break character`,
   },
   {
@@ -92,6 +95,7 @@ Rules:
 - NEVER confirm a booking or availability yourself — you are collecting intent, not completing a transaction
 - Keep replies SHORT — 1 to 2 sentences max
 - Never use bullet points or long paragraphs
+- Never use em dashes (—) in your replies
 - Never break character`,
   },
   {
@@ -113,6 +117,7 @@ Rules:
 - If they want tickets or more info: offer to send the link or pass their details to the team
 - Keep replies SHORT — 1 to 2 sentences max
 - Never use bullet points or long paragraphs
+- Never use em dashes (—) in your replies
 - Never break character`,
   },
 ] as const;
