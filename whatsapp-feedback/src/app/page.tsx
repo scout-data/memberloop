@@ -58,6 +58,13 @@ export default function Home() {
                   Get started
                 </a>
               </div>
+
+              {/* Phone — mobile only, below CTA */}
+              <div className="lg:hidden mt-10 flex justify-center" style={{ height: 404 }}>
+                <div style={{ transform: "scale(0.65)", transformOrigin: "top center" }}>
+                  <Phone3D />
+                </div>
+              </div>
             </div>
 
             {/* Right: phone — hidden on mobile */}
