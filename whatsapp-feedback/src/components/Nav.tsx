@@ -23,7 +23,7 @@ export function Nav({ active, transparent }: { active?: Page; transparent?: bool
 
   return (
     <>
-      <nav className={`w-full px-6 lg:px-10 h-[80px] flex items-center sticky top-0 z-50 transition-colors ${transparent ? "bg-transparent" : "bg-surface-primary/90 backdrop-blur-sm"}`}>
+      <nav className={`w-full px-6 lg:px-10 h-[80px] flex items-center justify-between sticky top-0 z-50 transition-colors ${transparent ? "bg-transparent" : "bg-surface-primary/90 backdrop-blur-sm"}`}>
         <a href="/">
           <CrowdloopLogo color={transparent ? "#ffffff" : "#003014"} />
         </a>
