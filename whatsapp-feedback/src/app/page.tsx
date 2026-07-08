@@ -43,7 +43,7 @@ export default function Home() {
             {/* Left */}
             <div className="flex-1 max-w-[636px] flex flex-col justify-center pt-2 lg:pt-4">
               <h1 className="text-[48px] lg:text-[56px] font-light leading-[1.05] tracking-[-0.04em] text-white mb-6 lg:mb-7">
-                Turn crowd feedback<br className="hidden lg:block" />into future ticket sales
+                Turn crowd feedback<br className="hidden lg:block" /> into future ticket sales
               </h1>
 
               <p className="text-[17px] lg:text-[20px] leading-[1.4] tracking-[-0.02em] mb-8 lg:mb-10 max-w-[500px] text-white/75">
