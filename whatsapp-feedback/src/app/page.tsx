@@ -178,10 +178,10 @@ function WhoWeHelpSection() {
           For events where every guest counts
         </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "40px 80px" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:items-start" style={{ gap: "40px 80px" }}>
 
           {/* Chips */}
-          <div style={{ display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none" }}>
+          <div style={{ display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", alignItems: "center" }}>
             {WHO_WE_HELP.map(item => (
               <button
                 key={item.id}
