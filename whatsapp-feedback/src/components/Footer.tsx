@@ -69,7 +69,7 @@ export function Footer() {
           letterSpacing: "-0.01em",
           fontFamily: "'Plus Jakarta Sans', sans-serif",
         }}>
-          © 2026 crowdloop. All rights reserved.
+          © 2026 Distil Technology Limited t/a crowdloop
         </span>
       </div>
 
