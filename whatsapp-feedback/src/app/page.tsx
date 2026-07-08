@@ -118,7 +118,7 @@ export default function Home() {
       <section className="px-6 lg:px-10 pt-8 pb-16 lg:pb-24 max-w-[1328px] mx-auto">
         <div className="text-center mb-14">
           <h2 className="text-[32px] font-light tracking-[-0.03em] text-text-primary">
-            Get started for free
+            Simple pricing
           </h2>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -272,39 +272,41 @@ function WhoWeHelpSection() {
 
 const PLANS = [
   {
-    id: "starter",
+    id: "event",
     num: "01",
-    name: "Starter",
-    tagline: "Get started with no commitment",
-    price: "Free",
+    name: "Single Event",
+    tagline: "Try it on your next event",
+    price: "£89",
     period: "",
-    vatNote: "No credit card needed",
+    vatNote: "one-off · ex VAT",
     popular: false,
-    cta: "Get started free",
+    cta: "Get started",
     features: [
-      "1 WhatsApp number",
-      "Up to 250 conversations/month",
-      "QR code, website widget and email link",
-      "Feedback mode",
-      "30-day message history",
+      "1 event",
+      "7-day post-event feedback window",
+      "AI WhatsApp feedback assistant",
+      "QR code and email link",
+      "Up to 500 attendee conversations",
+      "End-of-event insights report",
     ],
   },
   {
     id: "pro",
     num: "02",
     name: "Pro",
-    tagline: "For clubs serious about member experience",
-    price: "£89",
+    tagline: "For teams running events regularly",
+    price: "£149",
     period: "/mo",
     vatNote: "ex VAT",
     popular: true,
     cta: "Get started",
     features: [
-      "Unlimited conversations",
-      "All 5 modes: feedback, re-engagement, events, renewals and updates",
+      "Unlimited events",
+      "Keep contacts as a direct channel between events",
+      "Outbound messaging to past attendees",
+      "All 5 modes: feedback, re-engagement, promotion, renewals and updates",
       "Custom assistant name and voice",
       "Insights dashboard",
-      "Unlimited message history",
       "Priority support",
     ],
   },
@@ -312,7 +314,7 @@ const PLANS = [
     id: "enterprise",
     num: "03",
     name: "Enterprise",
-    tagline: "For federations and multi-venue operators",
+    tagline: "For multi-venue operators and agencies",
     price: "Custom",
     period: "",
     vatNote: "Talk to us",
