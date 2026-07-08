@@ -6,39 +6,41 @@ import { Nav } from "@/components/Nav";
 
 const PLANS = [
   {
-    id: "starter",
+    id: "event",
     num: "01",
-    name: "Starter",
-    tagline: "For events getting started with feedback",
-    price: "Free",
+    name: "Single Event",
+    tagline: "Try it on your next event",
+    price: "£89",
     period: "",
-    vatNote: "No credit card needed",
+    vatNote: "one-off · ex VAT",
     popular: false,
-    cta: "Get started free",
+    cta: "Get started",
     features: [
-      "1 WhatsApp number",
-      "Up to 250 conversations/month",
-      "QR code, website widget and email link",
-      "Feedback mode",
-      "30-day message history",
+      "1 event",
+      "7-day post-event feedback window",
+      "AI WhatsApp feedback assistant",
+      "QR code and email link",
+      "Up to 500 attendee conversations",
+      "End-of-event insights report",
     ],
   },
   {
     id: "pro",
     num: "02",
     name: "Pro",
-    tagline: "For events serious about their audience",
-    price: "£89",
+    tagline: "For teams running events regularly",
+    price: "£149",
     period: "/mo",
     vatNote: "ex VAT",
     popular: true,
     cta: "Get started",
     features: [
-      "Unlimited conversations",
-      "All 5 modes: feedback, re-engagement, events, renewals and updates",
+      "Unlimited events",
+      "Keep contacts as a direct channel between events",
+      "Outbound messaging to past attendees",
+      "All 5 modes: feedback, re-engagement, promotion, renewals and updates",
       "Custom assistant name and voice",
       "Insights dashboard",
-      "Unlimited message history",
       "Priority support",
     ],
   },
@@ -73,10 +75,10 @@ export default function Pricing() {
       {/* Header */}
       <section className="px-6 lg:px-10 pt-14 lg:pt-20 pb-12 lg:pb-16 max-w-[1328px] mx-auto text-center">
         <h1 className="text-[44px] lg:text-[64px] font-light leading-[1] tracking-[-0.04em] text-text-primary mb-5">
-          Get started for free
+          Simple pricing
         </h1>
         <p className="text-[17px] lg:text-[20px] text-text-secondary tracking-[-0.02em]">
-          Set up in minutes. No long-term contracts.
+          Start with a single event. Scale when you&apos;re ready.
         </p>
       </section>
 
