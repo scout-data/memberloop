@@ -97,16 +97,13 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
             </svg>
             <span style={{ color: "#007AFF", fontSize: 14, fontFamily: "inherit" }}>6</span>
           </div>
-          <div style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(145deg, #1a4731 0%, #0d2b1e 100%)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-              <line x1="8" y1="2" x2="8" y2="17" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-              <path d="M8 2.5 L16 5.5 L8 9.5" fill="#C6E5C6"/>
-              <ellipse cx="8" cy="17" rx="4" ry="1.2" fill="rgba(255,255,255,0.25)"/>
-            </svg>
+          <div style={{ width: 34, height: 34, borderRadius: "50%", overflow: "hidden", flexShrink: 0 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/organiser-avatar.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: "#000", fontFamily: "inherit" }}>Ashwood Golf Club</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#000", fontFamily: "inherit" }}>Tastemakers Festival</span>
               <svg width="12" height="12" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0 }}>
                 <circle cx="10" cy="10" r="10" fill="#1DA1F2"/>
                 <path d="M5.5 10L8.5 13L14.5 7" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
