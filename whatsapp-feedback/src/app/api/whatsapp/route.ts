@@ -71,6 +71,9 @@ export async function POST(req: NextRequest) {
 
     console.log(`[WA IN]  ${from}: ${text}`);
 
+    // Mark message as read (blue double-tick)
+    await markAsRead(message.id);
+
     if (!conversations.has(from)) conversations.set(from, []);
     const history = conversations.get(from)!;
     history.push({ role: "user", content: text });
@@ -102,6 +105,21 @@ export async function POST(req: NextRequest) {
 }
 
 // ─── Send via WhatsApp Cloud API ──────────────────────────────────────────────
+
+async function markAsRead(messageId: string) {
+  await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${ACCESS_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      status: "read",
+      message_id: messageId,
+    }),
+  });
+}
 
 async function sendWhatsApp(to: string, text: string) {
   const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
