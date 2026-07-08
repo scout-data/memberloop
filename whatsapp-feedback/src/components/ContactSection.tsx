@@ -74,7 +74,7 @@ export function ContactSection() {
         ) : (
           <form
             onSubmit={handleSubmit}
-            style={{ display: "flex", flexWrap: "wrap", gap: 8, maxWidth: 520, margin: "0 auto 48px" }}
+            style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 8, maxWidth: 520, margin: "0 auto 48px" }}
           >
             <input
               type="email"

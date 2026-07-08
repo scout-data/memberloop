@@ -59,12 +59,6 @@ export default function Home() {
                 </a>
               </div>
 
-              {/* Phone — mobile only, below CTA */}
-              <div className="lg:hidden mt-10 flex justify-center" style={{ height: 404 }}>
-                <div style={{ transform: "scale(0.65)", transformOrigin: "top center" }}>
-                  <Phone3D />
-                </div>
-              </div>
             </div>
 
             {/* Right: phone — hidden on mobile */}
@@ -184,17 +178,17 @@ function WhoWeHelpSection() {
           For events where every guest counts
         </h2>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 80px", alignItems: "stretch" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "40px 80px" }}>
 
           {/* Chips */}
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-start" }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+          <div style={{ display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none" }}>
             {WHO_WE_HELP.map(item => (
               <button
                 key={item.id}
                 onClick={() => setSelected(item.id)}
                 style={{
-                  padding: "11px 22px",
+                  flexShrink: 0,
+                  padding: "8px 16px",
                   borderRadius: 999,
                   border: `1px solid ${selected === item.id ? "transparent" : "#D9D9D9"}`,
                   background: selected === item.id ? "#232323" : "transparent",
@@ -210,7 +204,6 @@ function WhoWeHelpSection() {
                 {item.label}
               </button>
             ))}
-          </div>
           </div>
 
           {/* Dynamic content */}
@@ -413,7 +406,7 @@ const ENGAGEMENT_ROWS = [
 
 function EngagementTable() {
   return (
-    <div className="mx-auto rounded-2xl overflow-hidden" style={{ border: "1px solid #EEE7DB" }}>
+    <div className="mx-auto rounded-2xl overflow-hidden" style={{ border: "1px solid #EEE7DB", minWidth: 540 }}>
       {/* Header */}
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", background: "#F0EFEC", borderBottom: "1px solid #EEE7DB", alignItems: "stretch" }}>
         <span style={{ fontSize: 15, fontWeight: 600, color: "#888", letterSpacing: "-0.01em", padding: "18px 40px", display: "flex", alignItems: "center" }}>Metric</span>
