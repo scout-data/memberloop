@@ -4,76 +4,152 @@ import { useState, useEffect, useRef } from "react";
 import { notFound } from "next/navigation";
 import { DemoPhone } from "@/components/DemoPhone";
 import { DemoMessage } from "@/lib/demoModes";
-import { getVenueConfig, VenueEvent } from "@/lib/venueConfigs";
+import { getVenueConfig, VenueEvent, VenueConfig } from "@/lib/venueConfigs";
 
-// ─── Event Card ───────────────────────────────────────────────────────────────
+type Pref = { label: string; value: string };
 
-function EventCard({ event }: { event: VenueEvent }) {
+// ─── Event tile (compact horizontal) ─────────────────────────────────────────
+
+function EventTile({ event }: { event: VenueEvent }) {
   return (
     <div style={{
       background: "#fff",
-      borderRadius: 12,
+      borderRadius: 10,
       overflow: "hidden",
-      boxShadow: "0 1px 4px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06)",
-      width: "100%",
+      boxShadow: "0 1px 3px rgba(0,0,0,0.07)",
+      display: "flex",
+      flexShrink: 0,
       fontFamily: "Helvetica Neue, Arial, sans-serif",
     }}>
-      {/* Image area */}
-      <div style={{ height: 130, background: "#1a1a1a", overflow: "hidden", position: "relative" }}>
-        {event.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={event.image} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        ) : (
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, #1a1a1a 0%, #2a2a2a 100%)" }} />
-        )}
-      </div>
-
-      {/* Text */}
-      <div style={{ padding: "10px 12px 8px" }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: "#111", marginBottom: 3, lineHeight: "17px" }}>{event.title}</div>
-        <div style={{ fontSize: 12, color: "#667781", lineHeight: "16px" }}>{event.detail}</div>
-      </div>
-
-      {/* Divider */}
-      <div style={{ height: 1, background: "#F0F0F0", margin: "0 12px" }} />
-
-      {/* CTA */}
-      <div style={{ padding: "8px 12px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+      <div style={{ padding: "10px 12px", flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#111", lineHeight: "17px", marginBottom: 2 }}>{event.title}</div>
+        <div style={{ fontSize: 11, color: "#667781", lineHeight: "15px", marginBottom: 6 }}>{event.detail}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <svg width="11" height="11" viewBox="0 0 13 13" fill="none">
             <path d="M1 6.5h11M7 1.5l5 5-5 5" stroke="#00A67E" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <span style={{ fontSize: 13, fontWeight: 500, color: "#00A67E" }}>{event.cta}</span>
+          <span style={{ fontSize: 12, fontWeight: 500, color: "#00A67E" }}>{event.cta}</span>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── Inner page (rendered only when config is known) ─────────────────────────
+// ─── Right panel: preferences + events ───────────────────────────────────────
 
-function VenueDemoInner({ config }: { config: NonNullable<ReturnType<typeof getVenueConfig>> }) {
-  const [messages, setMessages]     = useState<DemoMessage[]>([]);
-  const [input, setInput]           = useState("");
-  const [loading, setLoading]       = useState(false);
-  const [hasReplied, setHasReplied] = useState(false);
+function RightPanel({ preferences, suggestedEvents, calendarEvents, hasReplied }: {
+  preferences: Pref[];
+  suggestedEvents: VenueEvent[];
+  calendarEvents: VenueEvent[];
+  hasReplied: boolean;
+}) {
+  const hasSuggested = suggestedEvents.length > 0;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", fontFamily: "Helvetica Neue, Arial, sans-serif" }}>
+
+      {/* Preferences */}
+      <div style={{ flex: 1 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 600, color: "#111", letterSpacing: "-0.03em", marginBottom: 4 }}>
+          What we&apos;ve learned
+        </h2>
+        <p style={{ fontSize: 13, color: "#9a9a9a", letterSpacing: "-0.01em", marginBottom: 28 }}>
+          Updates as the conversation continues.
+        </p>
+
+        {!hasReplied && (
+          <p style={{ fontSize: 14, color: "#c8c8c8", fontStyle: "italic" }}>
+            Start a conversation to see preferences appear here.
+          </p>
+        )}
+
+        {hasReplied && preferences.length === 0 && (
+          <p style={{ fontSize: 14, color: "#c8c8c8", fontStyle: "italic" }}>
+            Keep chatting to build a preference profile.
+          </p>
+        )}
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {preferences.map((pref, i) => (
+            <div key={i} style={{ fontSize: 15, color: "#111", letterSpacing: "-0.01em", lineHeight: "21px", animation: "fadeSlideIn 0.3s ease" }}>
+              <span style={{ fontWeight: 600 }}>{pref.label.replace(/_/g, " ")}:</span> {pref.value}
+            </div>
+          ))}
+        </div>
+
+        {/* Suggested — flows directly below preferences */}
+        {hasSuggested && (
+          <div style={{ marginTop: 24, animation: "fadeSlideIn 0.4s ease" }}>
+            <h3 style={{ fontSize: 14, fontWeight: 600, color: "#111", letterSpacing: "-0.02em", marginBottom: 10 }}>
+              Suggested for you
+            </h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {suggestedEvents.map((event, i) => (
+                <EventTile key={i} event={event} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* From your calendar — always at the bottom */}
+      {calendarEvents.length > 0 && (
+        <div>
+          <div style={{ height: 1, background: "#E8E8E8", marginBottom: 20 }} />
+          <h3 style={{ fontSize: 14, fontWeight: 600, color: "#aaa", letterSpacing: "-0.02em", marginBottom: 10 }}>
+            From your calendar
+          </h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 220, overflowY: "auto", paddingRight: 4 }}>
+            {calendarEvents.map((event, i) => (
+              <EventTile key={i} event={event} />
+            ))}
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
+
+// ─── Inner page ───────────────────────────────────────────────────────────────
+
+function VenueDemoInner({ config }: { config: VenueConfig }) {
+  const [messages, setMessages]             = useState<DemoMessage[]>([]);
+  const [input, setInput]                   = useState("");
+  const [loading, setLoading]               = useState(false);
+  const [preferences, setPreferences]       = useState<Pref[]>([]);
+  const [suggestedIndices, setSuggested]    = useState<number[]>([]);
+  const [hasReplied, setHasReplied]         = useState(false);
+
+  const suggestedEvents = suggestedIndices.map(i => config.events[i]).filter(Boolean) as VenueEvent[];
+  const calendarEvents  = config.events.filter((_, i) => !suggestedIndices.includes(i));
   const chatRef  = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Initialise with opening message
   useEffect(() => {
     setMessages([{ role: "assistant", content: config.openingMessage }]);
   }, [config.openingMessage]);
 
-  // Focus input on mount
-  useEffect(() => {
-    inputRef.current?.focus({ preventScroll: true });
-  }, []);
+  useEffect(() => { inputRef.current?.focus({ preventScroll: true }); }, []);
 
-  // Scroll to bottom on new messages
   useEffect(() => {
     if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
   }, [messages, loading]);
+
+  async function fetchPreferences(msgs: DemoMessage[]) {
+    try {
+      const res = await fetch("/api/preferences", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: msgs, events: config.events.map(e => ({ title: e.title, detail: e.detail })) }),
+      });
+      const data = await res.json() as { preferences?: Pref[]; suggested?: number[] };
+      console.log("[PREFS]", res.status, data);
+      if (data.preferences?.length) setPreferences(data.preferences);
+      if (data.suggested) setSuggested(data.suggested);
+    } catch (e) {
+      console.error("[PREFS ERR]", e);
+    }
+  }
 
   async function send(text: string) {
     if (!text.trim() || loading) return;
@@ -91,7 +167,9 @@ function VenueDemoInner({ config }: { config: NonNullable<ReturnType<typeof getV
       });
       const data = await res.json() as { content?: string };
       if (data.content) {
-        setMessages([...next, { role: "assistant" as const, content: data.content }]);
+        const withReply = [...next, { role: "assistant" as const, content: data.content }];
+        setMessages(withReply);
+        fetchPreferences(withReply);
       }
     } catch {
       setMessages(prev => [...prev, { role: "assistant", content: "Sorry, something went wrong. Try again." }]);
@@ -109,75 +187,58 @@ function VenueDemoInner({ config }: { config: NonNullable<ReturnType<typeof getV
     setMessages([{ role: "assistant", content: config.openingMessage }]);
     setInput("");
     setLoading(false);
+    setPreferences([]);
+    setSuggested([]);
     setHasReplied(false);
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F9F7F4", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", background: "#F9F7F4", display: "flex", flexDirection: "column", fontFamily: "Helvetica Neue, Arial, sans-serif" }}>
 
       {/* Top bar */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 28px", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 40px", borderBottom: "1px solid rgba(0,0,0,0.06)", flexShrink: 0 }}>
         <a href="/" style={{ textDecoration: "none" }}>
-          <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.03em", color: "#111", fontFamily: "Helvetica Neue, Arial, sans-serif" }}>
-            crowdloop
-          </span>
+          <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.03em", color: "#111" }}>crowdloop</span>
         </a>
-        <span style={{ fontSize: 13, color: "#9a9a9a", fontFamily: "Helvetica Neue, Arial, sans-serif", letterSpacing: "-0.01em" }}>
+        <span style={{ fontSize: 13, color: "#9a9a9a", letterSpacing: "-0.01em" }}>
           a demo built for {config.name}
         </span>
       </div>
 
-      {/* Main content */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", padding: "48px 24px 64px" }}>
+      {/* Two columns */}
+      <div style={{ flex: 1, display: "flex", maxWidth: 1100, margin: "0 auto", width: "100%", padding: "48px 40px", gap: 0, alignItems: "stretch" }}>
 
-        {/* Hero text */}
-        <p style={{ fontSize: 16, color: "#555", textAlign: "center", marginBottom: 36, maxWidth: 440, lineHeight: "1.5", fontFamily: "Helvetica Neue, Arial, sans-serif", letterSpacing: "-0.01em" }}>
-          This is what your guests experience after an evening at {config.name}. Try it.
-        </p>
+        {/* Left: phone */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingRight: 56, flexShrink: 0 }}>
+          <p style={{ fontSize: 15, color: "#666", textAlign: "center", marginBottom: 28, maxWidth: 300, lineHeight: 1.5, letterSpacing: "-0.01em" }}>
+            This is what your guests experience after an evening at {config.name}. Try it.
+          </p>
+          <DemoPhone
+            messages={messages}
+            input={input}
+            loading={loading}
+            chatRef={chatRef}
+            inputRef={inputRef}
+            onInput={setInput}
+            onKey={handleKey}
+            onSend={() => send(input)}
+            showPrompt={true}
+          />
+          <button
+            onClick={reset}
+            style={{ marginTop: 12, fontSize: 13, color: "#aaa", background: "none", border: "none", cursor: "pointer", letterSpacing: "-0.01em" }}
+          >
+            start over
+          </button>
+        </div>
 
-        {/* Phone */}
-        <DemoPhone
-          messages={messages}
-          input={input}
-          loading={loading}
-          chatRef={chatRef}
-          inputRef={inputRef}
-          onInput={setInput}
-          onKey={handleKey}
-          onSend={() => send(input)}
-          showPrompt={true}
-        />
+        {/* Divider */}
+        <div style={{ width: 1, background: "#E8E8E8", flexShrink: 0, alignSelf: "stretch" }} />
 
-        {/* Start over */}
-        <button
-          onClick={reset}
-          style={{ marginTop: 16, fontSize: 13, color: "#9a9a9a", background: "none", border: "none", cursor: "pointer", fontFamily: "Helvetica Neue, Arial, sans-serif", letterSpacing: "-0.01em", padding: "4px 8px" }}
-        >
-          ↺ Start over
-        </button>
-
-        {/* Events section */}
-        {hasReplied && (
-          <div style={{ width: "100%", maxWidth: 720, marginTop: 56 }}>
-            <div style={{ textAlign: "center", marginBottom: 24 }}>
-              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#111", letterSpacing: "-0.03em", marginBottom: 8, fontFamily: "Helvetica Neue, Arial, sans-serif" }}>
-                Based on your conversation, here&apos;s what we&apos;d suggest next
-              </h2>
-              <p style={{ fontSize: 14, color: "#667781", fontFamily: "Helvetica Neue, Arial, sans-serif", letterSpacing: "-0.01em" }}>
-                crowdloop reaches back out with personalised event recommendations. 98% open rate.
-              </p>
-            </div>
-
-            {/* Cards row */}
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-              {config.events.map((event, i) => (
-                <div key={i} style={{ flex: "1 1 200px", minWidth: 0 }}>
-                  <EventCard event={event} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Right: preferences + events */}
+        <div style={{ flex: 1, paddingLeft: 56, display: "flex", flexDirection: "column" }}>
+          <RightPanel preferences={preferences} suggestedEvents={suggestedEvents} calendarEvents={calendarEvents} hasReplied={hasReplied} />
+        </div>
 
       </div>
     </div>

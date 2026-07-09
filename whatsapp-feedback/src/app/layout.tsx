@@ -11,6 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="facebook-domain-verification" content="rfc69feen3ulwwmqrim8alywg0ettx" />
       </head>
       <body className="font-sans antialiased bg-white text-ink">{children}</body>
     </html>
