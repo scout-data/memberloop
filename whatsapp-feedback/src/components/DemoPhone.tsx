@@ -13,17 +13,21 @@ export function WhatsAppCard({ card, onCta }: { card: CardData; onCta?: (cta: st
       fontFamily: "Helvetica Neue, Arial, sans-serif",
       background: "#fff",
     }}>
-      <div style={{
-        height: 130, position: "relative", overflow: "hidden",
-        background: "linear-gradient(180deg, #4a90a4 0%, #5ba3b8 35%, #2d6e3e 35%, #1a5c35 100%)",
-      }}>
-        <div style={{ position: "absolute", top: 14, right: 18, width: 22, height: 22, borderRadius: "50%", background: "#FFD97D", boxShadow: "0 0 10px rgba(255,217,125,0.6)" }} />
-        <div style={{ position: "absolute", top: 16, left: 16, width: 36, height: 14, borderRadius: 99, background: "rgba(255,255,255,0.55)" }} />
-        <div style={{ position: "absolute", top: 20, left: 24, width: 28, height: 12, borderRadius: 99, background: "rgba(255,255,255,0.45)" }} />
-        <div style={{ position: "absolute", bottom: 0, left: "30%", width: "40%", height: "55%", background: "rgba(255,255,255,0.06)", borderRadius: "50% 50% 0 0" }} />
-        <div style={{ position: "absolute", bottom: 18, left: "50%", marginLeft: -1, width: 2, height: 38, background: "#fff" }} />
-        <div style={{ position: "absolute", bottom: 54, left: "50%", marginLeft: 1, width: 0, height: 0, borderLeft: "14px solid #e53e3e", borderTop: "8px solid transparent", borderBottom: "8px solid transparent" }} />
-        <div style={{ position: "absolute", bottom: 14, left: "50%", transform: "translateX(-50%)", width: 16, height: 5, borderRadius: "50%", background: "rgba(0,0,0,0.25)" }} />
+      <div style={{ height: 130, position: "relative", overflow: "hidden", background: "#1a1a1a" }}>
+        {card.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={card.image} alt={card.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, #4a90a4 0%, #5ba3b8 35%, #2d6e3e 35%, #1a5c35 100%)" }}>
+            <div style={{ position: "absolute", top: 14, right: 18, width: 22, height: 22, borderRadius: "50%", background: "#FFD97D", boxShadow: "0 0 10px rgba(255,217,125,0.6)" }} />
+            <div style={{ position: "absolute", top: 16, left: 16, width: 36, height: 14, borderRadius: 99, background: "rgba(255,255,255,0.55)" }} />
+            <div style={{ position: "absolute", top: 20, left: 24, width: 28, height: 12, borderRadius: 99, background: "rgba(255,255,255,0.45)" }} />
+            <div style={{ position: "absolute", bottom: 0, left: "30%", width: "40%", height: "55%", background: "rgba(255,255,255,0.06)", borderRadius: "50% 50% 0 0" }} />
+            <div style={{ position: "absolute", bottom: 18, left: "50%", marginLeft: -1, width: 2, height: 38, background: "#fff" }} />
+            <div style={{ position: "absolute", bottom: 54, left: "50%", marginLeft: 1, width: 0, height: 0, borderLeft: "14px solid #e53e3e", borderTop: "8px solid transparent", borderBottom: "8px solid transparent" }} />
+            <div style={{ position: "absolute", bottom: 14, left: "50%", transform: "translateX(-50%)", width: 16, height: 5, borderRadius: "50%", background: "rgba(0,0,0,0.25)" }} />
+          </div>
+        )}
       </div>
       <div style={{ padding: "8px 10px 6px" }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: "#111", marginBottom: 2, lineHeight: "17px" }}>{card.title}</div>
@@ -35,8 +39,10 @@ export function WhatsAppCard({ card, onCta }: { card: CardData; onCta?: (cta: st
         disabled={!onCta}
         style={{ width: "100%", padding: "7px 10px", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, background: "none", border: "none", cursor: onCta ? "pointer" : "default" }}
       >
-        <span style={{ fontSize: 11, color: "#667781" }}>↗</span>
-        <span style={{ fontSize: 13, fontWeight: 600, color: "#25D366" }}>{card.cta}</span>
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+          <path d="M1 6.5h11M7 1.5l5 5-5 5" stroke="#00A67E" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span style={{ fontSize: 13, fontWeight: 500, color: "#00A67E" }}>{card.cta}</span>
       </button>
     </div>
   );
@@ -99,11 +105,11 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
           </div>
           <div style={{ width: 34, height: 34, borderRadius: "50%", overflow: "hidden", flexShrink: 0 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/organiser-avatar.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src="/crowdloop-logo-square.png" alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: "#000", fontFamily: "inherit" }}>Tastemakers Festival</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#000", fontFamily: "inherit" }}>crowdloop</span>
               <svg width="12" height="12" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0 }}>
                 <circle cx="10" cy="10" r="10" fill="#1DA1F2"/>
                 <path d="M5.5 10L8.5 13L14.5 7" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>

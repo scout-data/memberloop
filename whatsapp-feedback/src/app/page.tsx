@@ -8,23 +8,50 @@ import { HomeDemoSection } from "@/components/HomeDemoSection";
 
 type ChatMessage =
   | { kind: "bubble"; side: "left" | "right"; time: string; text: string }
-  | { kind: "separator"; label: string };
+  | { kind: "separator"; label: string }
+  | { kind: "card"; body: string; image: string; title: string; detail: string; cta: string };
 
 const MESSAGES: ChatMessage[] = [
-  { kind: "bubble",    side: "right", time: "23:44", text: "Amazing night, just wanted to leave some feedback" },
-  { kind: "bubble",    side: "left",  time: "23:44", text: "So glad you came! How was the show for you overall?" },
-  { kind: "bubble",    side: "right", time: "23:46", text: "Loved the headliner but the bar queues were brutal, missed half the support act" },
-  { kind: "bubble",    side: "left",  time: "23:46", text: "That's really useful. How long were you waiting roughly?" },
-  { kind: "bubble",    side: "right", time: "23:48", text: "About 40 mins at peak. Needs more bars or more staff" },
-  { kind: "bubble",    side: "left",  time: "23:48", text: "Noted, we'll make sure the team sees this. Really appreciate you flagging it." },
+  { kind: "bubble",    side: "left",  time: "23:51", text: "How was Oval Space tonight? Want notifying when Floating Points is playing again?" },
+  { kind: "bubble",    side: "right", time: "23:52", text: "Yes please! Keep me posted on similar nights there too." },
+  { kind: "bubble",    side: "left",  time: "23:52", text: "Done. You're on the list for Floating Points dates and deep house nights at Oval Space." },
   { kind: "separator", label: "Next month" },
-  { kind: "bubble",    side: "left",  time: "10:02", text: "Quick update: we've added two extra bars for all upcoming shows. Your feedback directly influenced that." },
-  { kind: "bubble",    side: "left",  time: "10:03", text: "Our next show is Saturday 19 July. Early access tickets are live now. Want me to grab you a link?" },
-  { kind: "bubble",    side: "right", time: "10:05", text: "Yes please! Honestly one of the best nights out I've had in ages" },
+  { kind: "card", body: "Oval Space have a night next Saturday with Four Tet that we think you'd love.", image: "/four-tet.jpg", title: "Four Tet · Oval Space", detail: "Saturday 15 Feb · Doors 9pm · From £22", cta: "Buy tickets" },
+  { kind: "bubble",    side: "right", time: "18:31", text: "Yes please!" },
+  { kind: "bubble",    side: "left",  time: "18:31", text: "You're in. Ticket confirmed and on its way to you." },
 ];
 
 // Delay before each message appears (ms)
-const DELAYS = [700, 1600, 1400, 1600, 1400, 1800, 800, 2000, 2200, 1600];
+const DELAYS = [1800, 3200, 2200, 1400, 2800, 1200, 1800];
+
+const ROTATING_WORDS = ["fans'", "venue's", "club's", "theatre's", "supper club's"];
+
+function RotatingWord() {
+  const [index, setIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setIndex(i => (i + 1) % ROTATING_WORDS.length);
+        setVisible(true);
+      }, 350);
+    }, 2600);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <span style={{
+      display: "inline-block",
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translateY(0)" : "translateY(-6px)",
+      transition: "opacity 0.35s ease, transform 0.35s ease",
+    }}>
+      {ROTATING_WORDS[index]}
+    </span>
+  );
+}
 
 export default function Home() {
   return (
@@ -43,11 +70,11 @@ export default function Home() {
             {/* Left */}
             <div className="flex-1 max-w-[636px] flex flex-col justify-center pt-2 lg:pt-4">
               <h1 className="text-[48px] lg:text-[56px] font-light leading-[1.05] tracking-[-0.04em] text-white mb-6 lg:mb-7">
-                Turn crowd feedback<br className="hidden lg:block" /> into future ticket sales
+                Grow your <RotatingWord /><br className="hidden lg:block" /> community on WhatsApp
               </h1>
 
               <p className="text-[17px] lg:text-[20px] leading-[1.4] tracking-[-0.02em] mb-8 lg:mb-10 max-w-[500px] text-white/75">
-                crowdloop&apos;s AI WhatsApp assistants turn event feedback into future bookings and a direct personalised channel to your audience.
+                Build a personal relationship with every one of your community. Promote and sell out events on the world&apos;s most trusted messaging app.
               </p>
 
               <div className="flex items-center gap-3">
@@ -97,8 +124,8 @@ export default function Home() {
 
         <div className="flex flex-col gap-28">
           <HowItWorksStep step={1} headline="Link to WhatsApp from anywhere" body="A QR code at the exit, a link in your post-event email, a button on your ticket confirmation. Attendees tap once and they're in a conversation. No app to download, no login, no friction." visual={<PlacementsVisual />} />
-          <HowItWorksStep step={2} headline="Your assistant collects feedback to start the relationship" body="When someone messages in, your AI responds instantly in your event's voice. It asks the right follow-up questions and surfaces the kind of insight a form never captures. Every conversation becomes the start of a direct channel." visual={<ConversationVisual />} />
-          <HowItWorksStep step={3} headline="Turn that channel into your next event's audience" body="Every attendee who messaged in becomes a direct contact in the world's most-opened messaging app. Address the issues they raised, then tell them you did. Announce your next event to people who already love what you do. 98% open rates." visual={<InsightsVisual />} />
+          <HowItWorksStep step={2} headline="crowdloop learns what every individual loves" body="When someone messages in, crowdloop responds instantly. Learning what they like and what events they want to be told about. Every conversation becomes the start of a direct channel." visual={<ConversationVisual />} />
+          <HowItWorksStep step={3} headline="Grow your community and sell out events" body="Every attendee who messaged in becomes a direct contact in the world's most-opened messaging app. Promote and sell out your next event to people who already love what you do. 98% open rates." visual={<InsightsVisual />} />
         </div>
       </section>
 
@@ -713,16 +740,13 @@ function TouchpointsVisual() {
 }
 
 const CONV_BUBBLES: { side: "left" | "right"; text: string }[] = [
-  { side: "right", text: "Good event overall but leaving was a real problem" },
-  { side: "left",  text: "Sorry to hear that. What happened when you were leaving?" },
-  { side: "right", text: "The exit gates funnelled everyone into one route. Took nearly 40 minutes to get out" },
-  { side: "left",  text: "That's really useful to know. Did you take one of the shuttle transfers?" },
-  { side: "right", text: "Yes, waited over an hour. Only two buses showed up and they were already full" },
-  { side: "left",  text: "I'm sorry about that. How many people were in your group?" },
-  { side: "right", text: "Four of us. We ended up getting a cab which cost a fortune" },
-  { side: "left",  text: "Understood. I'll make sure the operations team sees this before the next event." },
+  { side: "left",  text: "How was Oval Space tonight? Want notifying when Floating Points is playing again?" },
+  { side: "right", text: "Yes please! Keep me posted on similar nights there too." },
+  { side: "left",  text: "Great. Is it the electronic music generally, or specifically Floating Points you love?" },
+  { side: "right", text: "Both really. Deep house and electronic. Four Tet is another favourite." },
+  { side: "left",  text: "Got it. We'll keep you in the loop when nights like that come up at Oval Space." },
 ];
-const CONV_DELAYS = [600, 1500, 1400, 1400, 1300, 1400, 1400, 1600];
+const CONV_DELAYS = [800, 2000, 1800, 2200, 1800];
 
 function ConversationVisual() {
   const [visible, setVisible] = useState(0);
@@ -784,86 +808,84 @@ function ConversationVisual() {
   );
 }
 
-const INSIGHTS_INITIAL = [
-  { id: "exit",    label: "Exit & transport", count: 61 },
-  { id: "bars",    label: "Bar queues",        count: 38 },
-  { id: "sound",   label: "Sound quality",     count: 24 },
-  { id: "tickets", label: "Ticketing",         count: 17 },
+const INSIGHTS_ITEMS = [
+  { id: "spring",  label: "Spring Showcase",      start: 180, cap: 440 },
+  { id: "fp",      label: "Floating Points",       start: 240, cap: 450 },
+  { id: "fourtet", label: "Four Tet · Oval Space", start: 310, cap: 450 },
+  { id: "bank",    label: "Bank Holiday rave",     start: 120, cap: 420 },
 ];
 
-const INSIGHTS_STEPS: Record<string, number>[] = [
-  { exit: 68, bars: 44, sound: 29, tickets: 22 },
-  { exit: 72, bars: 57, sound: 34, tickets: 28 },
-  { exit: 75, bars: 73, sound: 39, tickets: 31 },
-];
-
-const INSIGHTS_STEP_DELAY = 2200;
+const FILL_DURATION = 6000;
+const FILL_INTERVAL = 40;
 
 function InsightsVisual() {
-  const [themes, setThemes] = useState(INSIGHTS_INITIAL);
+  const [counts, setCounts] = useState(() => Object.fromEntries(INSIGHTS_ITEMS.map(i => [i.id, i.start])));
 
   useEffect(() => {
     let running = true;
 
     function runLoop() {
       if (!running) return;
-      setThemes(INSIGHTS_INITIAL.map(t => ({ ...t })));
+      setCounts(Object.fromEntries(INSIGHTS_ITEMS.map(i => [i.id, i.start])));
 
-      let cumulative = 0;
-      INSIGHTS_STEPS.forEach((counts) => {
-        cumulative += INSIGHTS_STEP_DELAY;
-        setTimeout(() => {
-          if (!running) return;
-          setThemes(prev => prev.map(t => ({ ...t, count: counts[t.id] })));
-        }, cumulative);
-      });
+      const steps = FILL_DURATION / FILL_INTERVAL;
+      let step = 0;
 
-      setTimeout(() => { if (running) runLoop(); }, cumulative + 3000);
+      const interval = setInterval(() => {
+        if (!running) { clearInterval(interval); return; }
+        step++;
+        const t = step / steps;
+        // ease-in-out so it starts slow, accelerates, then eases to full
+        const eased = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        setCounts(Object.fromEntries(
+          INSIGHTS_ITEMS.map(i => [i.id, Math.round(i.start + (i.cap - i.start) * eased)])
+        ));
+        if (step >= steps) {
+          clearInterval(interval);
+          setTimeout(() => { if (running) runLoop(); }, 2500);
+        }
+      }, FILL_INTERVAL);
+
+      return () => clearInterval(interval);
     }
 
     runLoop();
     return () => { running = false; };
   }, []);
 
-  const sorted = [...themes].sort((a, b) => b.count - a.count);
-  const maxCount = sorted[0]?.count || 1;
-  const total = themes.reduce((s, t) => s + t.count, 0);
-
+  const total = INSIGHTS_ITEMS.reduce((s, i) => s + counts[i.id], 0);
   const ITEM_H = 44;
   const GAP = 14;
 
   return (
     <div className="w-full max-w-[420px] p-8 flex flex-col gap-5">
       <div className="flex items-center justify-between">
-        <span className="text-[13px] font-semibold tracking-[-0.01em] text-text-primary">Top themes this month</span>
-        <span className="text-[12px] text-text-muted">{total} mentions</span>
+        <span className="text-[13px] font-semibold tracking-[-0.01em] text-text-primary">Tickets sold via crowdloop</span>
+        <span className="text-[12px] text-text-muted">{total} tickets</span>
       </div>
 
-      <div style={{ position: "relative", height: themes.length * (ITEM_H + GAP) - GAP }}>
-        {themes.map((theme) => {
-          const rank = sorted.findIndex(s => s.id === theme.id);
-          const pct = Math.round((theme.count / maxCount) * 100);
+      <div style={{ position: "relative", height: INSIGHTS_ITEMS.length * (ITEM_H + GAP) - GAP }}>
+        {INSIGHTS_ITEMS.map((item, rank) => {
+          const count = counts[item.id];
+          const pct = Math.round((count / item.cap) * 100);
+          const soldOut = count >= item.cap;
+          const barColor = soldOut ? "#25D366" : `hsl(${142 - (1 - pct / 100) * 60}, 60%, 40%)`;
           return (
             <div
-              key={theme.id}
-              style={{
-                position: "absolute",
-                top: rank * (ITEM_H + GAP),
-                left: 0, right: 0,
-                height: ITEM_H,
-                transition: "top 0.55s cubic-bezier(0.4, 0, 0.2, 1)",
-              }}
+              key={item.id}
+              style={{ position: "absolute", top: rank * (ITEM_H + GAP), left: 0, right: 0, height: ITEM_H }}
             >
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span className="text-[14px] tracking-[-0.01em] text-text-primary">{theme.label}</span>
-                  <span className="text-[13px] text-text-muted">{theme.count} mentions</span>
+                  <span className="text-[14px] tracking-[-0.01em] text-text-primary">{item.label}</span>
+                  {soldOut ? (
+                    <span style={{ fontSize: 11, fontWeight: 600, color: "#25D366", background: "rgba(37,211,102,0.1)", borderRadius: 99, padding: "2px 8px" }}>SOLD OUT</span>
+                  ) : (
+                    <span className="text-[13px] text-text-muted">{count} tickets</span>
+                  )}
                 </div>
                 <div className="h-1.5 bg-surface-tertiary rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-action-primary rounded-full"
-                    style={{ width: `${pct}%`, transition: "width 0.55s cubic-bezier(0.4, 0, 0.2, 1)" }}
-                  />
+                  <div className="h-full rounded-full" style={{ width: `${pct}%`, background: barColor }} />
                 </div>
               </div>
             </div>
@@ -1003,14 +1025,14 @@ function Screen() {
           flexShrink: 0,
         }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/organiser-avatar.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <img src="/crowdloop-logo-square.png" alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
 
         {/* Name + online */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
             <span style={{ fontSize: 13, fontWeight: 600, color: "#000", fontFamily: "inherit" }}>
-              Tastemakers Festival
+              crowdloop
             </span>
             {/* Meta verified tick */}
             <svg width="12" height="12" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0 }}>
@@ -1092,7 +1114,7 @@ function AnimatedChat() {
           if (!running) return;
           setVisible(i + 1);
           const msg = MESSAGES[i];
-          if (msg.kind === "bubble" && msg.side === "left") setReadUpTo(i);
+          if ((msg.kind === "bubble" && msg.side === "left") || msg.kind === "card") setReadUpTo(i);
         }, cumulative);
       });
 
@@ -1129,6 +1151,8 @@ function AnimatedChat() {
                 {msg.label}
               </span>
             </div>
+          ) : msg.kind === "card" ? (
+            <HeroCard body={msg.body} image={msg.image} title={msg.title} detail={msg.detail} cta={msg.cta} />
           ) : (
             <Bubble side={msg.side} time={msg.time} read={msg.side === "right" && readUpTo > i}>
               {msg.text}
@@ -1136,6 +1160,38 @@ function AnimatedChat() {
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+// ─── WhatsApp hero card (template message) ────────────────────────────────────
+
+function HeroCard({ body, image, title, detail, cta }: { body: string; image: string; title: string; detail: string; cta: string }) {
+  return (
+    <div style={{ display: "flex", justifyContent: "flex-start" }}>
+      <div style={{
+        width: 220, borderRadius: 8, overflow: "hidden",
+        boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+        fontFamily: "Helvetica Neue, Arial, sans-serif",
+        background: "#fff",
+      }}>
+        <div style={{ height: 130, overflow: "hidden", background: "#1a1a1a" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={image} alt={title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+        <div style={{ padding: "8px 10px 6px" }}>
+          <div style={{ fontSize: 13, color: "#111", lineHeight: "18px", marginBottom: 6 }}>{body}</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "#111", marginBottom: 1, lineHeight: "16px" }}>{title}</div>
+          <div style={{ fontSize: 11, color: "#667781", lineHeight: "15px" }}>{detail}</div>
+        </div>
+        <div style={{ height: 1, background: "#F0F0F0" }} />
+        <button style={{ width: "100%", padding: "7px 10px", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, background: "none", border: "none", cursor: "default" }}>
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M1 6.5h11M7 1.5l5 5-5 5" stroke="#00A67E" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span style={{ fontSize: 13, fontWeight: 500, color: "#00A67E" }}>{cta}</span>
+        </button>
+      </div>
     </div>
   );
 }

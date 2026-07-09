@@ -7,29 +7,55 @@ const VERIFY_TOKEN    = process.env.WHATSAPP_VERIFY_TOKEN;
 const ACCESS_TOKEN    = process.env.WHATSAPP_ACCESS_TOKEN;
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
 
-const SYSTEM_PROMPT = `You are the WhatsApp feedback assistant for Tastemakers Festival, a UK music and arts festival. An attendee has just messaged in after the event. Your job is to collect genuine feedback and make them feel heard.
+// ─── Venue config ─────────────────────────────────────────────────────────────
+// Each venue has a list of keywords to match against the user's first message.
+// The first message is typically the QR prefill text, but may be rephrased —
+// Claude handles flexible interpretation; keywords are just for fast detection.
+
+type VenueConfig = { name: string; keywords: string[] };
+
+const VENUES: VenueConfig[] = [
+  { name: "Pear Tree Cafe",  keywords: ["pear tree", "peartree", "pear-tree"] },
+  { name: "Oval Space",      keywords: ["oval space", "ovalspace", "oval-space"] },
+];
+
+function detectVenue(text: string): VenueConfig | null {
+  const lower = text.toLowerCase();
+  return VENUES.find(v => v.keywords.some(k => lower.includes(k))) ?? null;
+}
+
+function buildSystemPrompt(venueName: string | null): string {
+  const venueContext = venueName
+    ? `You are assisting someone who has attended an event at ${venueName}. The conversation was started from a ${venueName} QR code.`
+    : "You are assisting someone who has attended a live music or events venue.";
+
+  return `You are crowdloop, a WhatsApp assistant that helps music and events fans discover and connect with events they love. ${venueContext}
+
+Your job is to make the attendee feel heard, learn what they love, and keep them connected to future events.
 
 Rules:
 - Keep every reply SHORT — 1 to 2 sentences max, exactly like a real WhatsApp message
 - Be warm and conversational, but never use slang, colloquialisms or casual filler words — avoid terms like "rough", "dodgy", "vibe", "mate", "gutted", "brilliant" or similar
 - Ask ONE focused follow-up question per message — never multiple at once
-- Dig into specifics: if something was good or bad, ask what exactly
+- Learn their tastes: what artists they love, what kinds of events, what they want more of
 - NEVER promise refunds, compensation, or any form of remedy — you cannot authorise these
 - NEVER say you will "sort", "process", "escalate", or "fix" anything
-- If someone asks for a refund or compensation: acknowledge warmly, collect the details, say "I'll make sure the team sees this and someone will be in touch" — nothing more
-- After 3-4 exchanges with meaningful feedback, or when the conversation feels like it is coming to a natural end, ask: "Is there anything else you would like to share with us?"
-- If they have more feedback: continue collecting it
-- If they are done: thank them sincerely and say their feedback will be reviewed carefully ahead of future events
-- Then ask: "Would you like to hear from us about future Tastemakers events?"
-- If they say yes: confirm warmly, say the team will be in touch, and close
+- If someone raises a complaint: acknowledge warmly, note the detail, say "I'll make sure the team sees this"
+- After 3-4 exchanges, ask: "Is there anything else you'd like to share?"
+- If they are done: thank them and say you'll keep them posted on events they'll love
+- Then ask: "Want us to let you know when something comes up that's right for you?"
+- If they say yes: confirm warmly and close
 - If they say no: thank them warmly and close
 - Never use bullet points, numbered lists, or long paragraphs
 - Never use em dashes (—) in your replies
 - Never break character`;
+}
 
-// Per-number conversation history (resets on server restart — fine for demo)
+// ─── Per-number state ─────────────────────────────────────────────────────────
+
 type Message = { role: "user" | "assistant"; content: string };
 const conversations = new Map<string, Message[]>();
+const venueByNumber = new Map<string, string | null>();  // phone → venue name
 
 // Deduplicate Meta webhook deliveries
 const processedIds = new Set<string>();
@@ -78,7 +104,16 @@ export async function POST(req: NextRequest) {
     // Mark message as read (blue double-tick)
     await markAsRead(message.id);
 
-    if (!conversations.has(from)) conversations.set(from, []);
+    // Detect venue on first message from this number
+    const isNewConversation = !conversations.has(from);
+    if (isNewConversation) {
+      const venue = detectVenue(text);
+      venueByNumber.set(from, venue?.name ?? null);
+      if (venue) console.log(`[WA VENUE] ${from} → ${venue.name}`);
+      conversations.set(from, []);
+    }
+
+    const venueName = venueByNumber.get(from) ?? null;
     const history = conversations.get(from)!;
     history.push({ role: "user", content: text });
 
@@ -86,7 +121,7 @@ export async function POST(req: NextRequest) {
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 200,
-      system: SYSTEM_PROMPT,
+      system: buildSystemPrompt(venueName),
       messages: history,
     });
 

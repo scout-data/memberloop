@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: memberloop
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npx next start
+    plan: starter
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: NEXT_PUBLIC_WHATSAPP_NUMBER
+        value: "447463589130"
+      - key: RESEND_API_KEY
+        sync: false
