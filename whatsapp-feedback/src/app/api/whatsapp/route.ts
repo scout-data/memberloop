@@ -62,8 +62,9 @@ Rules:
 - Never break character`;
 }
 
-function buildSystemPrompt(mode: ConversationMode, venueName: string | null): string {
+function buildSystemPrompt(mode: ConversationMode, venueName: string | null, artistContext = ""): string {
   if (mode === "feedback" && venueName) return buildFeedbackPrompt(venueName);
+  if (artistContext) return `${DISCOVERY_SYSTEM}\n\n${artistContext}`;
   return DISCOVERY_SYSTEM;
 }
 
@@ -159,11 +160,18 @@ export async function POST(req: NextRequest) {
 
     const fullHistory: Message[] = [...history, { role: "user", content: text }];
 
+    // In discovery mode, look up any mentioned artists on Last.fm so Claude
+    // responds with accurate genre info rather than guessing
+    let artistContext = "";
+    if (mode === "discovery") {
+      artistContext = await buildArtistContext(text);
+    }
+
     // Call Claude
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 200,
-      system: buildSystemPrompt(mode, venueName),
+      system: buildSystemPrompt(mode, venueName, artistContext),
       messages: fullHistory,
     });
 
@@ -188,6 +196,63 @@ export async function POST(req: NextRequest) {
     console.error("[WA ERR]", err);
     return NextResponse.json({ ok: true });
   }
+}
+
+// ─── Real-time artist context via Last.fm ─────────────────────────────────────
+// Extracts artist names from the user's message, fetches real genre/bio data
+// from Last.fm, and returns a context string to inject into the system prompt.
+
+async function extractArtistNames(text: string): Promise<string[]> {
+  try {
+    const res = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 60,
+      system: "Extract any musician or band names from the message. Reply with ONLY a JSON array of strings, e.g. [\"Barry Can't Swim\",\"Bicep\"]. Reply [] if none.",
+      messages: [{ role: "user", content: text }],
+    });
+    const raw = res.content[0].type === "text" ? res.content[0].text.trim() : "[]";
+    const match = raw.match(/\[[\s\S]*\]/);
+    return match ? JSON.parse(match[0]) : [];
+  } catch {
+    return [];
+  }
+}
+
+async function lastfmArtistInfo(name: string): Promise<{ genres: string[]; summary: string } | null> {
+  try {
+    const url = `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${encodeURIComponent(name)}&api_key=${process.env.LASTFM_API_KEY}&format=json&autocorrect=1`;
+    const res = await fetch(url);
+    const data = await res.json() as {
+      artist?: {
+        tags?: { tag?: { name: string }[] };
+        bio?: { summary?: string };
+      };
+      error?: number;
+    };
+    if (data.error || !data.artist) return null;
+    const genres = (data.artist.tags?.tag ?? []).slice(0, 5).map(t => t.name).filter(Boolean);
+    const summary = (data.artist.bio?.summary ?? "").replace(/<[^>]+>/g, "").split("Read more")[0].trim().slice(0, 200);
+    return { genres, summary };
+  } catch {
+    return null;
+  }
+}
+
+async function buildArtistContext(text: string): Promise<string> {
+  const names = await extractArtistNames(text);
+  if (!names.length) return "";
+
+  const results = await Promise.all(names.map(async name => {
+    const info = await lastfmArtistInfo(name);
+    if (!info || !info.genres.length) return null;
+    return `${name}: ${info.genres.join(", ")}${info.summary ? ` — ${info.summary}` : ""}`;
+  }));
+
+  const lines = results.filter(Boolean) as string[];
+  if (!lines.length) return "";
+
+  console.log(`[ARTIST CTX] ${lines.join(" | ")}`);
+  return `IMPORTANT — verified artist data from Last.fm (use this, do not guess genres):\n${lines.map(l => `• ${l}`).join("\n")}`;
 }
 
 // ─── Async profile extraction ─────────────────────────────────────────────────
@@ -224,9 +289,31 @@ async function extractAndSaveProfile(phone: string, history: { role: string; con
     if (!match) return;
     const profile = JSON.parse(match[0]);
 
+    // Enrich genre_affinities with verified Last.fm data for mentioned artists
+    let genreAffinities = profile.genre_affinities ?? [];
+    if (profile.mentioned_artists?.length) {
+      const enriched = await Promise.all(profile.mentioned_artists.map(async (artist: string) => {
+        const info = await lastfmArtistInfo(artist);
+        return info?.genres ?? [];
+      }));
+      const lastfmGenres = enriched.flat();
+      // Merge: boost existing genres that match Last.fm, add new ones
+      const existing = new Map(genreAffinities.map((g: { genre: string; weight: number; source: string }) => [g.genre.toLowerCase(), g]));
+      for (const genre of lastfmGenres) {
+        const key = genre.toLowerCase();
+        if (existing.has(key)) {
+          const entry = existing.get(key) as { genre: string; weight: number; source: string };
+          entry.weight = Math.min(1, entry.weight + 0.15);
+        } else {
+          existing.set(key, { genre, weight: 0.6, source: "artist_lookup" });
+        }
+      }
+      genreAffinities = Array.from(existing.values());
+    }
+
     await supabase.from("user_profiles").upsert({
       phone_number: phone,
-      genre_affinities: profile.genre_affinities ?? null,
+      genre_affinities: genreAffinities.length ? genreAffinities : null,
       home_area: profile.home_area ?? null,
       preferred_towns: profile.preferred_towns ?? null,
       max_travel: profile.max_travel ?? null,
