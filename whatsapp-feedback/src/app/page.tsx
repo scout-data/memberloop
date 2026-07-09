@@ -24,7 +24,7 @@ const MESSAGES: ChatMessage[] = [
 // Delay before each message appears (ms)
 const DELAYS = [1800, 3200, 2200, 1400, 2800, 1200, 1800];
 
-const ROTATING_WORDS = ["fans'", "venue's", "club's", "theatre's", "supper club's"];
+const ROTATING_WORDS = ["fan", "venue's", "club's", "theatre's", "supper club's"];
 
 function RotatingWord() {
   const [index, setIndex] = useState(0);
