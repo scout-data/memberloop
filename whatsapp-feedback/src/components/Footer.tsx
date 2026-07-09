@@ -1,5 +1,4 @@
 const FOOTER_LINKS = [
-  { label: "Pricing",  href: "/pricing"  },
   { label: "Privacy",  href: "#"         },
   { label: "Contact",  href: "/contact"  },
   { label: "Try it",   href: "/demo"     },
