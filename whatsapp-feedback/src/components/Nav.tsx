@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { CrowdloopLogo } from "./CrowdloopLogo";
 
-type Page = "home" | "contact" | "demo" | "partnerships";
+type Page = "home" | "contact" | "demo";
 
 export function Nav({ active, transparent }: { active?: Page; transparent?: boolean }) {
   const [open, setOpen] = useState(false);
@@ -31,9 +31,8 @@ export function Nav({ active, transparent }: { active?: Page; transparent?: bool
         {/* Desktop links — centred */}
         <div className="hidden lg:flex flex-1 items-center justify-center gap-6">
           <a href="/#how-it-works" className={`text-[14px] transition-colors tracking-[-0.01em] ${linkBase}`}>How it works</a>
-          <a href="/demo"           className={`text-[14px] tracking-[-0.01em] transition-colors ${active === "demo"         ? activeLink : linkBase}`}>Try it</a>
-          <a href="/partnerships"   className={`text-[14px] tracking-[-0.01em] transition-colors ${active === "partnerships" ? activeLink : linkBase}`}>Partners</a>
-          <a href="/contact"        className={`text-[14px] tracking-[-0.01em] transition-colors ${active === "contact"      ? activeLink : linkBase}`}>Contact</a>
+          <a href="/demo"           className={`text-[14px] tracking-[-0.01em] transition-colors ${active === "demo"    ? activeLink : linkBase}`}>Try it</a>
+          <a href="/contact"        className={`text-[14px] tracking-[-0.01em] transition-colors ${active === "contact" ? activeLink : linkBase}`}>Contact</a>
         </div>
 
         {/* Desktop CTA */}
@@ -64,10 +63,9 @@ export function Nav({ active, transparent }: { active?: Page; transparent?: bool
       <div className={`lg:hidden fixed inset-x-0 top-[80px] bottom-0 z-40 bg-surface-primary flex flex-col px-6 pt-8 pb-12 transition-all duration-200 ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
         <div className="flex flex-col gap-1">
           {([
-            { label: "How it works", href: "/#how-it-works"  },
-            { label: "Try it",      href: "/demo"           },
-            { label: "Partners",    href: "/partnerships"   },
-            { label: "Contact",     href: "/contact"        },
+            { label: "How it works", href: "/#how-it-works" },
+            { label: "Try it", href: "/demo"          },
+            { label: "Contact", href: "/contact"      },
           ] as { label: string; href: string; onClick?: (e: React.MouseEvent) => void }[]).map(({ label, href, onClick: extraOnClick }) => (
             <a
               key={label}
