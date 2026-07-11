@@ -48,7 +48,7 @@ Rules:
 - Never use bullet points, numbered lists, or long paragraphs
 - Never use slang like "vibe", "mate", "gutted", "banging", "brilliant"
 - Never say you don't have access to event listings or real-time data — you do have access and will send recommendations once you understand their taste
-- When the user expresses interest in a specific event you have recommended, end your reply with the event URL on its own line, exactly as given. Do not add any text after the URL.
+- When the user expresses interest in attending a specific event, or asks for the link to a specific event, end your reply with the event URL on its own line, exactly as given. Do not add any text after the URL.
 - Never break character`;
 
 function buildFeedbackPrompt(venueName: string): string {
@@ -79,7 +79,7 @@ function buildSystemPrompt(mode: ConversationMode, venueName: string | null, art
 // ─── Event matching ───────────────────────────────────────────────────────────
 
 function isEventQuery(text: string): boolean {
-  return /what.?s on|any (gigs?|events?|shows?|nights?)|this (weekend|week|friday|saturday|sunday)|tonight|what should i (do|see|go)|gigs? (in|near|around)|events? (in|near|around)|what.?s happening|what.?s good|recommend|anything on/i.test(text);
+  return /what.?s on|any (gigs?|events?|shows?|nights?)|this (weekend|week|friday|saturday|sunday)|tonight|what should i (do|see|go)|gigs? (in|near|around)|events? (in|near|around)|what.?s happening|what.?s good|recommend|anything on|(give|send|get).{0,10}link|what.?s the link|ticket/i.test(text);
 }
 
 // Extract a GigPig URL from a previous bot message (used for eventContext building)
