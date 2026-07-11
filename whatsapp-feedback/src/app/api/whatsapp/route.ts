@@ -106,8 +106,23 @@ type EventCandidate = {
   details_url: string | null;
 };
 
+// Extract a city/location keyword from the user's message or profile
+function extractLocation(userMessage: string, profile: Record<string, unknown>): string | null {
+  const UK_CITIES = ["london", "manchester", "birmingham", "bristol", "leeds", "sheffield", "edinburgh", "glasgow", "liverpool", "brighton", "bath", "oxford", "cambridge", "nottingham", "cardiff"];
+  const lower = userMessage.toLowerCase();
+  const fromMsg = UK_CITIES.find(c => lower.includes(c));
+  if (fromMsg) return fromMsg;
+  const homeArea = profile.home_area as string | null;
+  if (homeArea) {
+    const fromProfile = UK_CITIES.find(c => homeArea.toLowerCase().includes(c));
+    if (fromProfile) return fromProfile;
+  }
+  return null;
+}
+
 async function findMatchingEvents(phone: string, profile: Record<string, unknown>, userMessage: string): Promise<string> {
   try {
+    const location = extractLocation(userMessage, profile);
     const queryText = [profileToQueryText(profile), userMessage].filter(Boolean).join(". ");
     const embRes = await openai.embeddings.create({ model: "text-embedding-3-small", input: queryText });
     const embedding = embRes.data[0].embedding;
@@ -115,19 +130,32 @@ async function findMatchingEvents(phone: string, profile: Record<string, unknown
     const { data, error } = await supabase.rpc("match_events", {
       query_embedding: embedding,
       phone,
-      match_count: 9,
+      match_count: 20, // fetch more so we have enough after location filtering
     });
 
     if (error || !data?.length) return "";
 
-    const lines = (data as EventCandidate[]).slice(0, 9).map((e, i) => {
+    let candidates = data as EventCandidate[];
+
+    // Filter by location if we detected one
+    if (location) {
+      const locationFiltered = candidates.filter(e =>
+        e.venue_name.toLowerCase().includes(location)
+      );
+      // Fall back to unfiltered if location filtering leaves nothing
+      if (locationFiltered.length > 0) candidates = locationFiltered;
+    }
+
+    const lines = candidates.slice(0, 9).map((e, i) => {
       const date = new Date(e.start_time).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
       const time = new Date(e.start_time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
       return `${i + 1}. ${e.title} at ${e.venue_name} — ${date} at ${time}${e.details_url ? ` | ${e.details_url}` : ""}`;
     }).join("\n");
 
-    console.log(`[EVENTS] ${data.length} candidates for ${phone}`);
-    return `\n\nUPCOMING EVENTS from the crowdloop database, matched to this user's taste:\n${lines}\n\nIf the user is asking about events or you have learned enough about their taste, recommend 1-3 of these naturally. Explain briefly why each suits them. Include the URL. Only recommend events that genuinely fit — if none do, continue building their profile instead.`;
+    console.log(`[EVENTS] ${candidates.length} candidates for ${phone}${location ? ` (filtered: ${location})` : ""}`);
+
+    const locationNote = location ? ` in ${location.charAt(0).toUpperCase() + location.slice(1)}` : "";
+    return `\n\nUPCOMING EVENTS${locationNote} from the crowdloop database, matched to this user's taste:\n${lines}\n\nRecommend 1-3 of these now. Be specific about why each suits their taste. Include the URL. Do not ask more questions — the user wants event suggestions.`;
   } catch (e) {
     console.error("[EVENTS ERR]", e);
     return "";
