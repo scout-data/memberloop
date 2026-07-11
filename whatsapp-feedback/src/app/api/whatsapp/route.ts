@@ -1,8 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const openai  = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const VERIFY_TOKEN    = process.env.WHATSAPP_VERIFY_TOKEN;
 const ACCESS_TOKEN    = process.env.WHATSAPP_ACCESS_TOKEN;
@@ -71,6 +73,65 @@ function buildSystemPrompt(mode: ConversationMode, venueName: string | null, art
   if (mode === "feedback" && venueName) return buildFeedbackPrompt(venueName);
   if (artistContext) return `${DISCOVERY_SYSTEM}\n\n${artistContext}`;
   return DISCOVERY_SYSTEM;
+}
+
+// ─── Event matching ───────────────────────────────────────────────────────────
+
+function isEventQuery(text: string): boolean {
+  return /what.?s on|any (gigs?|events?|shows?|nights?)|this (weekend|week|friday|saturday|sunday)|tonight|what should i (do|see|go)|gigs? (in|near|around)|events? (in|near|around)|what.?s happening|what.?s good|recommend|anything on/i.test(text);
+}
+
+function profileToQueryText(profile: Record<string, unknown>): string {
+  const parts: string[] = [];
+  const affinities = profile.genre_affinities as Array<{ genre: string; weight: number }> | null;
+  if (affinities?.length) {
+    const genres = [...affinities].sort((a, b) => b.weight - a.weight).map(g => g.genre).slice(0, 6);
+    parts.push(`Music genres: ${genres.join(", ")}.`);
+  }
+  const artists = profile.mentioned_artists as string[] | null;
+  if (artists?.length) parts.push(`Enjoys: ${artists.join(", ")}.`);
+  const interests = profile.inferred_interests as string[] | null;
+  if (interests?.length) parts.push(`Interests: ${interests.join(", ")}.`);
+  if (profile.home_area) parts.push(`Based in ${String(profile.home_area)}.`);
+  const towns = profile.preferred_towns as string[] | null;
+  if (towns?.length) parts.push(`Prefers events in ${towns.join(", ")}.`);
+  return parts.join(" ") || "live music events";
+}
+
+type EventCandidate = {
+  id: number;
+  title: string;
+  venue_name: string;
+  start_time: string;
+  details_url: string | null;
+};
+
+async function findMatchingEvents(phone: string, profile: Record<string, unknown>, userMessage: string): Promise<string> {
+  try {
+    const queryText = [profileToQueryText(profile), userMessage].filter(Boolean).join(". ");
+    const embRes = await openai.embeddings.create({ model: "text-embedding-3-small", input: queryText });
+    const embedding = embRes.data[0].embedding;
+
+    const { data, error } = await supabase.rpc("match_events", {
+      query_embedding: embedding,
+      phone,
+      match_count: 9,
+    });
+
+    if (error || !data?.length) return "";
+
+    const lines = (data as EventCandidate[]).slice(0, 9).map((e, i) => {
+      const date = new Date(e.start_time).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+      const time = new Date(e.start_time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+      return `${i + 1}. ${e.title} at ${e.venue_name} — ${date} at ${time}${e.details_url ? ` | ${e.details_url}` : ""}`;
+    }).join("\n");
+
+    console.log(`[EVENTS] ${data.length} candidates for ${phone}`);
+    return `\n\nUPCOMING EVENTS from the crowdloop database, matched to this user's taste:\n${lines}\n\nIf the user is asking about events or you have learned enough about their taste, recommend 1-3 of these naturally. Explain briefly why each suits them. Include the URL. Only recommend events that genuinely fit — if none do, continue building their profile instead.`;
+  } catch (e) {
+    console.error("[EVENTS ERR]", e);
+    return "";
+  }
 }
 
 // Deduplicate Meta webhook deliveries
@@ -172,11 +233,24 @@ export async function POST(req: NextRequest) {
       artistContext = await buildArtistContext(text);
     }
 
+    // In discovery mode, look up real events when the user asks or after enough exchanges
+    let eventContext = "";
+    if (mode === "discovery" && (isEventQuery(text) || fullHistory.length >= 6)) {
+      const { data: profileRow } = await supabase
+        .from("user_profiles")
+        .select("*")
+        .eq("phone_number", from)
+        .single();
+      if (profileRow && (profileRow.profile_confidence ?? 0) >= 0.3) {
+        eventContext = await findMatchingEvents(from, profileRow as Record<string, unknown>, text);
+      }
+    }
+
     // Call Claude
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 200,
-      system: buildSystemPrompt(mode, venueName, artistContext),
+      max_tokens: 350,
+      system: buildSystemPrompt(mode, venueName, artistContext) + eventContext,
       messages: fullHistory,
     });
 
