@@ -48,6 +48,7 @@ Rules:
 - Never use bullet points, numbered lists, or long paragraphs
 - Never use slang like "vibe", "mate", "gutted", "banging", "brilliant"
 - Never say you don't have access to event listings or real-time data — you do have access and will send recommendations once you understand their taste
+- When the user expresses interest in a specific event you have recommended, end your reply with the event URL on its own line, exactly as given. Do not add any text after the URL.
 - Never break character`;
 
 function buildFeedbackPrompt(venueName: string): string {
@@ -81,28 +82,13 @@ function isEventQuery(text: string): boolean {
   return /what.?s on|any (gigs?|events?|shows?|nights?)|this (weekend|week|friday|saturday|sunday)|tonight|what should i (do|see|go)|gigs? (in|near|around)|events? (in|near|around)|what.?s happening|what.?s good|recommend|anything on/i.test(text);
 }
 
-async function isInterestExpression(userText: string, lastBotMessage: string): Promise<boolean> {
-  if (!lastBotMessage) return false;
-  try {
-    const res = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 5,
-      system: "Reply YES if the user is expressing interest in attending or finding out more about a specific event that was just recommended. Reply NO otherwise.",
-      messages: [{ role: "user", content: `Bot said: "${lastBotMessage.slice(0, 200)}"\nUser replied: "${userText}"` }],
-    });
-    return res.content[0].type === "text" && res.content[0].text.trim().startsWith("YES");
-  } catch {
-    return false;
-  }
-}
-
-// Extract a GigPig URL from a previous bot message
+// Extract a GigPig URL from a previous bot message (used for eventContext building)
 function extractGigpigUrl(assistantMessages: { role: string; content: string }[]): string | null {
   for (let i = assistantMessages.length - 1; i >= 0; i--) {
     const msg = assistantMessages[i];
     if (msg.role !== "assistant") continue;
     const match = msg.content.match(/https:\/\/www\.gigpig\.uk\/whats-on\/[^\s|]+/);
-    if (match) return match[0].replace(/[|,.]$/, ""); // trim trailing punctuation
+    if (match) return match[0].replace(/[|,.]$/, "");
   }
   return null;
 }
@@ -310,33 +296,22 @@ export async function POST(req: NextRequest) {
 
     const reply = response.content[0].type === "text" ? response.content[0].text : "";
 
-    // Persist assistant reply
-    await supabase.from("messages").insert({
-      phone_number: from,
-      role: "assistant",
-      content: reply,
-    });
+    // If Claude included a URL (its signal that user expressed interest), split into two messages
+    const urlMatch = reply.match(/https:\/\/www\.gigpig\.uk\/whats-on\/[^\s]+/);
+    const cleanReply = urlMatch
+      ? reply.replace(/\n?https:\/\/www\.gigpig\.uk\/whats-on\/[^\s]+/, "").trim()
+      : reply;
 
-    console.log(`[WA OUT] ${from}: ${reply}`);
+    await supabase.from("messages").insert({ phone_number: from, role: "assistant", content: cleanReply });
+    console.log(`[WA OUT] ${from}: ${cleanReply}`);
 
-    // Fire-and-forget profile extraction (runs async, doesn't block reply)
-    extractAndSaveProfile(from, [...fullHistory, { role: "assistant", content: reply }]);
+    extractAndSaveProfile(from, [...fullHistory, { role: "assistant", content: cleanReply }]);
 
-    await sendWhatsApp(from, reply);
+    await sendWhatsApp(from, cleanReply);
 
-    // If the user expressed interest in an event, follow up with the direct link
-    if (mode === "discovery") {
-      const lastBotMessage = [...history].reverse().find(m => m.role === "assistant")?.content ?? "";
-      const interested = await isInterestExpression(text, lastBotMessage);
-      if (interested) {
-        const url = extractGigpigUrl([...fullHistory, { role: "assistant", content: reply }]);
-        if (url) {
-          const linkMsg = `Full details and tickets here: ${url}`;
-          await supabase.from("messages").insert({ phone_number: from, role: "assistant", content: linkMsg });
-          await sendWhatsApp(from, linkMsg);
-          console.log(`[WA LINK] ${from}: ${url}`);
-        }
-      }
+    if (urlMatch) {
+      await sendWhatsApp(from, urlMatch[0]);
+      console.log(`[WA LINK] ${from}: ${urlMatch[0]}`);
     }
 
     return NextResponse.json({ ok: true });
