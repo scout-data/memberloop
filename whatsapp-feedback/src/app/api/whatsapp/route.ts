@@ -81,6 +81,21 @@ function isEventQuery(text: string): boolean {
   return /what.?s on|any (gigs?|events?|shows?|nights?)|this (weekend|week|friday|saturday|sunday)|tonight|what should i (do|see|go)|gigs? (in|near|around)|events? (in|near|around)|what.?s happening|what.?s good|recommend|anything on/i.test(text);
 }
 
+function isInterestExpression(text: string): boolean {
+  return /\b(yeah|yes|perfect|sounds? (good|great|amazing|lovely|nice)|i'?m? ?(in|interested|up for)|that.?s (great|perfect|good|me)|love (it|that)|definitely|book(ing)?|ticket|let.?s go|going)\b/i.test(text);
+}
+
+// Extract a GigPig URL from a previous bot message
+function extractGigpigUrl(assistantMessages: { role: string; content: string }[]): string | null {
+  for (let i = assistantMessages.length - 1; i >= 0; i--) {
+    const msg = assistantMessages[i];
+    if (msg.role !== "assistant") continue;
+    const match = msg.content.match(/https:\/\/www\.gigpig\.uk\/whats-on\/[^\s|]+/);
+    if (match) return match[0].replace(/[|,.]$/, ""); // trim trailing punctuation
+  }
+  return null;
+}
+
 function profileToQueryText(profile: Record<string, unknown>): string {
   const parts: string[] = [];
   const affinities = profile.genre_affinities as Array<{ genre: string; weight: number }> | null;
@@ -297,6 +312,18 @@ export async function POST(req: NextRequest) {
     extractAndSaveProfile(from, [...fullHistory, { role: "assistant", content: reply }]);
 
     await sendWhatsApp(from, reply);
+
+    // If the user expressed interest in an event, follow up with the direct link
+    if (mode === "discovery" && isInterestExpression(text)) {
+      const url = extractGigpigUrl([...fullHistory, { role: "assistant", content: reply }]);
+      if (url) {
+        const linkMsg = `Full details and tickets here: ${url}`;
+        await supabase.from("messages").insert({ phone_number: from, role: "assistant", content: linkMsg });
+        await sendWhatsApp(from, linkMsg);
+        console.log(`[WA LINK] ${from}: ${url}`);
+      }
+    }
+
     return NextResponse.json({ ok: true });
 
   } catch (err) {
