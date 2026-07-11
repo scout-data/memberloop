@@ -81,8 +81,19 @@ function isEventQuery(text: string): boolean {
   return /what.?s on|any (gigs?|events?|shows?|nights?)|this (weekend|week|friday|saturday|sunday)|tonight|what should i (do|see|go)|gigs? (in|near|around)|events? (in|near|around)|what.?s happening|what.?s good|recommend|anything on/i.test(text);
 }
 
-function isInterestExpression(text: string): boolean {
-  return /\b(yeah|yes|perfect|sounds? (good|great|amazing|lovely|nice)|i'?m? ?(in|interested|up for)|that.?s (great|perfect|good|me)|love (it|that)|definitely|book(ing)?|ticket|let.?s go|going)\b/i.test(text);
+async function isInterestExpression(userText: string, lastBotMessage: string): Promise<boolean> {
+  if (!lastBotMessage) return false;
+  try {
+    const res = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 5,
+      system: "Reply YES if the user is expressing interest in attending or finding out more about a specific event that was just recommended. Reply NO otherwise.",
+      messages: [{ role: "user", content: `Bot said: "${lastBotMessage.slice(0, 200)}"\nUser replied: "${userText}"` }],
+    });
+    return res.content[0].type === "text" && res.content[0].text.trim().startsWith("YES");
+  } catch {
+    return false;
+  }
 }
 
 // Extract a GigPig URL from a previous bot message
@@ -314,13 +325,17 @@ export async function POST(req: NextRequest) {
     await sendWhatsApp(from, reply);
 
     // If the user expressed interest in an event, follow up with the direct link
-    if (mode === "discovery" && isInterestExpression(text)) {
-      const url = extractGigpigUrl([...fullHistory, { role: "assistant", content: reply }]);
-      if (url) {
-        const linkMsg = `Full details and tickets here: ${url}`;
-        await supabase.from("messages").insert({ phone_number: from, role: "assistant", content: linkMsg });
-        await sendWhatsApp(from, linkMsg);
-        console.log(`[WA LINK] ${from}: ${url}`);
+    if (mode === "discovery") {
+      const lastBotMessage = [...history].reverse().find(m => m.role === "assistant")?.content ?? "";
+      const interested = await isInterestExpression(text, lastBotMessage);
+      if (interested) {
+        const url = extractGigpigUrl([...fullHistory, { role: "assistant", content: reply }]);
+        if (url) {
+          const linkMsg = `Full details and tickets here: ${url}`;
+          await supabase.from("messages").insert({ phone_number: from, role: "assistant", content: linkMsg });
+          await sendWhatsApp(from, linkMsg);
+          console.log(`[WA LINK] ${from}: ${url}`);
+        }
       }
     }
 
