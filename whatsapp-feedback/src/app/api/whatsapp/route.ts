@@ -48,7 +48,7 @@ Rules:
 - Never use bullet points, numbered lists, or long paragraphs
 - Never use slang like "vibe", "mate", "gutted", "banging", "brilliant"
 - Never say you don't have access to event listings or real-time data — you do have access and will send recommendations once you understand their taste
-- When the user expresses interest in attending a specific event, or asks for the link to a specific event, end your reply with the event URL on its own line, exactly as given. Do not add any text after the URL.
+- When the user asks for a link, or clearly expresses interest in attending a specific event you have recommended, call the send_event_link tool with the event title and slug. Do not include URLs in your text reply.
 - Never break character`;
 
 function buildFeedbackPrompt(venueName: string): string {
@@ -82,16 +82,6 @@ function isEventQuery(text: string): boolean {
   return /what.?s on|any (gigs?|events?|shows?|nights?)|this (weekend|week|friday|saturday|sunday)|tonight|what should i (do|see|go)|gigs? (in|near|around)|events? (in|near|around)|what.?s happening|what.?s good|recommend|anything on|(give|send|get).{0,10}link|what.?s the link|ticket/i.test(text);
 }
 
-// Extract a GigPig URL from a previous bot message (used for eventContext building)
-function extractGigpigUrl(assistantMessages: { role: string; content: string }[]): string | null {
-  for (let i = assistantMessages.length - 1; i >= 0; i--) {
-    const msg = assistantMessages[i];
-    if (msg.role !== "assistant") continue;
-    const match = msg.content.match(/https:\/\/www\.gigpig\.uk\/whats-on\/[^\s|]+/);
-    if (match) return match[0].replace(/[|,.]$/, "");
-  }
-  return null;
-}
 
 function profileToQueryText(profile: Record<string, unknown>): string {
   const parts: string[] = [];
@@ -161,7 +151,8 @@ async function findMatchingEvents(phone: string, profile: Record<string, unknown
     const lines = candidates.slice(0, 9).map((e, i) => {
       const date = new Date(e.start_time).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
       const time = new Date(e.start_time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-      return `${i + 1}. ${e.title} at ${e.venue_name} — ${date} at ${time}${e.details_url ? ` | ${e.details_url}` : ""}`;
+      const slug = e.details_url ? e.details_url.replace("https://www.gigpig.uk/whats-on/", "") : null;
+      return `${i + 1}. ${e.title} at ${e.venue_name} — ${date} at ${time}${slug ? ` [slug: ${slug}]` : ""}`;
     }).join("\n");
 
     console.log(`[EVENTS] ${candidates.length} candidates for ${phone}${location ? ` (filtered: ${location})` : ""}`);
@@ -286,40 +277,42 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Call Claude
+    // Call Claude with send_event_link tool available
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 350,
       system: buildSystemPrompt(mode, venueName, artistContext) + eventContext,
       messages: fullHistory,
+      tools: [{
+        name: "send_event_link",
+        description: "Send a WhatsApp card with a Find out more button linking to a specific event. Call this when the user asks for a link or clearly expresses interest in attending a specific event you recommended.",
+        input_schema: {
+          type: "object" as const,
+          properties: {
+            event_title: { type: "string", description: "Display name of the event, e.g. 'DJ H at Swingers'" },
+            gigpig_slug: { type: "string", description: "The slug from the event listing, e.g. 'dj-h-swingers-13403437'" },
+          },
+          required: ["event_title", "gigpig_slug"],
+        },
+      }],
+      tool_choice: { type: "auto" },
     });
 
-    const reply = response.content[0].type === "text" ? response.content[0].text : "";
+    const textBlock = response.content.find(b => b.type === "text");
+    const toolUse  = response.content.find(b => b.type === "tool_use" && b.name === "send_event_link");
+    const reply = textBlock?.type === "text" ? textBlock.text : "";
 
-    // If Claude included a URL (its signal that user expressed interest), split into two messages
-    const urlMatch = reply.match(/https:\/\/www\.gigpig\.uk\/whats-on\/[^\s]+/);
-    const cleanReply = urlMatch
-      ? reply.replace(/\n?https:\/\/www\.gigpig\.uk\/whats-on\/[^\s]+/, "").trim()
-      : reply;
+    await supabase.from("messages").insert({ phone_number: from, role: "assistant", content: reply });
+    console.log(`[WA OUT] ${from}: ${reply}`);
 
-    await supabase.from("messages").insert({ phone_number: from, role: "assistant", content: cleanReply });
-    console.log(`[WA OUT] ${from}: ${cleanReply}`);
+    extractAndSaveProfile(from, [...fullHistory, { role: "assistant", content: reply }]);
 
-    extractAndSaveProfile(from, [...fullHistory, { role: "assistant", content: cleanReply }]);
+    if (reply) await sendWhatsApp(from, reply);
 
-    await sendWhatsApp(from, cleanReply);
-
-    if (urlMatch) {
-      const slug = urlMatch[0].replace("https://www.gigpig.uk/whats-on/", "");
-      // Look up the event title so the template body reads naturally
-      const { data: eventRow } = await supabase
-        .from("events")
-        .select("title")
-        .eq("details_url", urlMatch[0])
-        .single();
-      const title = eventRow?.title ?? slug.replace(/-/g, " ");
-      await sendEventTemplate(from, title, slug);
-      console.log(`[WA LINK] ${from}: crowdloop_go → ${slug}`);
+    if (toolUse?.type === "tool_use") {
+      const { event_title, gigpig_slug } = toolUse.input as { event_title: string; gigpig_slug: string };
+      await sendEventTemplate(from, event_title, gigpig_slug);
+      console.log(`[WA LINK] ${from}: crowdloop_go → ${gigpig_slug}`);
     }
 
     return NextResponse.json({ ok: true });
