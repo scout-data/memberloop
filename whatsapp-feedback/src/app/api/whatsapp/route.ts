@@ -11,8 +11,6 @@ const ACCESS_TOKEN    = process.env.WHATSAPP_ACCESS_TOKEN;
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
 
 // ─── Mode detection ───────────────────────────────────────────────────────────
-// "discovery" is the default while we're building the tastemakers product.
-// "feedback" only activates when a known venue keyword is in the first message.
 
 type ConversationMode = "discovery" | "feedback";
 
@@ -48,7 +46,9 @@ Rules:
 - Never use bullet points, numbered lists, or long paragraphs
 - Never use slang like "vibe", "mate", "gutted", "banging", "brilliant"
 - Never say you don't have access to event listings or real-time data — you do have access and will send recommendations once you understand their taste
-- When the user asks for a link, or clearly expresses interest in attending a specific event you have recommended, call the send_event_link tool with the event title and slug. Do not include URLs in your text reply.
+- When recommending multiple events, call send_events_carousel with 2-3 events immediately after your intro sentence — do not describe events in text only
+- When the user asks for a specific event's link, call send_event_link with the event title and slug
+- Never include URLs in your text reply
 - Never break character`;
 
 function buildFeedbackPrompt(venueName: string): string {
@@ -82,7 +82,6 @@ function isEventQuery(text: string): boolean {
   return /what.?s on|any (gigs?|events?|shows?|nights?)|this (weekend|week|friday|saturday|sunday)|tonight|what should i (do|see|go)|gigs? (in|near|around)|events? (in|near|around)|what.?s happening|what.?s good|recommend|anything on|(give|send|get).{0,10}link|what.?s the link|ticket/i.test(text);
 }
 
-
 function profileToQueryText(profile: Record<string, unknown>): string {
   const parts: string[] = [];
   const affinities = profile.genre_affinities as Array<{ genre: string; weight: number }> | null;
@@ -108,7 +107,17 @@ type EventCandidate = {
   details_url: string | null;
 };
 
-// Extract a city/location keyword from the user's message or profile
+type EventFull = EventCandidate & {
+  details_url: string; // guaranteed non-null after filtering
+  artist_image: string | null;
+};
+
+function formatVenueDate(venueName: string, startTime: string): string {
+  const date = new Date(startTime).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+  const time = new Date(startTime).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  return `${date} · ${time} · ${venueName}`;
+}
+
 function extractLocation(userMessage: string, profile: Record<string, unknown>): string | null {
   const UK_CITIES = ["london", "manchester", "birmingham", "bristol", "leeds", "sheffield", "edinburgh", "glasgow", "liverpool", "brighton", "bath", "oxford", "cambridge", "nottingham", "cardiff"];
   const lower = userMessage.toLowerCase();
@@ -122,7 +131,11 @@ function extractLocation(userMessage: string, profile: Record<string, unknown>):
   return null;
 }
 
-async function findMatchingEvents(phone: string, profile: Record<string, unknown>, userMessage: string): Promise<string> {
+async function fetchMatchingEvents(
+  phone: string,
+  profile: Record<string, unknown>,
+  userMessage: string,
+): Promise<{ events: EventFull[]; location: string | null }> {
   try {
     const location = extractLocation(userMessage, profile);
     const queryText = [profileToQueryText(profile), userMessage].filter(Boolean).join(". ");
@@ -132,37 +145,51 @@ async function findMatchingEvents(phone: string, profile: Record<string, unknown
     const { data, error } = await supabase.rpc("match_events", {
       query_embedding: embedding,
       phone,
-      match_count: 20, // fetch more so we have enough after location filtering
+      match_count: 20,
     });
 
-    if (error || !data?.length) return "";
+    if (error || !data?.length) return { events: [], location };
 
-    let candidates = data as EventCandidate[];
+    let candidates = (data as EventCandidate[]).filter(e => e.details_url !== null);
 
-    // Filter by location if we detected one
     if (location) {
-      const locationFiltered = candidates.filter(e =>
-        e.venue_name.toLowerCase().includes(location)
-      );
-      // Fall back to unfiltered if location filtering leaves nothing
+      const locationFiltered = candidates.filter(e => e.venue_name.toLowerCase().includes(location));
       if (locationFiltered.length > 0) candidates = locationFiltered;
     }
 
-    const lines = candidates.slice(0, 9).map((e, i) => {
-      const date = new Date(e.start_time).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
-      const time = new Date(e.start_time).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-      const slug = e.details_url ? e.details_url.replace("https://www.gigpig.uk/whats-on/", "") : null;
-      return `${i + 1}. ${e.title} at ${e.venue_name} — ${date} at ${time}${slug ? ` [slug: ${slug}]` : ""}`;
-    }).join("\n");
+    const top = candidates.slice(0, 9);
 
-    console.log(`[EVENTS] ${candidates.length} candidates for ${phone}${location ? ` (filtered: ${location})` : ""}`);
+    // Batch fetch artist images (not returned by match_events RPC)
+    const { data: imageRows } = await supabase
+      .from("events")
+      .select("id, artist_image")
+      .in("id", top.map(e => e.id));
+    const imageMap = new Map(
+      (imageRows ?? []).map((r: { id: number; artist_image: string | null }) => [r.id, r.artist_image])
+    );
 
-    const locationNote = location ? ` in ${location.charAt(0).toUpperCase() + location.slice(1)}` : "";
-    return `\n\nUPCOMING EVENTS${locationNote} from the crowdloop database, matched to this user's taste:\n${lines}\n\nRecommend 1-3 of these now. Be specific about why each suits their taste. Include the URL. Do not ask more questions — the user wants event suggestions.`;
+    const events: EventFull[] = top.map(e => ({
+      ...e,
+      details_url: e.details_url as string,
+      artist_image: imageMap.get(e.id) ?? null,
+    }));
+
+    console.log(`[EVENTS] ${events.length} linkable candidates for ${phone}${location ? ` (filtered: ${location})` : ""}`);
+    return { events, location };
   } catch (e) {
     console.error("[EVENTS ERR]", e);
-    return "";
+    return { events: [], location: null };
   }
+}
+
+function buildEventContext(events: EventFull[], location: string | null): string {
+  if (!events.length) return "";
+  const locationNote = location ? ` in ${location.charAt(0).toUpperCase() + location.slice(1)}` : "";
+  const lines = events.map((e, i) => {
+    const slug = e.details_url.replace("https://www.gigpig.uk/whats-on/", "");
+    return `${i + 1}. ${e.title} at ${e.venue_name} — ${formatVenueDate(e.venue_name, e.start_time)} [slug: ${slug}]`;
+  }).join("\n");
+  return `\n\nUPCOMING EVENTS${locationNote} from the crowdloop database, matched to this user's taste:\n${lines}\n\nEvery event has a slug. Call send_event_link for a specific event, or send_events_carousel to show 2-3 events as image cards.`;
 }
 
 // Deduplicate Meta webhook deliveries
@@ -257,14 +284,14 @@ export async function POST(req: NextRequest) {
 
     const fullHistory: Message[] = [...history, { role: "user", content: text }];
 
-    // In discovery mode, look up any mentioned artists on Last.fm so Claude
-    // responds with accurate genre info rather than guessing
+    // In discovery mode, look up any mentioned artists on Last.fm
     let artistContext = "";
     if (mode === "discovery") {
       artistContext = await buildArtistContext(text);
     }
 
     // In discovery mode, look up real events when the user asks or after enough exchanges
+    let eventMatches: EventFull[] = [];
     let eventContext = "";
     if (mode === "discovery" && (isEventQuery(text) || fullHistory.length >= 6)) {
       const { data: profileRow } = await supabase
@@ -273,33 +300,68 @@ export async function POST(req: NextRequest) {
         .eq("phone_number", from)
         .single();
       if (profileRow && (profileRow.profile_confidence ?? 0) >= 0.3) {
-        eventContext = await findMatchingEvents(from, profileRow as Record<string, unknown>, text);
+        const { events, location } = await fetchMatchingEvents(from, profileRow as Record<string, unknown>, text);
+        eventMatches = events;
+        eventContext = buildEventContext(events, location);
       }
     }
 
-    // Call Claude with send_event_link tool available
+    // Build system prompt — when events are ready, switch into recommendation mode
+    // so the profiling rules don't override the instruction to recommend
+    const baseSystem = buildSystemPrompt(mode, venueName, artistContext);
+    const system = eventContext
+      ? `${baseSystem}\n\n--- RECOMMENDATION MODE ---\nYou have real upcoming events from the database ready to share. Your next reply MUST:\n1. Write a 1-sentence intro tailored to this person's taste\n2. Immediately call send_events_carousel with 2-3 events\nDo not ask any questions. Do not describe events in text — let the carousel do that.${eventContext}`
+      : baseSystem;
+
+    // Call Claude with tools available
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 350,
-      system: buildSystemPrompt(mode, venueName, artistContext) + eventContext,
+      system,
       messages: fullHistory,
-      tools: [{
-        name: "send_event_link",
-        description: "Send a WhatsApp card with a Find out more button linking to a specific event. Call this when the user asks for a link or clearly expresses interest in attending a specific event you recommended.",
-        input_schema: {
-          type: "object" as const,
-          properties: {
-            event_title: { type: "string", description: "Display name of the event, e.g. 'DJ H at Swingers'" },
-            gigpig_slug: { type: "string", description: "The slug from the event listing, e.g. 'dj-h-swingers-13403437'" },
+      tools: [
+        {
+          name: "send_event_link",
+          description: "Send a WhatsApp image card with artist photo and a Find out more button for one specific event. Call this when the user asks for a link to a specific event they want to attend.",
+          input_schema: {
+            type: "object" as const,
+            properties: {
+              event_title: { type: "string", description: "Display name of the event, e.g. 'DJ H at Swingers'" },
+              gigpig_slug: { type: "string", description: "The slug from the event listing, e.g. 'dj-h-swingers-13403437'" },
+            },
+            required: ["event_title", "gigpig_slug"],
           },
-          required: ["event_title", "gigpig_slug"],
         },
-      }],
+        {
+          name: "send_events_carousel",
+          description: "Send a WhatsApp carousel of 2-3 recommended events, each with an artist photo and a Find out more button. Call this when recommending events to the user.",
+          input_schema: {
+            type: "object" as const,
+            properties: {
+              events: {
+                type: "array",
+                description: "2-3 events to show in the carousel",
+                items: {
+                  type: "object",
+                  properties: {
+                    event_title: { type: "string", description: "Display name of the event" },
+                    gigpig_slug: { type: "string", description: "The slug from the event listing" },
+                  },
+                  required: ["event_title", "gigpig_slug"],
+                },
+                minItems: 2,
+                maxItems: 3,
+              },
+            },
+            required: ["events"],
+          },
+        },
+      ],
       tool_choice: { type: "auto" },
     });
 
     const textBlock = response.content.find(b => b.type === "text");
-    const toolUse  = response.content.find(b => b.type === "tool_use" && b.name === "send_event_link");
+    const toolUse  = response.content.find(b => b.type === "tool_use");
     const reply = textBlock?.type === "text" ? textBlock.text : "";
 
     await supabase.from("messages").insert({ phone_number: from, role: "assistant", content: reply });
@@ -310,9 +372,36 @@ export async function POST(req: NextRequest) {
     if (reply) await sendWhatsApp(from, reply);
 
     if (toolUse?.type === "tool_use") {
-      const { event_title, gigpig_slug } = toolUse.input as { event_title: string; gigpig_slug: string };
-      await sendEventTemplate(from, event_title, gigpig_slug);
-      console.log(`[WA LINK] ${from}: crowdloop_go → ${gigpig_slug}`);
+      if (toolUse.name === "send_event_link") {
+        const { event_title, gigpig_slug } = toolUse.input as { event_title: string; gigpig_slug: string };
+        const match = eventMatches.find(e => e.details_url.endsWith(gigpig_slug));
+        if (match?.artist_image) {
+          await sendEventCard(from, event_title, formatVenueDate(match.venue_name, match.start_time), match.artist_image, gigpig_slug);
+          console.log(`[WA CARD] ${from}: crowdloop_event_card → ${gigpig_slug}`);
+        } else {
+          await sendEventTemplate(from, event_title, gigpig_slug); // fallback: no-image template
+          console.log(`[WA LINK] ${from}: crowdloop_go (fallback) → ${gigpig_slug}`);
+        }
+      } else if (toolUse.name === "send_events_carousel") {
+        const { events } = toolUse.input as { events: Array<{ event_title: string; gigpig_slug: string }> };
+        const enriched = events.map(e => {
+          const match = eventMatches.find(m => m.details_url.endsWith(e.gigpig_slug));
+          return {
+            event_title: e.event_title,
+            venue_date: match ? formatVenueDate(match.venue_name, match.start_time) : "",
+            artist_image: match?.artist_image ?? "",
+            gigpig_slug: e.gigpig_slug,
+          };
+        }).filter(e => e.artist_image && e.venue_date);
+
+        if (enriched.length >= 2) {
+          await sendEventCarousel(from, enriched);
+          console.log(`[WA CAROUSEL] ${from}: ${enriched.length} cards`);
+        } else if (enriched.length === 1) {
+          await sendEventCard(from, enriched[0].event_title, enriched[0].venue_date, enriched[0].artist_image, enriched[0].gigpig_slug);
+          console.log(`[WA CARD] ${from}: single card fallback`);
+        }
+      }
     }
 
     return NextResponse.json({ ok: true });
@@ -324,8 +413,6 @@ export async function POST(req: NextRequest) {
 }
 
 // ─── Real-time artist context via Last.fm ─────────────────────────────────────
-// Extracts artist names from the user's message, fetches real genre/bio data
-// from Last.fm, and returns a context string to inject into the system prompt.
 
 async function extractArtistNames(text: string): Promise<string[]> {
   try {
@@ -414,7 +501,6 @@ async function extractAndSaveProfile(phone: string, history: { role: string; con
     if (!match) return;
     const profile = JSON.parse(match[0]);
 
-    // Enrich genre_affinities with verified Last.fm data for mentioned artists
     let genreAffinities = profile.genre_affinities ?? [];
     if (profile.mentioned_artists?.length) {
       const enriched = await Promise.all(profile.mentioned_artists.map(async (artist: string) => {
@@ -422,7 +508,6 @@ async function extractAndSaveProfile(phone: string, history: { role: string; con
         return info?.genres ?? [];
       }));
       const lastfmGenres = enriched.flat();
-      // Merge: boost existing genres that match Last.fm, add new ones
       const existing = new Map(genreAffinities.map((g: { genre: string; weight: number; source: string }) => [g.genre.toLowerCase(), g]));
       for (const genre of lastfmGenres) {
         const key = genre.toLowerCase();
@@ -464,6 +549,89 @@ async function extractAndSaveProfile(phone: string, history: { role: string; con
 
 // ─── WhatsApp Cloud API helpers ───────────────────────────────────────────────
 
+async function sendEventCard(to: string, eventTitle: string, venueDate: string, imageUrl: string, gigpigSlug: string) {
+  const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      to,
+      type: "template",
+      template: {
+        name: "crowdloop_event_card",
+        language: { code: "en_GB" },
+        components: [
+          {
+            type: "header",
+            parameters: [{ type: "image", image: { link: imageUrl } }],
+          },
+          {
+            type: "body",
+            parameters: [
+              { type: "text", text: eventTitle },
+              { type: "text", text: venueDate },
+            ],
+          },
+          {
+            type: "button",
+            sub_type: "url",
+            index: "0",
+            parameters: [{ type: "text", text: gigpigSlug }],
+          },
+        ],
+      },
+    }),
+  });
+  if (!res.ok) console.error("[WA CARD ERR]", res.status, await res.text());
+}
+
+async function sendEventCarousel(
+  to: string,
+  events: Array<{ event_title: string; venue_date: string; artist_image: string; gigpig_slug: string }>,
+) {
+  const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      to,
+      type: "template",
+      template: {
+        name: "crowdloop_carousel",
+        language: { code: "en_GB" },
+        components: [
+          {
+            type: "carousel",
+            cards: events.map((e, index) => ({
+              card_index: index,
+              components: [
+                {
+                  type: "header",
+                  parameters: [{ type: "image", image: { link: e.artist_image } }],
+                },
+                {
+                  type: "body",
+                  parameters: [
+                    { type: "text", text: e.event_title },
+                    { type: "text", text: e.venue_date },
+                  ],
+                },
+                {
+                  type: "button",
+                  sub_type: "url",
+                  index: "0",
+                  parameters: [{ type: "text", text: e.gigpig_slug }],
+                },
+              ],
+            })),
+          },
+        ],
+      },
+    }),
+  });
+  if (!res.ok) console.error("[WA CAROUSEL ERR]", res.status, await res.text());
+}
+
 async function sendEventTemplate(to: string, eventTitle: string, gigpigSlug: string) {
   const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
     method: "POST",
@@ -490,10 +658,7 @@ async function sendEventTemplate(to: string, eventTitle: string, gigpigSlug: str
       },
     }),
   });
-  if (!res.ok) {
-    const err = await res.text();
-    console.error("[WA TEMPLATE ERR]", res.status, err);
-  }
+  if (!res.ok) console.error("[WA TEMPLATE ERR]", res.status, await res.text());
 }
 
 async function markAsRead(messageId: string) {
@@ -515,8 +680,5 @@ async function sendWhatsApp(to: string, text: string) {
       text: { body: text },
     }),
   });
-  if (!res.ok) {
-    const err = await res.text();
-    console.error("[WA SEND ERR]", res.status, err);
-  }
+  if (!res.ok) console.error("[WA SEND ERR]", res.status, await res.text());
 }
