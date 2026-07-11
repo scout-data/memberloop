@@ -310,8 +310,16 @@ export async function POST(req: NextRequest) {
     await sendWhatsApp(from, cleanReply);
 
     if (urlMatch) {
-      await sendWhatsApp(from, urlMatch[0]);
-      console.log(`[WA LINK] ${from}: ${urlMatch[0]}`);
+      const slug = urlMatch[0].replace("https://www.gigpig.uk/whats-on/", "");
+      // Look up the event title so the template body reads naturally
+      const { data: eventRow } = await supabase
+        .from("events")
+        .select("title")
+        .eq("details_url", urlMatch[0])
+        .single();
+      const title = eventRow?.title ?? slug.replace(/-/g, " ");
+      await sendEventTemplate(from, title, slug);
+      console.log(`[WA LINK] ${from}: crowdloop_go → ${slug}`);
     }
 
     return NextResponse.json({ ok: true });
@@ -462,6 +470,38 @@ async function extractAndSaveProfile(phone: string, history: { role: string; con
 }
 
 // ─── WhatsApp Cloud API helpers ───────────────────────────────────────────────
+
+async function sendEventTemplate(to: string, eventTitle: string, gigpigSlug: string) {
+  const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      to,
+      type: "template",
+      template: {
+        name: "crowdloop_go",
+        language: { code: "en_GB" },
+        components: [
+          {
+            type: "body",
+            parameters: [{ type: "text", text: eventTitle }],
+          },
+          {
+            type: "button",
+            sub_type: "url",
+            index: "0",
+            parameters: [{ type: "text", text: gigpigSlug }],
+          },
+        ],
+      },
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    console.error("[WA TEMPLATE ERR]", res.status, err);
+  }
+}
 
 async function markAsRead(messageId: string) {
   await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
