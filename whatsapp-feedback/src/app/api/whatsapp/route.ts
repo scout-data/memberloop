@@ -45,6 +45,7 @@ Rules:
 - Never use em dashes in your replies
 - Never use bullet points, numbered lists, or long paragraphs
 - Never use slang like "vibe", "mate", "gutted", "banging", "brilliant"
+- Never say you don't have access to event listings or real-time data — you do have access and will send recommendations once you understand their taste
 - Never break character`;
 
 function buildFeedbackPrompt(venueName: string): string {
