@@ -162,7 +162,7 @@ async function findMatchingEvents(phone: string, profile: Record<string, unknown
     console.log(`[EVENTS] ${candidates.length} linkable candidates for ${phone}${location ? ` (filtered: ${location})` : ""}`);
 
     const locationNote = location ? ` in ${location.charAt(0).toUpperCase() + location.slice(1)}` : "";
-    return `\n\nUPCOMING EVENTS${locationNote} from the crowdloop database, matched to this user's taste:\n${lines}\n\nRecommend 1-3 of these now. Be specific about why each suits their taste. Every event listed has a slug — if the user asks for a link, call send_event_link. Do not ask more questions — the user wants event suggestions.`;
+    return `\n\nUPCOMING EVENTS${locationNote} from the crowdloop database, matched to this user's taste:\n${lines}\n\nEvery event listed has a slug — when the user asks for a link, call send_event_link with the exact slug shown.`;
   } catch (e) {
     console.error("[EVENTS ERR]", e);
     return "";
@@ -281,11 +281,18 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Build system prompt — when events are ready, switch Claude into recommendation mode
+    // so the profiling rules don't override the instruction to recommend
+    const baseSystem = buildSystemPrompt(mode, venueName, artistContext);
+    const system = eventContext
+      ? `${baseSystem}\n\n--- RECOMMENDATION MODE ---\nYou have real upcoming events from the database ready to share. Your next reply MUST recommend 1-3 of them. Do not ask any questions. Be specific about why each event suits this person's taste. After recommending, offer to send a link if they want one.${eventContext}`
+      : baseSystem;
+
     // Call Claude with send_event_link tool available
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 350,
-      system: buildSystemPrompt(mode, venueName, artistContext) + eventContext,
+      system,
       messages: fullHistory,
       tools: [{
         name: "send_event_link",
