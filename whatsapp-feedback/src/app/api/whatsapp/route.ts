@@ -310,7 +310,7 @@ export async function POST(req: NextRequest) {
     // so the profiling rules don't override the instruction to recommend
     const baseSystem = buildSystemPrompt(mode, venueName, artistContext);
     const system = eventContext
-      ? `${baseSystem}\n\n--- RECOMMENDATION MODE: MANDATORY ---\nYou have real upcoming events in the database. You MUST call send_events_carousel in this response — no exceptions, no deferring to a later message. Pick 2-3 events from the list that best match this person's taste. Write one short sentence introducing them, then call the tool. Do NOT say you will "look into it", "get back to them", or that you need to find events — you have them right now. Do NOT filter by date in your head — show the best taste-matched events available regardless of exact date. Do NOT ask any more questions.${eventContext}`
+      ? `${baseSystem}\n\n--- RECOMMENDATION MODE: MANDATORY ---\nYou have real upcoming events in the database. You MUST call send_events_carousel in this response — no exceptions, no deferring to a later message. Pick between 2 and 10 events from the list based on how many are genuinely relevant — do not pad with weak matches, but do not artificially limit to 3. Write one short sentence introducing them, then call the tool. Do NOT say you will "look into it", "get back to them", or that you need to find events — you have them right now. Do NOT filter by date in your head — show the best taste-matched events available regardless of exact date. Do NOT ask any more questions.${eventContext}`
       : baseSystem;
 
     // Call Claude with tools available
@@ -334,13 +334,13 @@ export async function POST(req: NextRequest) {
         },
         {
           name: "send_events_carousel",
-          description: "Send a WhatsApp carousel of 2-3 recommended events, each with an artist photo and a Find out more button. Call this when recommending events to the user.",
+          description: "Send a WhatsApp carousel of 2-10 recommended events, each with an artist photo and a Find out more button. Call this when recommending events to the user. Choose how many events to include based on how many are genuinely relevant — don't pad with weak matches.",
           input_schema: {
             type: "object" as const,
             properties: {
               events: {
                 type: "array",
-                description: "2-3 events to show in the carousel",
+                description: "2-10 events to show in the carousel — only include events that are a strong match for this person's taste",
                 items: {
                   type: "object",
                   properties: {
@@ -350,7 +350,7 @@ export async function POST(req: NextRequest) {
                   required: ["event_title", "gigpig_slug"],
                 },
                 minItems: 2,
-                maxItems: 3,
+                maxItems: 10,
               },
             },
             required: ["events"],
@@ -590,6 +590,7 @@ async function sendEventCarousel(
   to: string,
   events: Array<{ event_title: string; venue_date: string; artist_image: string; gigpig_slug: string }>,
 ) {
+  const templateName = `crowdloop_carousel_${events.length}`;
   const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
     method: "POST",
     headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, "Content-Type": "application/json" },
@@ -598,7 +599,7 @@ async function sendEventCarousel(
       to,
       type: "template",
       template: {
-        name: "crowdloop_carousel",
+        name: templateName,
         language: { code: "en_GB" },
         components: [
           {
