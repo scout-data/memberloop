@@ -313,7 +313,11 @@ async function fetchMatchingEvents(
           : e.venue_name.toLowerCase().includes(location);
       });
       console.log(`[LOCATION] ${location}: ${locationFiltered.length}/${candidates.length} candidates matched`);
-      if (locationFiltered.length > 0) candidates = locationFiltered;
+      if (locationFiltered.length === 0) {
+        console.log(`[LOCATION] Nothing in ${location} — returning empty rather than wrong-city results`);
+        return { events: [], location, lowConfidence: true };
+      }
+      candidates = locationFiltered;
     }
 
     const isLateNight = /late night|after midnight|late evening/.test(userMessage.toLowerCase());
@@ -483,7 +487,8 @@ export async function POST(req: NextRequest) {
         const { events, location, lowConfidence } = await fetchMatchingEvents(from, profileRow as Record<string, unknown>, text, sessionLocation, history);
         eventMatches = events;
         if (lowConfidence) {
-          noMatchContext = `\n\nEVENT SEARCH RESULT: No strong match found in the database for this request. Be honest — tell the user you couldn't find that specific act or event. Then pivot: offer to help find something with a similar sound, or ask what else they enjoy.`;
+          const cityNote = location ? ` in ${location.charAt(0).toUpperCase() + location.slice(1)}` : "";
+          noMatchContext = `\n\nEVENT SEARCH RESULT: Nothing found${cityNote} in the database matching this request. Be honest — tell the user there's nothing matching right now${cityNote ? " in that area" : ""}. Then pivot: if a city was mentioned, ask if they'd consider somewhere nearby or a different night; otherwise ask what else they're into.`;
         } else {
           eventContext = buildEventContext(events, location);
         }

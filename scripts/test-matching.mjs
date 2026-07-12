@@ -210,8 +210,12 @@ async function search(userMessage, profile = {}) {
         : e.venue_name.toLowerCase().includes(location);
     });
     console.log(`After location filter (${location}): ${locationFiltered.length}`);
-    if (locationFiltered.length > 0) candidates = locationFiltered;
-    else console.log("  ⚠️  Location filter returned 0 — showing unfiltered results");
+    if (locationFiltered.length === 0) {
+      console.log(`\n✗  No results in ${location} — no carousel would be sent`);
+      console.log(`   Claude would say: "Nothing on in ${location.charAt(0).toUpperCase() + location.slice(1)} for that right now — want to try somewhere nearby?"`);
+      process.exit(0);
+    }
+    candidates = locationFiltered;
   }
 
   // Date filter
