@@ -550,6 +550,7 @@ async function extractAndSaveProfile(phone: string, history: { role: string; con
 // ─── WhatsApp Cloud API helpers ───────────────────────────────────────────────
 
 async function sendEventCard(to: string, eventTitle: string, venueDate: string, imageUrl: string, gigpigSlug: string) {
+  // Template body: "Coming up near you:\n*{{1}}*\n{{2}}\n\nTap below to find out more and get tickets."
   const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
     method: "POST",
     headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, "Content-Type": "application/json" },
@@ -611,6 +612,7 @@ async function sendEventCarousel(
                 },
                 {
                   type: "body",
+                  // Card body: "Coming up: *{{1}}*\n{{2}}\nTap to get tickets."
                   parameters: [
                     { type: "text", text: e.event_title },
                     { type: "text", text: e.venue_date },
