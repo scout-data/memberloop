@@ -7,8 +7,30 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const openai  = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const VERIFY_TOKEN    = process.env.WHATSAPP_VERIFY_TOKEN;
-const ACCESS_TOKEN    = process.env.WHATSAPP_ACCESS_TOKEN;
-const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
+
+type ClientConfig = {
+  accessToken: string;
+  phoneNumberId: string;
+  botName: string;
+  templatePrefix: string;
+};
+
+function getClientConfig(phoneNumberId: string): ClientConfig {
+  if (phoneNumberId === process.env.GIGPIG_PHONE_NUMBER_ID) {
+    return {
+      accessToken:   process.env.GIGPIG_ACCESS_TOKEN!,
+      phoneNumberId: process.env.GIGPIG_PHONE_NUMBER_ID!,
+      botName:       "GigPig",
+      templatePrefix: "gigpig",
+    };
+  }
+  return {
+    accessToken:   process.env.WHATSAPP_ACCESS_TOKEN!,
+    phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID!,
+    botName:       "crowdloop",
+    templatePrefix: "crowdloop",
+  };
+}
 
 // ─── Mode detection ───────────────────────────────────────────────────────────
 
@@ -26,7 +48,7 @@ function detectVenue(text: string): VenueConfig | null {
   return VENUES.find(v => v.keywords.some(k => lower.includes(k))) ?? null;
 }
 
-const DISCOVERY_SYSTEM = `You are crowdloop, a WhatsApp assistant that helps people find great live music and events.
+function buildDiscoverySystem(botName: string): string { return `You are ${botName}, a WhatsApp assistant that helps people find great live music and events.
 
 Your purpose: learn what this person loves so you can alert them when their favourite artists are playing nearby, and surface events with new artists they're likely to love. The better you understand their taste, the more useful the recommendations you send them.
 
@@ -49,7 +71,7 @@ Rules:
 - When recommending multiple events, call send_events_carousel with 2-10 events immediately after your intro sentence — do not describe events in text only
 - When the user asks for a specific event's link, call send_event_link with the event title and slug
 - Never include URLs in your text reply
-- Never break character`;
+- Never break character`; }
 
 function buildFeedbackPrompt(venueName: string): string {
   return `You are crowdloop, a WhatsApp assistant that helps music and events fans discover and connect with events they love. You are assisting someone who has attended an event at ${venueName}.
@@ -70,10 +92,11 @@ Rules:
 - Never break character`;
 }
 
-function buildSystemPrompt(mode: ConversationMode, venueName: string | null, artistContext = ""): string {
+function buildSystemPrompt(mode: ConversationMode, venueName: string | null, botName: string, artistContext = ""): string {
+  const discoverySystem = buildDiscoverySystem(botName);
   if (mode === "feedback" && venueName) return buildFeedbackPrompt(venueName);
-  if (artistContext) return `${DISCOVERY_SYSTEM}\n\n${artistContext}`;
-  return DISCOVERY_SYSTEM;
+  if (artistContext) return `${discoverySystem}\n\n${artistContext}`;
+  return discoverySystem;
 }
 
 // ─── Event matching ───────────────────────────────────────────────────────────
@@ -217,10 +240,13 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    const messages = body?.entry?.[0]?.changes?.[0]?.value?.messages;
+    const value = body?.entry?.[0]?.changes?.[0]?.value;
+    const messages = value?.messages;
     if (!messages?.length) return NextResponse.json({ ok: true });
 
     const message = messages[0];
+    const incomingPhoneNumberId = value?.metadata?.phone_number_id as string;
+    const wa = getClientConfig(incomingPhoneNumberId);
 
     // Deduplicate
     if (processedIds.has(message.id)) return NextResponse.json({ ok: true });
@@ -237,7 +263,7 @@ export async function POST(req: NextRequest) {
 
     console.log(`[WA IN]  ${from}: ${text}`);
 
-    await markAsRead(message.id);
+    await markAsRead(message.id, wa);
 
     // ── Load history from Supabase ─────────────────────────────────────────────
     const { data: historyRows } = await supabase
@@ -308,7 +334,7 @@ export async function POST(req: NextRequest) {
 
     // Build system prompt — when events are ready, switch into recommendation mode
     // so the profiling rules don't override the instruction to recommend
-    const baseSystem = buildSystemPrompt(mode, venueName, artistContext);
+    const baseSystem = buildSystemPrompt(mode, venueName, wa.botName, artistContext);
     const system = eventContext
       ? `${baseSystem}\n\n--- RECOMMENDATION MODE: MANDATORY ---\nYou have real upcoming events in the database. You MUST call send_events_carousel in this response — no exceptions, no deferring to a later message. Pick between 2 and 10 events from the list based on how many are genuinely relevant — do not pad with weak matches, but do not artificially limit to 3. Write one short sentence introducing them, then call the tool. Do NOT say you will "look into it", "get back to them", or that you need to find events — you have them right now. Do NOT filter by date in your head — show the best taste-matched events available regardless of exact date. Do NOT ask any more questions.${eventContext}`
       : baseSystem;
@@ -369,18 +395,18 @@ export async function POST(req: NextRequest) {
 
     extractAndSaveProfile(from, [...fullHistory, { role: "assistant", content: reply }]);
 
-    if (reply) await sendWhatsApp(from, reply);
+    if (reply) await sendWhatsApp(from, reply, wa);
 
     if (toolUse?.type === "tool_use") {
       if (toolUse.name === "send_event_link") {
         const { event_title, gigpig_slug } = toolUse.input as { event_title: string; gigpig_slug: string };
         const match = eventMatches.find(e => e.details_url.endsWith(gigpig_slug));
         if (match?.artist_image) {
-          await sendEventCard(from, event_title, formatVenueDate(match.venue_name, match.start_time), match.artist_image, gigpig_slug);
-          console.log(`[WA CARD] ${from}: crowdloop_event_card → ${gigpig_slug}`);
+          await sendEventCard(from, event_title, formatVenueDate(match.venue_name, match.start_time), match.artist_image, gigpig_slug, wa);
+          console.log(`[WA CARD] ${from} (${wa.botName}): event_card → ${gigpig_slug}`);
         } else {
-          await sendEventTemplate(from, event_title, gigpig_slug); // fallback: no-image template
-          console.log(`[WA LINK] ${from}: crowdloop_go (fallback) → ${gigpig_slug}`);
+          await sendEventTemplate(from, event_title, gigpig_slug, wa);
+          console.log(`[WA LINK] ${from} (${wa.botName}): go fallback → ${gigpig_slug}`);
         }
       } else if (toolUse.name === "send_events_carousel") {
         const { events } = toolUse.input as { events: Array<{ event_title: string; gigpig_slug: string }> };
@@ -397,11 +423,11 @@ export async function POST(req: NextRequest) {
           .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
 
         if (enriched.length >= 2) {
-          await sendEventCarousel(from, enriched);
-          console.log(`[WA CAROUSEL] ${from}: ${enriched.length} cards`);
+          await sendEventCarousel(from, enriched, wa);
+          console.log(`[WA CAROUSEL] ${from} (${wa.botName}): ${enriched.length} cards`);
         } else if (enriched.length === 1) {
-          await sendEventCard(from, enriched[0].event_title, enriched[0].venue_date, enriched[0].artist_image, enriched[0].gigpig_slug);
-          console.log(`[WA CARD] ${from}: single card fallback`);
+          await sendEventCard(from, enriched[0].event_title, enriched[0].venue_date, enriched[0].artist_image, enriched[0].gigpig_slug, wa);
+          console.log(`[WA CARD] ${from} (${wa.botName}): single card fallback`);
         }
       }
     }
@@ -551,17 +577,16 @@ async function extractAndSaveProfile(phone: string, history: { role: string; con
 
 // ─── WhatsApp Cloud API helpers ───────────────────────────────────────────────
 
-async function sendEventCard(to: string, eventTitle: string, venueDate: string, imageUrl: string, gigpigSlug: string) {
-  // Template body: "Coming up near you:\n*{{1}}*\n{{2}}\n\nTap below to find out more and get tickets."
-  const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
+async function sendEventCard(to: string, eventTitle: string, venueDate: string, imageUrl: string, gigpigSlug: string, client: ClientConfig) {
+  const res = await fetch(`https://graph.facebook.com/v19.0/${client.phoneNumberId}/messages`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${client.accessToken}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       messaging_product: "whatsapp",
       to,
       type: "template",
       template: {
-        name: "crowdloop_event_card",
+        name: `${client.templatePrefix}_event_card`,
         language: { code: "en_GB" },
         components: [
           {
@@ -591,11 +616,12 @@ async function sendEventCard(to: string, eventTitle: string, venueDate: string, 
 async function sendEventCarousel(
   to: string,
   events: Array<{ event_title: string; venue_date: string; artist_image: string; gigpig_slug: string }>,
+  client: ClientConfig,
 ) {
-  const templateName = `crowdloop_carousel_${events.length}`;
-  const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
+  const templateName = `${client.templatePrefix}_carousel_${events.length}`;
+  const res = await fetch(`https://graph.facebook.com/v19.0/${client.phoneNumberId}/messages`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${client.accessToken}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       messaging_product: "whatsapp",
       to,
@@ -637,16 +663,16 @@ async function sendEventCarousel(
   if (!res.ok) console.error("[WA CAROUSEL ERR]", res.status, await res.text());
 }
 
-async function sendEventTemplate(to: string, eventTitle: string, gigpigSlug: string) {
-  const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
+async function sendEventTemplate(to: string, eventTitle: string, gigpigSlug: string, client: ClientConfig) {
+  const res = await fetch(`https://graph.facebook.com/v19.0/${client.phoneNumberId}/messages`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${client.accessToken}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       messaging_product: "whatsapp",
       to,
       type: "template",
       template: {
-        name: "crowdloop_go",
+        name: `${client.templatePrefix}_go`,
         language: { code: "en_GB" },
         components: [
           {
@@ -666,18 +692,18 @@ async function sendEventTemplate(to: string, eventTitle: string, gigpigSlug: str
   if (!res.ok) console.error("[WA TEMPLATE ERR]", res.status, await res.text());
 }
 
-async function markAsRead(messageId: string) {
-  await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
+async function markAsRead(messageId: string, client: ClientConfig) {
+  await fetch(`https://graph.facebook.com/v19.0/${client.phoneNumberId}/messages`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${client.accessToken}`, "Content-Type": "application/json" },
     body: JSON.stringify({ messaging_product: "whatsapp", status: "read", message_id: messageId }),
   });
 }
 
-async function sendWhatsApp(to: string, text: string) {
-  const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
+async function sendWhatsApp(to: string, text: string, client: ClientConfig) {
+  const res = await fetch(`https://graph.facebook.com/v19.0/${client.phoneNumberId}/messages`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${client.accessToken}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       messaging_product: "whatsapp",
       to,
