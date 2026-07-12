@@ -207,6 +207,11 @@ function extractDateRange(userMessage: string): { from: Date; to: Date; dayFilte
     to.setDate(now.getDate() + 56);
     return { from: now, to, dayFilter: dayIdx };
   }
+  if (/next two weeks|two weeks|fortnight/.test(lower)) {
+    const to = new Date(now);
+    to.setDate(now.getDate() + 14);
+    return { from: now, to };
+  }
   if (/few weeks|coming weeks|next few weeks|couple of weeks/.test(lower)) {
     const to = new Date(now);
     to.setDate(now.getDate() + 21);
@@ -246,7 +251,7 @@ async function fetchMatchingEvents(
   userMessage: string,
   sessionLocation: string | null,
   recentHistory: { role: string; content: string }[],
-): Promise<{ events: EventFull[]; location: string | null }> {
+): Promise<{ events: EventFull[]; location: string | null; lowConfidence?: boolean }> {
   try {
     const location = extractLocation(userMessage, profile, sessionLocation);
     // Weight current conversation over saved profile: recent messages first, profile last
@@ -263,7 +268,13 @@ async function fetchMatchingEvents(
 
     if (error || !data?.length) return { events: [], location };
 
-    let candidates = (data as EventCandidate[]).filter(e => e.details_url !== null);
+    type EventWithSimilarity = EventCandidate & { similarity: number };
+    let candidates = (data as EventWithSimilarity[]).filter(e => e.details_url !== null);
+    const topSimilarity = candidates[0]?.similarity ?? 0;
+    if (topSimilarity < 0.40) {
+      console.log(`[EVENTS] Low confidence (${(topSimilarity * 100).toFixed(1)}%) — skipping carousel`);
+      return { events: [], location, lowConfidence: true };
+    }
 
     const dateRange = extractDateRange(userMessage);
     if (dateRange) {
@@ -303,6 +314,13 @@ async function fetchMatchingEvents(
       });
       console.log(`[LOCATION] ${location}: ${locationFiltered.length}/${candidates.length} candidates matched`);
       if (locationFiltered.length > 0) candidates = locationFiltered;
+    }
+
+    const isLateNight = /late night|after midnight|late evening/.test(userMessage.toLowerCase());
+    if (isLateNight) {
+      const lateFiltered = candidates.filter(e => new Date(e.start_time).getHours() >= 21);
+      console.log(`[LATE NIGHT] ${lateFiltered.length}/${candidates.length} events starting 21:00+`);
+      if (lateFiltered.length > 0) candidates = lateFiltered;
     }
 
     // Pick top 9 with venue diversity — max 2 events per venue
@@ -450,6 +468,7 @@ export async function POST(req: NextRequest) {
     // In discovery mode, look up real events when the user asks or after enough exchanges
     let eventMatches: EventFull[] = [];
     let eventContext = "";
+    let noMatchContext = "";
     if (mode === "discovery" && (isEventQuery(text) || fullHistory.length >= 6)) {
       const { data: profileRow } = await supabase
         .from("user_profiles")
@@ -461,9 +480,13 @@ export async function POST(req: NextRequest) {
         const msgLocation = extractLocationFromMessage(text);
         if (msgLocation) locationByNumber.set(from, msgLocation);
         const sessionLocation = locationByNumber.get(from) ?? null;
-        const { events, location } = await fetchMatchingEvents(from, profileRow as Record<string, unknown>, text, sessionLocation, history);
+        const { events, location, lowConfidence } = await fetchMatchingEvents(from, profileRow as Record<string, unknown>, text, sessionLocation, history);
         eventMatches = events;
-        eventContext = buildEventContext(events, location);
+        if (lowConfidence) {
+          noMatchContext = `\n\nEVENT SEARCH RESULT: No strong match found in the database for this request. Be honest — tell the user you couldn't find that specific act or event. Then pivot: offer to help find something with a similar sound, or ask what else they enjoy.`;
+        } else {
+          eventContext = buildEventContext(events, location);
+        }
       }
     }
 
@@ -472,7 +495,9 @@ export async function POST(req: NextRequest) {
     const baseSystem = buildSystemPrompt(mode, venueName, wa.botName, artistContext);
     const system = eventContext
       ? `${baseSystem}\n\n--- RECOMMENDATION MODE: MANDATORY ---\nYou have real upcoming events in the database. You MUST call send_events_carousel in this response — no exceptions, no deferring to a later message. Pick between 2 and 10 events from the list based on how many are genuinely relevant — do not pad with weak matches, but do not artificially limit to 3. Write one short sentence introducing them, then call the tool. Do NOT say you will "look into it", "get back to them", or that you need to find events — you have them right now. Do NOT filter by date in your head — show the best taste-matched events available regardless of exact date. Do NOT ask any more questions.${eventContext}`
-      : baseSystem;
+      : noMatchContext
+        ? `${baseSystem}${noMatchContext}`
+        : baseSystem;
 
     // Call Claude with tools available
     const response = await client.messages.create({

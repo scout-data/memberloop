@@ -102,6 +102,10 @@ function extractDateRange(msg) {
     const year = monthIdx < now.getMonth() ? now.getFullYear() + 1 : now.getFullYear();
     return { from: new Date(year, monthIdx, 1), to: new Date(year, monthIdx + 1, 0, 23, 59, 59), label: MONTHS[monthIdx] };
   }
+  if (/next two weeks|two weeks|fortnight/.test(lower)) {
+    const to = new Date(now); to.setDate(now.getDate() + 14);
+    return { from: now, to, label: "next 2 weeks" };
+  }
   if (/few weeks|coming weeks|next few weeks|couple of weeks/.test(lower)) {
     const to = new Date(now); to.setDate(now.getDate() + 21);
     return { from: now, to, label: "next 3 weeks" };
@@ -173,6 +177,13 @@ async function search(userMessage, profile = {}) {
   let candidates = (data ?? []).filter(e => e.details_url);
   console.log(`Semantic matches (with link): ${candidates.length}`);
 
+  const topSimilarity = candidates[0]?.similarity ?? 0;
+  if (topSimilarity < 0.40) {
+    console.log(`\n⚠️  Low confidence (${(topSimilarity * 100).toFixed(1)}%) — best match below 40% threshold`);
+    console.log(`   No carousel would be sent. Claude would respond honestly: couldn't find that specific act.`);
+    process.exit(0);
+  }
+
   // Fetch raw location data for all candidates
   const { data: rawRows } = await supabase
     .from("events")
@@ -214,6 +225,15 @@ async function search(userMessage, profile = {}) {
     console.log(`After date filter (${dateRange.label}): ${dateFiltered.length}`);
     if (dateFiltered.length > 0) candidates = dateFiltered;
     else console.log("  ⚠️  Date filter returned 0 — showing without date filter");
+  }
+
+  // Late night filter
+  const isLateNight = /late night|after midnight|late evening/.test(userMessage.toLowerCase());
+  if (isLateNight) {
+    const lateFiltered = candidates.filter(e => new Date(e.start_time).getHours() >= 21);
+    console.log(`After late night filter (21:00+): ${lateFiltered.length}`);
+    if (lateFiltered.length > 0) candidates = lateFiltered;
+    else console.log("  ⚠️  No events after 21:00 — showing all times");
   }
 
   // Max 2 events per venue for diversity
