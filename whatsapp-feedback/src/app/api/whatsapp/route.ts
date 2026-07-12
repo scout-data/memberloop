@@ -180,6 +180,35 @@ function extractLocation(userMessage: string, profile: Record<string, unknown>):
   return null;
 }
 
+function extractDateRange(userMessage: string): { from: Date; to: Date } | null {
+  const lower = userMessage.toLowerCase();
+  const now = new Date();
+  const MONTHS = ["january","february","march","april","may","june","july","august","september","october","november","december"];
+  const monthIdx = MONTHS.findIndex(m => lower.includes(m));
+  if (monthIdx !== -1) {
+    const year = monthIdx < now.getMonth() ? now.getFullYear() + 1 : now.getFullYear();
+    return {
+      from: new Date(year, monthIdx, 1),
+      to: new Date(year, monthIdx + 1, 0, 23, 59, 59),
+    };
+  }
+  if (/next weekend/.test(lower)) {
+    const day = now.getDay();
+    const daysToSat = ((6 - day + 7) % 7) || 7;
+    const sat = new Date(now); sat.setDate(now.getDate() + daysToSat); sat.setHours(0,0,0,0);
+    const sun = new Date(sat); sun.setDate(sat.getDate() + 1); sun.setHours(23,59,59,0);
+    return { from: sat, to: sun };
+  }
+  if (/this weekend/.test(lower)) {
+    const day = now.getDay();
+    const daysToSat = (6 - day + 7) % 7;
+    const sat = new Date(now); sat.setDate(now.getDate() + daysToSat); sat.setHours(0,0,0,0);
+    const sun = new Date(sat); sun.setDate(sat.getDate() + 1); sun.setHours(23,59,59,0);
+    return { from: sat, to: sun };
+  }
+  return null;
+}
+
 async function fetchMatchingEvents(
   phone: string,
   profile: Record<string, unknown>,
@@ -194,12 +223,21 @@ async function fetchMatchingEvents(
     const { data, error } = await supabase.rpc("match_events", {
       query_embedding: embedding,
       phone,
-      match_count: 20,
+      match_count: 150,
     });
 
     if (error || !data?.length) return { events: [], location };
 
     let candidates = (data as EventCandidate[]).filter(e => e.details_url !== null);
+
+    const dateRange = extractDateRange(userMessage);
+    if (dateRange) {
+      const dateFiltered = candidates.filter(e => {
+        const t = new Date(e.start_time).getTime();
+        return t >= dateRange.from.getTime() && t <= dateRange.to.getTime();
+      });
+      if (dateFiltered.length > 0) candidates = dateFiltered;
+    }
 
     // Batch fetch artist images + venue town/county for all candidates upfront
     type VenueRow = { town: string | null; county: string | null };
