@@ -159,6 +159,7 @@ type EventCandidate = {
 type EventFull = EventCandidate & {
   details_url: string; // guaranteed non-null after filtering
   artist_image: string | null;
+  embedding_text: string | null;
 };
 
 function formatVenueDate(venueName: string, startTime: string): string {
@@ -266,17 +267,18 @@ async function fetchMatchingEvents(
       if (dateFiltered.length > 0) candidates = dateFiltered;
     }
 
-    // Batch fetch artist images + location from raw JSON (avoids FK join dependency)
-    type RawRow = { id: number; artist_image: string | null; raw: { location?: { town?: string; county?: string } } | null };
+    // Batch fetch artist images, location, and genre context
+    type RawRow = { id: number; artist_image: string | null; embedding_text: string | null; raw: { location?: { town?: string; county?: string } } | null };
     const { data: imageRows } = await supabase
       .from("events")
-      .select("id, artist_image, raw")
+      .select("id, artist_image, embedding_text, raw")
       .in("id", candidates.map(e => e.id));
     const infoMap = new Map(
       (imageRows ?? []).map((r: RawRow) => {
         const loc = r.raw?.location ?? {};
         return [r.id, {
           artist_image: r.artist_image,
+          embedding_text: r.embedding_text,
           town: (loc.town ?? "").toLowerCase(),
           county: (loc.county ?? "").toLowerCase(),
         }];
@@ -294,12 +296,23 @@ async function fetchMatchingEvents(
       if (locationFiltered.length > 0) candidates = locationFiltered;
     }
 
-    const top = candidates.slice(0, 9);
+    // Pick top 9 with venue diversity — max 2 events per venue
+    const venueCounts = new Map<string, number>();
+    const top: typeof candidates = [];
+    for (const e of candidates) {
+      const count = venueCounts.get(e.venue_name) ?? 0;
+      if (count < 2) {
+        top.push(e);
+        venueCounts.set(e.venue_name, count + 1);
+      }
+      if (top.length === 9) break;
+    }
 
     const events: EventFull[] = top.map(e => ({
       ...e,
       details_url: e.details_url as string,
       artist_image: infoMap.get(e.id)?.artist_image ?? null,
+      embedding_text: infoMap.get(e.id)?.embedding_text ?? null,
     }));
 
     console.log(`[EVENTS] ${events.length} linkable candidates for ${phone}${location ? ` (filtered: ${location})` : ""}`);
@@ -315,9 +328,11 @@ function buildEventContext(events: EventFull[], location: string | null): string
   const locationNote = location ? ` in ${location.charAt(0).toUpperCase() + location.slice(1)}` : "";
   const lines = events.map((e, i) => {
     const slug = e.details_url.replace("https://www.gigpig.uk/whats-on/", "");
-    return `${i + 1}. ${e.title} at ${e.venue_name} — ${formatVenueDate(e.venue_name, e.start_time)} [slug: ${slug}]`;
+    // Extract genre/vibe line from embedding_text (e.g. "Genre: jazz, soul. Vibe: intimate, seated")
+    const genreLine = e.embedding_text?.match(/Genre:[^.]+\.|Vibe:[^.]+\./g)?.join(" ") ?? "";
+    return `${i + 1}. ${e.title} at ${e.venue_name} — ${formatVenueDate(e.venue_name, e.start_time)}${genreLine ? ` | ${genreLine}` : ""} [slug: ${slug}]`;
   }).join("\n");
-  return `\n\nUPCOMING EVENTS${locationNote} from the crowdloop database, matched to this user's taste:\n${lines}\n\nEvery event has a slug. Call send_event_link for a specific event, or send_events_carousel to show 2-10 events as image cards.`;
+  return `\n\nUPCOMING EVENTS${locationNote} from the crowdloop database, matched to this user's taste:\n${lines}\n\nEvery event has a slug. Call send_event_link for a specific event, or send_events_carousel to show 2-10 events as image cards. Use the Genre/Vibe info to write an accurate intro — do not guess genre from the user's profile.`;
 }
 
 // Deduplicate Meta webhook deliveries
