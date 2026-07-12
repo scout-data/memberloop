@@ -203,17 +203,20 @@ async function fetchMatchingEvents(
 
     // Batch fetch artist images + venue town/county for all candidates upfront
     type VenueRow = { town: string | null; county: string | null };
-    type ImageRow = { id: number; artist_image: string | null; venue_uuid: string | null; venues: VenueRow | null };
+    type ImageRow = { id: number; artist_image: string | null; venue_uuid: string | null; venues: VenueRow[] };
     const { data: imageRows } = await supabase
       .from("events")
       .select("id, artist_image, venue_uuid, venues(town, county)")
       .in("id", candidates.map(e => e.id));
     const infoMap = new Map(
-      (imageRows ?? []).map((r: ImageRow) => [r.id, {
-        artist_image: r.artist_image,
-        town: (r.venues?.town ?? "").toLowerCase(),
-        county: (r.venues?.county ?? "").toLowerCase(),
-      }])
+      (imageRows ?? []).map((r: ImageRow) => {
+        const venue = r.venues?.[0] ?? null;
+        return [r.id, {
+          artist_image: r.artist_image,
+          town: (venue?.town ?? "").toLowerCase(),
+          county: (venue?.county ?? "").toLowerCase(),
+        }];
+      })
     );
 
     if (location) {
