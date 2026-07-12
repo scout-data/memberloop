@@ -310,7 +310,7 @@ export async function POST(req: NextRequest) {
     // so the profiling rules don't override the instruction to recommend
     const baseSystem = buildSystemPrompt(mode, venueName, artistContext);
     const system = eventContext
-      ? `${baseSystem}\n\n--- RECOMMENDATION MODE ---\nYou have real upcoming events from the database ready to share. Your next reply MUST:\n1. Write a 1-sentence intro tailored to this person's taste\n2. Immediately call send_events_carousel with 2-3 events\nDo not ask any questions. Do not describe events in text — let the carousel do that.${eventContext}`
+      ? `${baseSystem}\n\n--- RECOMMENDATION MODE: MANDATORY ---\nYou have real upcoming events in the database. You MUST call send_events_carousel in this response — no exceptions, no deferring to a later message. Pick 2-3 events from the list that best match this person's taste. Write one short sentence introducing them, then call the tool. Do NOT say you will "look into it", "get back to them", or that you need to find events — you have them right now. Do NOT filter by date in your head — show the best taste-matched events available regardless of exact date. Do NOT ask any more questions.${eventContext}`
       : baseSystem;
 
     // Call Claude with tools available
