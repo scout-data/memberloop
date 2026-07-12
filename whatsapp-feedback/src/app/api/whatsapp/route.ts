@@ -167,11 +167,18 @@ function formatVenueDate(venueName: string, startTime: string): string {
   return `${date} · ${time} · ${venueName}`;
 }
 
-function extractLocation(userMessage: string, profile: Record<string, unknown>): string | null {
-  const UK_CITIES = ["london", "manchester", "birmingham", "bristol", "leeds", "sheffield", "edinburgh", "glasgow", "liverpool", "brighton", "bath", "oxford", "cambridge", "nottingham", "cardiff"];
+const UK_CITIES = ["london", "manchester", "birmingham", "bristol", "leeds", "sheffield", "edinburgh", "glasgow", "liverpool", "brighton", "bath", "oxford", "cambridge", "nottingham", "cardiff"];
+
+function extractLocationFromMessage(userMessage: string): string | null {
   const lower = userMessage.toLowerCase();
-  const fromMsg = UK_CITIES.find(c => lower.includes(c));
+  return UK_CITIES.find(c => lower.includes(c)) ?? null;
+}
+
+function extractLocation(userMessage: string, profile: Record<string, unknown>, sessionLocation: string | null): string | null {
+  // Priority: current message → session location → profile home_area
+  const fromMsg = extractLocationFromMessage(userMessage);
   if (fromMsg) return fromMsg;
+  if (sessionLocation) return sessionLocation;
   const homeArea = profile.home_area as string | null;
   if (homeArea) {
     const fromProfile = UK_CITIES.find(c => homeArea.toLowerCase().includes(c));
@@ -191,6 +198,22 @@ function extractDateRange(userMessage: string): { from: Date; to: Date } | null 
       from: new Date(year, monthIdx, 1),
       to: new Date(year, monthIdx + 1, 0, 23, 59, 59),
     };
+  }
+  if (/few weeks|coming weeks|next few weeks|couple of weeks/.test(lower)) {
+    const to = new Date(now);
+    to.setDate(now.getDate() + 21);
+    return { from: now, to };
+  }
+  if (/this week/.test(lower)) {
+    const to = new Date(now);
+    to.setDate(now.getDate() + (7 - now.getDay()));
+    to.setHours(23, 59, 59, 0);
+    return { from: now, to };
+  }
+  if (/next month/.test(lower)) {
+    const m = now.getMonth() + 1;
+    const y = m > 11 ? now.getFullYear() + 1 : now.getFullYear();
+    return { from: new Date(y, m % 12, 1), to: new Date(y, (m % 12) + 1, 0, 23, 59, 59) };
   }
   if (/next weekend/.test(lower)) {
     const day = now.getDay();
@@ -213,10 +236,14 @@ async function fetchMatchingEvents(
   phone: string,
   profile: Record<string, unknown>,
   userMessage: string,
+  sessionLocation: string | null,
+  recentHistory: { role: string; content: string }[],
 ): Promise<{ events: EventFull[]; location: string | null }> {
   try {
-    const location = extractLocation(userMessage, profile);
-    const queryText = [profileToQueryText(profile), userMessage].filter(Boolean).join(". ");
+    const location = extractLocation(userMessage, profile, sessionLocation);
+    // Weight current conversation over saved profile: recent messages first, profile last
+    const recentConversation = recentHistory.slice(-6).map(m => m.content).join(" ");
+    const queryText = [userMessage, recentConversation, profileToQueryText(profile)].filter(Boolean).join(". ");
     const embRes = await openai.embeddings.create({ model: "text-embedding-3-small", input: queryText });
     const embedding = embRes.data[0].embedding;
 
@@ -297,6 +324,8 @@ function buildEventContext(events: EventFull[], location: string | null): string
 const processedIds = new Set<string>();
 // Cache detected mode per number so we don't re-detect on every message
 const modeByNumber = new Map<string, ConversationMode>();
+// Cache last known location per number so follow-up messages inherit it
+const locationByNumber = new Map<string, string>();
 
 // ─── Webhook verification ─────────────────────────────────────────────────────
 
@@ -404,7 +433,11 @@ export async function POST(req: NextRequest) {
         .eq("phone_number", from)
         .single();
       if (profileRow && (profileRow.profile_confidence ?? 0) >= 0.3) {
-        const { events, location } = await fetchMatchingEvents(from, profileRow as Record<string, unknown>, text);
+        // Update session location if current message mentions one explicitly
+        const msgLocation = extractLocationFromMessage(text);
+        if (msgLocation) locationByNumber.set(from, msgLocation);
+        const sessionLocation = locationByNumber.get(from) ?? null;
+        const { events, location } = await fetchMatchingEvents(from, profileRow as Record<string, unknown>, text, sessionLocation, history);
         eventMatches = events;
         eventContext = buildEventContext(events, location);
       }
