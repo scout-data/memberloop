@@ -201,26 +201,37 @@ async function fetchMatchingEvents(
 
     let candidates = (data as EventCandidate[]).filter(e => e.details_url !== null);
 
+    // Batch fetch artist images + venue town/county for all candidates upfront
+    type VenueRow = { town: string | null; county: string | null };
+    type ImageRow = { id: number; artist_image: string | null; venue_uuid: string | null; venues: VenueRow | null };
+    const { data: imageRows } = await supabase
+      .from("events")
+      .select("id, artist_image, venue_uuid, venues(town, county)")
+      .in("id", candidates.map(e => e.id));
+    const infoMap = new Map(
+      (imageRows ?? []).map((r: ImageRow) => [r.id, {
+        artist_image: r.artist_image,
+        town: (r.venues?.town ?? "").toLowerCase(),
+        county: (r.venues?.county ?? "").toLowerCase(),
+      }])
+    );
+
     if (location) {
-      const locationFiltered = candidates.filter(e => e.venue_name.toLowerCase().includes(location));
+      const locationFiltered = candidates.filter(e => {
+        const info = infoMap.get(e.id);
+        return info
+          ? info.town.includes(location) || info.county.includes(location) || e.venue_name.toLowerCase().includes(location)
+          : e.venue_name.toLowerCase().includes(location);
+      });
       if (locationFiltered.length > 0) candidates = locationFiltered;
     }
 
     const top = candidates.slice(0, 9);
 
-    // Batch fetch artist images (not returned by match_events RPC)
-    const { data: imageRows } = await supabase
-      .from("events")
-      .select("id, artist_image")
-      .in("id", top.map(e => e.id));
-    const imageMap = new Map(
-      (imageRows ?? []).map((r: { id: number; artist_image: string | null }) => [r.id, r.artist_image])
-    );
-
     const events: EventFull[] = top.map(e => ({
       ...e,
       details_url: e.details_url as string,
-      artist_image: imageMap.get(e.id) ?? null,
+      artist_image: infoMap.get(e.id)?.artist_image ?? null,
     }));
 
     console.log(`[EVENTS] ${events.length} linkable candidates for ${phone}${location ? ` (filtered: ${location})` : ""}`);
