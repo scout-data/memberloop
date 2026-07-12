@@ -266,20 +266,19 @@ async function fetchMatchingEvents(
       if (dateFiltered.length > 0) candidates = dateFiltered;
     }
 
-    // Batch fetch artist images + venue town/county for all candidates upfront
-    type VenueRow = { town: string | null; county: string | null };
-    type ImageRow = { id: number; artist_image: string | null; venue_uuid: string | null; venues: VenueRow[] };
+    // Batch fetch artist images + location from raw JSON (avoids FK join dependency)
+    type RawRow = { id: number; artist_image: string | null; raw: { location?: { town?: string; county?: string } } | null };
     const { data: imageRows } = await supabase
       .from("events")
-      .select("id, artist_image, venue_uuid, venues(town, county)")
+      .select("id, artist_image, raw")
       .in("id", candidates.map(e => e.id));
     const infoMap = new Map(
-      (imageRows ?? []).map((r: ImageRow) => {
-        const venue = r.venues?.[0] ?? null;
+      (imageRows ?? []).map((r: RawRow) => {
+        const loc = r.raw?.location ?? {};
         return [r.id, {
           artist_image: r.artist_image,
-          town: (venue?.town ?? "").toLowerCase(),
-          county: (venue?.county ?? "").toLowerCase(),
+          town: (loc.town ?? "").toLowerCase(),
+          county: (loc.county ?? "").toLowerCase(),
         }];
       })
     );
@@ -291,6 +290,7 @@ async function fetchMatchingEvents(
           ? info.town.includes(location) || info.county.includes(location) || e.venue_name.toLowerCase().includes(location)
           : e.venue_name.toLowerCase().includes(location);
       });
+      console.log(`[LOCATION] ${location}: ${locationFiltered.length}/${candidates.length} candidates matched`);
       if (locationFiltered.length > 0) candidates = locationFiltered;
     }
 
