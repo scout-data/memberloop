@@ -391,8 +391,10 @@ export async function POST(req: NextRequest) {
             venue_date: match ? formatVenueDate(match.venue_name, match.start_time) : "",
             artist_image: match?.artist_image ?? "",
             gigpig_slug: e.gigpig_slug,
+            start_time: match?.start_time ?? "",
           };
-        }).filter(e => e.artist_image && e.venue_date);
+        }).filter(e => e.artist_image && e.venue_date)
+          .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
 
         if (enriched.length >= 2) {
           await sendEventCarousel(from, enriched);
@@ -590,7 +592,8 @@ async function sendEventCarousel(
   to: string,
   events: Array<{ event_title: string; venue_date: string; artist_image: string; gigpig_slug: string }>,
 ) {
-  const templateName = `crowdloop_carousel_${events.length}`;
+  // crowdloop_carousel is the approved 3-card template; crowdloop_carousel_3 supersedes it once approved
+  const templateName = events.length === 3 ? "crowdloop_carousel" : `crowdloop_carousel_${events.length}`;
   const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
     method: "POST",
     headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, "Content-Type": "application/json" },
