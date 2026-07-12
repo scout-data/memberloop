@@ -188,7 +188,7 @@ function extractLocation(userMessage: string, profile: Record<string, unknown>, 
   return null;
 }
 
-function extractDateRange(userMessage: string): { from: Date; to: Date } | null {
+function extractDateRange(userMessage: string): { from: Date; to: Date; dayFilter?: number } | null {
   const lower = userMessage.toLowerCase();
   const now = new Date();
   const MONTHS = ["january","february","march","april","may","june","july","august","september","october","november","december"];
@@ -199,6 +199,13 @@ function extractDateRange(userMessage: string): { from: Date; to: Date } | null 
       from: new Date(year, monthIdx, 1),
       to: new Date(year, monthIdx + 1, 0, 23, 59, 59),
     };
+  }
+  const DAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
+  const dayIdx = DAYS.findIndex(d => lower.includes(d));
+  if (dayIdx !== -1) {
+    const to = new Date(now);
+    to.setDate(now.getDate() + 56);
+    return { from: now, to, dayFilter: dayIdx };
   }
   if (/few weeks|coming weeks|next few weeks|couple of weeks/.test(lower)) {
     const to = new Date(now);
@@ -261,8 +268,10 @@ async function fetchMatchingEvents(
     const dateRange = extractDateRange(userMessage);
     if (dateRange) {
       const dateFiltered = candidates.filter(e => {
-        const t = new Date(e.start_time).getTime();
-        return t >= dateRange.from.getTime() && t <= dateRange.to.getTime();
+        const d = new Date(e.start_time);
+        const inRange = d.getTime() >= dateRange.from.getTime() && d.getTime() <= dateRange.to.getTime();
+        const rightDay = dateRange.dayFilter !== undefined ? d.getDay() === dateRange.dayFilter : true;
+        return inRange && rightDay;
       });
       if (dateFiltered.length > 0) candidates = dateFiltered;
     }
