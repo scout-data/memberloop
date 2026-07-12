@@ -46,7 +46,7 @@ Rules:
 - Never use bullet points, numbered lists, or long paragraphs
 - Never use slang like "vibe", "mate", "gutted", "banging", "brilliant"
 - Never say you don't have access to event listings or real-time data — you do have access and will send recommendations once you understand their taste
-- When recommending multiple events, call send_events_carousel with 2-3 events immediately after your intro sentence — do not describe events in text only
+- When recommending multiple events, call send_events_carousel with 2-10 events immediately after your intro sentence — do not describe events in text only
 - When the user asks for a specific event's link, call send_event_link with the event title and slug
 - Never include URLs in your text reply
 - Never break character`;
@@ -189,7 +189,7 @@ function buildEventContext(events: EventFull[], location: string | null): string
     const slug = e.details_url.replace("https://www.gigpig.uk/whats-on/", "");
     return `${i + 1}. ${e.title} at ${e.venue_name} — ${formatVenueDate(e.venue_name, e.start_time)} [slug: ${slug}]`;
   }).join("\n");
-  return `\n\nUPCOMING EVENTS${locationNote} from the crowdloop database, matched to this user's taste:\n${lines}\n\nEvery event has a slug. Call send_event_link for a specific event, or send_events_carousel to show 2-3 events as image cards.`;
+  return `\n\nUPCOMING EVENTS${locationNote} from the crowdloop database, matched to this user's taste:\n${lines}\n\nEvery event has a slug. Call send_event_link for a specific event, or send_events_carousel to show 2-10 events as image cards.`;
 }
 
 // Deduplicate Meta webhook deliveries
@@ -592,8 +592,7 @@ async function sendEventCarousel(
   to: string,
   events: Array<{ event_title: string; venue_date: string; artist_image: string; gigpig_slug: string }>,
 ) {
-  // crowdloop_carousel is the approved 3-card template; crowdloop_carousel_3 supersedes it once approved
-  const templateName = events.length === 3 ? "crowdloop_carousel" : `crowdloop_carousel_${events.length}`;
+  const templateName = `crowdloop_carousel_${events.length}`;
   const res = await fetch(`https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`, {
     method: "POST",
     headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, "Content-Type": "application/json" },
