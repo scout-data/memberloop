@@ -92,6 +92,21 @@ ${markdown.slice(0, 20000)}`,
   return msg.content[0]?.text?.trim() ?? "NO_EVENTS";
 }
 
+// ─── Parse extracted events text into structured objects ─────────────────────
+
+function parseEvents(eventsText) {
+  if (!eventsText || eventsText === "NO_EVENTS") return [];
+  return eventsText
+    .split("\n")
+    .map(line => {
+      const parts = line.split("|").map(s => s.trim());
+      if (parts.length < 2) return null;
+      const [date, name, ...detailParts] = parts;
+      return { date, name, details: detailParts.join(" ") };
+    })
+    .filter(Boolean);
+}
+
 // ─── WhatsApp text message ────────────────────────────────────────────────────
 
 async function sendWhatsApp(to, body) {
@@ -116,7 +131,104 @@ async function sendWhatsApp(to, body) {
   if (!res.ok || resBody?.error) {
     console.error("[WA ERR]", res.status, JSON.stringify(resBody));
   } else {
-    console.log(`[WA SENT] → ${to}`);
+    console.log(`[WA SENT text] → ${to}`);
+  }
+}
+
+// ─── WhatsApp carousel ────────────────────────────────────────────────────────
+
+async function sendCarousel(to, events, goSlug, venueImage) {
+  const count = Math.min(events.length, 3);
+  const templateName = count === 1 ? "crowdloop_event_card" : `crowdloop_carousel_${count}`;
+
+  const makeCard = (event, index) => ({
+    card_index: index,
+    components: [
+      {
+        type: "header",
+        parameters: [
+          {
+            type: "image",
+            image: { link: venueImage },
+          },
+        ],
+      },
+      {
+        type: "body",
+        parameters: [
+          { type: "text", text: event.name.slice(0, 60) },
+          { type: "text", text: `${event.date}${event.details ? " · " + event.details.slice(0, 60) : ""}` },
+        ],
+      },
+      {
+        type: "button",
+        sub_type: "url",
+        index: "0",
+        parameters: [{ type: "text", text: goSlug }],
+      },
+    ],
+  });
+
+  let templateComponents;
+  if (count === 1) {
+    // Single card — uses a non-carousel template structure
+    templateComponents = [
+      {
+        type: "header",
+        parameters: [
+          {
+            type: "image",
+            image: { link: venueImage },
+          },
+        ],
+      },
+      {
+        type: "body",
+        parameters: [
+          { type: "text", text: events[0].name.slice(0, 60) },
+          { type: "text", text: `${events[0].date}${events[0].details ? " · " + events[0].details.slice(0, 60) : ""}` },
+        ],
+      },
+      {
+        type: "button",
+        sub_type: "url",
+        index: "0",
+        parameters: [{ type: "text", text: goSlug }],
+      },
+    ];
+  } else {
+    templateComponents = [
+      {
+        type: "carousel",
+        cards: events.slice(0, count).map((e, i) => makeCard(e, i)),
+      },
+    ];
+  }
+
+  const res = await fetch(`https://graph.facebook.com/v21.0/${WA_PHONE_ID}/messages`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${WA_TOKEN}`,
+    },
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      to,
+      type: "template",
+      template: {
+        name: templateName,
+        language: { code: "en_GB" },
+        components: templateComponents,
+      },
+    }),
+  });
+
+  const resBody = await res.json().catch(() => null);
+  console.log(`[WA CAROUSEL API] ${res.status}`, JSON.stringify(resBody));
+  if (!res.ok || resBody?.error) {
+    console.error("[WA CAROUSEL ERR]", JSON.stringify(resBody));
+  } else {
+    console.log(`[WA SENT carousel ${count}] → ${to}`);
   }
 }
 
@@ -177,12 +289,15 @@ async function run() {
       if (!row.last_hash) {
         // First run — extract events and send baseline
         const eventsText = await extractEvents(markdown, row.label);
-        console.log(`  Events extracted: ${eventsText === "NO_EVENTS" ? "none" : eventsText.split("\n").length + " line(s)"}`);
+        const events = parseEvents(eventsText);
+        console.log(`  Events extracted: ${events.length} event(s)`);
 
-        if (eventsText !== "NO_EVENTS") {
-          messageBody = `Here's what's currently on at ${row.label}:\n\n${eventsText}`;
+        if (events.length > 0 && row.go_slug) {
+          await sendCarousel(row.phone_number, events, row.go_slug, row.image_url);
+        } else if (events.length > 0) {
+          await sendWhatsApp(row.phone_number, `Here's what's currently on at ${row.label}:\n\n${eventsText}`);
         } else {
-          messageBody = `I've started watching ${row.label} for events. Nothing specific is listed right now — I'll let you know as soon as something new appears.`;
+          await sendWhatsApp(row.phone_number, `I've started watching ${row.label} for events. Nothing specific is listed right now — I'll let you know as soon as something new appears.`);
         }
 
         await supabase.from("watched_urls").update({
@@ -193,14 +308,20 @@ async function run() {
         }).eq("id", row.id);
 
       } else if (newHash !== row.last_hash) {
-        // Page changed — extract new events and build diff
-        const newEvents = await extractEvents(markdown, row.label);
-        console.log(`  Change detected. New events: ${newEvents === "NO_EVENTS" ? "none" : newEvents.split("\n").length + " line(s)"}`);
+        // Page changed — extract new events
+        const newEventsText = await extractEvents(markdown, row.label);
+        const events = parseEvents(newEventsText);
+        console.log(`  Change detected. New events: ${events.length} event(s)`);
 
-        messageBody = await buildDiffMessage(row.label, row.last_events_text ?? "none", newEvents);
+        if (events.length > 0 && row.go_slug) {
+          await sendCarousel(row.phone_number, events, row.go_slug, row.image_url);
+        } else {
+          const diffMsg = await buildDiffMessage(row.label, row.last_events_text ?? "none", newEventsText);
+          await sendWhatsApp(row.phone_number, diffMsg);
+        }
 
         await supabase.from("watched_urls").update({
-          last_events_text: newEvents,
+          last_events_text: newEventsText,
           last_hash: newHash,
           last_checked: now,
           last_changed: now,
@@ -209,10 +330,6 @@ async function run() {
       } else {
         console.log("  No change.");
         await supabase.from("watched_urls").update({ last_checked: now }).eq("id", row.id);
-      }
-
-      if (messageBody) {
-        await sendWhatsApp(row.phone_number, messageBody);
       }
     } catch (err) {
       console.error(`  ERROR: ${err.message}`);
