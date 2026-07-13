@@ -126,7 +126,7 @@ async function findVenueInfo(query: string): Promise<{
 
   const ogImg = html.match(/property="og:image"\s+content="([^"]+)"/)?.[1]
     ?? html.match(/name="twitter:image"\s+content="([^"]+)"/)?.[1]
-    ?? [...html.matchAll(/https?:\/\/[^"'\s]+\/uploads\/[^"'\s]+\.(jpg|jpeg|webp)/gi)].map(m => m[0]).find(Boolean)
+    ?? Array.from(html.matchAll(/https?:\/\/[^"'\s]+\/uploads\/[^"'\s]+\.(jpg|jpeg|webp)/gi)).map(m => m[0]).find(Boolean)
     ?? null;
 
   const name = scrapeJson.data?.metadata?.ogTitle
