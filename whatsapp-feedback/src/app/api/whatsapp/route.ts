@@ -53,11 +53,13 @@ Rules:
 - Never include URLs in your text reply
 - Never break character
 - VENUE WATCHING — follow this exact flow, no deviations:
-  1. User shares a URL or venue name → ALWAYS write a short message first ("On it..." or "Looking that up...") AND call find_venue in the same response
+  1. User shares a URL or venue name to watch → ALWAYS write a short message first ("On it..." or "Looking that up...") AND call find_venue in the same response
   2. find_venue returns → write ONE sentence confirming what you found (just the name and city), then ask "Want me to watch this and alert you when new events go up?" — nothing else
   3. User says yes/yeah/sure/ok → immediately call add_venue_to_watchlist — do NOT ask any follow-up questions first
   4. Never ask for location or extra details if the user already gave you a URL
-  5. Use list_watched_venues to show the user's watchlist. Use remove_venue_from_watchlist to stop tracking`;
+  5. Use list_watched_venues to show the user's watchlist. Use remove_venue_from_watchlist to stop tracking
+  6. User asks to SEE events / what's on / what's showing at a specific venue → call show_venue_events immediately with the venue name — do NOT call find_venue
+  7. When responding to short messages like "thanks", "cheers", "great" → reply in one sentence, referencing only the venue from the immediately preceding message`;
 
 const GIGPIG_DISCOVERY_SYSTEM = `You are GigPig's WhatsApp assistant, helping music fans discover live events from across the GigPig network — the UK's largest live music marketplace, with over 20,000 artists performing at hundreds of venues nationwide.
 
@@ -86,6 +88,58 @@ Rules:
 - Never break character`;
 
 // ─── Venue watching helpers ───────────────────────────────────────────────────
+
+function parseWatchedEvents(eventsText: string): Array<{ date: string; name: string; details: string }> {
+  if (!eventsText || eventsText === "NO_EVENTS") return [];
+  return eventsText.split("\n").map(line => {
+    const parts = line.split("|").map(s => s.trim());
+    if (parts.length < 2) return null;
+    const [date, name, ...rest] = parts;
+    return { date, name, details: rest.join(" ") };
+  }).filter((e): e is { date: string; name: string; details: string } => e !== null);
+}
+
+async function sendVenueEventsCarousel(
+  to: string,
+  events: Array<{ date: string; name: string; details: string }>,
+  goSlug: string,
+  imageUrl: string | null,
+  cfg: ClientConfig,
+) {
+  const count = Math.min(events.length, 10);
+  const templateName = count === 1 ? "crowdloop_event_card" : `crowdloop_carousel_${count}`;
+  const img = imageUrl ?? "https://picsum.photos/seed/crowdloop/800/450";
+
+  const makeCard = (e: { date: string; name: string; details: string }, index: number) => ({
+    card_index: index,
+    components: [
+      { type: "header", parameters: [{ type: "image", image: { link: img } }] },
+      { type: "body", parameters: [
+        { type: "text", text: e.name.slice(0, 60) },
+        { type: "text", text: `${e.date}${e.details ? " · " + e.details.slice(0, 60) : ""}` },
+      ]},
+      { type: "button", sub_type: "url", index: "0", parameters: [{ type: "text", text: goSlug }] },
+    ],
+  });
+
+  const templateComponents = count === 1
+    ? makeCard(events[0], 0).components
+    : [{ type: "carousel", cards: events.slice(0, count).map((e, i) => makeCard(e, i)) }];
+
+  const res = await fetch(`https://graph.facebook.com/v21.0/${cfg.phoneNumberId}/messages`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${cfg.accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      to,
+      type: "template",
+      template: { name: templateName, language: { code: "en_GB" }, components: templateComponents },
+    }),
+  });
+  const resBody = await res.json().catch(() => null);
+  console.log(`[WA VENUE EVENTS] ${res.status}`, JSON.stringify(resBody));
+  if (!res.ok || resBody?.error) console.error("[WA VENUE EVENTS ERR]", JSON.stringify(resBody));
+}
 
 function urlToGoSlug(url: string): string {
   try {
@@ -499,14 +553,19 @@ export async function POST(req: NextRequest) {
     await markAsRead(message.id, wa);
 
     // ── Load history + profile from Supabase ──────────────────────────────────
-    const [historyResult, profileResult] = await Promise.all([
+    const [historyResult, profileResult, venuesResult] = await Promise.all([
       supabase.from("messages").select("role, content").eq("phone_number", from).order("created_at", { ascending: true }).limit(30),
       supabase.from("user_profiles").select("pending_venue").eq("phone_number", from).maybeSingle(),
+      supabase.from("watched_urls").select("label, created_at").eq("phone_number", from).order("created_at", { ascending: false }),
     ]);
 
     type Message = { role: "user" | "assistant"; content: string };
     const history: Message[] = (historyResult.data ?? []) as Message[];
     const pendingVenue = profileResult.data?.pending_venue as { name: string; url: string; image_url?: string } | null;
+    const watchedVenues = venuesResult.data ?? [];
+    const watchedVenueContext = watchedVenues.length
+      ? `\n\nVenues this user is currently watching (most recent first): ${watchedVenues.map((v, i) => i === 0 ? `${v.label} (just added)` : v.label).join(", ")}.`
+      : "";
 
     // ── Intercept "Yes" confirmations for pending venue adds ───────────────────
     // Bypass Claude entirely — deterministic, survives deploys, no history pollution
@@ -588,7 +647,7 @@ export async function POST(req: NextRequest) {
 
     // Build system prompt — when events are ready, switch into recommendation mode
     // so the profiling rules don't override the instruction to recommend
-    const baseSystem = buildSystemPrompt(wa.botName, artistContext);
+    const baseSystem = buildSystemPrompt(wa.botName, artistContext) + watchedVenueContext;
     const system = eventContext
       ? `${baseSystem}\n\n--- RECOMMENDATION MODE: MANDATORY ---\nYou have real upcoming events in the database. You MUST call send_events_carousel in this response — no exceptions, no deferring to a later message. Pick between 2 and 10 events from the list based on how many are genuinely relevant — do not pad with weak matches, but do not artificially limit to 3. Write one short sentence introducing them, then call the tool. Do NOT say you will "look into it", "get back to them", or that you need to find events — you have them right now. Do NOT filter by date in your head — show the best taste-matched events available regardless of exact date. Do NOT ask any more questions.${eventContext}`
       : noMatchContext
@@ -674,6 +733,17 @@ export async function POST(req: NextRequest) {
             type: "object" as const,
             properties: {
               label: { type: "string", description: "The venue label to remove" },
+            },
+            required: ["label"],
+          },
+        },
+        {
+          name: "show_venue_events",
+          description: "Show current events for a venue the user is watching. Use this when the user asks to see events, what's on, or what's showing at a specific watched venue — do NOT use find_venue for this.",
+          input_schema: {
+            type: "object" as const,
+            properties: {
+              label: { type: "string", description: "The venue name, e.g. \"Ronnie Scott's\"" },
             },
             required: ["label"],
           },
@@ -811,6 +881,33 @@ export async function POST(req: NextRequest) {
           await sendWhatsApp(from, followUpText, wa);
         }
         savedContent = followUpText || reply;
+
+      } else if (toolUse.name === "show_venue_events") {
+        const { label } = toolUse.input as { label: string };
+        const searchTerm = label.replace(/[''`]/g, "%");
+        const { data: venue } = await supabase
+          .from("watched_urls")
+          .select("label, go_slug, image_url, last_events_text")
+          .eq("phone_number", from)
+          .ilike("label", `%${searchTerm}%`)
+          .maybeSingle();
+
+        if (!venue) {
+          savedContent = `I'm not watching "${label}" for you yet. Share the URL and I'll set it up.`;
+          await sendWhatsApp(from, savedContent, wa);
+        } else if (!venue.last_events_text || venue.last_events_text === "NO_EVENTS") {
+          savedContent = `Nothing listed for ${venue.label} right now. I'll message you as soon as something new goes up.`;
+          await sendWhatsApp(from, savedContent, wa);
+        } else {
+          const events = parseWatchedEvents(venue.last_events_text);
+          const intro = `Here's what's on at ${venue.label}:`;
+          await sendWhatsApp(from, intro, wa);
+          console.log(`[WA OUT] ${from}: ${intro}`);
+          if (events.length > 0 && venue.go_slug) {
+            await sendVenueEventsCarousel(from, events, venue.go_slug, venue.image_url, wa);
+          }
+          savedContent = intro;
+        }
 
       } else if (toolUse.name === "send_events_carousel") {
         const { events } = toolUse.input as { events: Array<{ event_title: string; gigpig_slug: string }> };
