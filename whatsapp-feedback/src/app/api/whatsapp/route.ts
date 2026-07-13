@@ -32,65 +32,25 @@ function getClientConfig(phoneNumberId: string): ClientConfig {
   };
 }
 
-// ─── Mode detection ───────────────────────────────────────────────────────────
+const CROWDLOOP_SYSTEM = `You are crowdloop, a WhatsApp assistant that helps people get more out of live events and discover new ones they'll love.
 
-type ConversationMode = "discovery" | "feedback";
+You naturally handle two things — often in the same conversation. If someone has just been to an event, hear what they experienced: what they loved, what fell short, what kind of crowd it attracted. If someone wants to find events, help them discover what's on based on what you know about their taste. Follow the conversation — if it moves between the two, move with it.
 
-type VenueConfig = { name: string; keywords: string[] };
-
-const VENUES: VenueConfig[] = [
-  { name: "Pear Tree Cafe",  keywords: ["pear tree", "peartree", "pear-tree"] },
-  { name: "Oval Space",      keywords: ["oval space", "ovalspace", "oval-space"] },
-];
-
-function detectVenue(text: string): VenueConfig | null {
-  const lower = text.toLowerCase();
-  return VENUES.find(v => v.keywords.some(k => lower.includes(k))) ?? null;
-}
-
-function buildDiscoverySystem(botName: string): string { return `You are ${botName}, a WhatsApp assistant that helps people find great live music and events.
-
-Your purpose: learn what this person loves so you can alert them when their favourite artists are playing nearby, and surface events with new artists they're likely to love. The better you understand their taste, the more useful the recommendations you send them.
-
-Make this purpose clear naturally in the conversation — not as a pitch, but woven in. For example, when they mention an artist: "Good to know — if they're playing near you I'll make sure you hear about it." Or early on: "Tell me what you're into and I'll flag anything that sounds right for you."
-
-Learn everything relevant: genres, specific artists they love, venues they rate, where they're based, when they go out, who they go with, whether they prefer discovering new acts or seeing names they know.
+Your purpose is to understand each person well enough to be genuinely useful. The more you know about what they care about, the better you can connect them to experiences worth attending.
 
 Rules:
 - Keep every reply SHORT — 1 to 3 sentences, exactly like a real WhatsApp message
-- Be warm and curious, not formal or salesy
+- Be warm and genuinely curious, not formal or salesy
 - Ask ONE focused question per message — never multiple at once
-- Open with what kind of music or events they're into — let them lead
-- Gradually get more specific: favourite artists, local area, evening vs weekend, intimate gig vs bigger venue
-- When they mention an artist, follow up on what they love about them or ask about similar acts
-- When you have a solid picture (after 5-8 exchanges), confirm you'll be in touch when something great comes up and close warmly
+- If someone raises a complaint or issue about an event: acknowledge warmly and say you'll make sure the team hears it — never promise remedies or refunds
 - Never use em dashes in your replies
 - Never use bullet points, numbered lists, or long paragraphs
 - Never use slang like "vibe", "mate", "gutted", "banging", "brilliant"
-- Never say you don't have access to event listings or real-time data — you do have access and will send recommendations once you understand their taste
-- When recommending multiple events, call send_events_carousel with 2-10 events immediately after your intro sentence — do not describe events in text only
+- Never say you don't have access to event listings or real-time data — you do
+- When recommending multiple events, call send_events_carousel immediately after one short intro sentence — do not describe events in text only
 - When the user asks for a specific event's link, call send_event_link with the event title and slug
 - Never include URLs in your text reply
-- Never break character`; }
-
-function buildFeedbackPrompt(venueName: string): string {
-  return `You are crowdloop, a WhatsApp assistant that helps music and events fans discover and connect with events they love. You are assisting someone who has attended an event at ${venueName}.
-
-Your job is to make the attendee feel heard, learn what they love, and keep them connected to future events.
-
-Rules:
-- Keep every reply SHORT — 1 to 2 sentences max, exactly like a real WhatsApp message
-- Be warm and conversational, but never use slang or casual filler words
-- Ask ONE focused follow-up question per message — never multiple at once
-- Learn their tastes: what artists they love, what kinds of events, what they want more of
-- NEVER promise refunds, compensation, or any form of remedy
-- If someone raises a complaint: acknowledge warmly, say "I'll make sure the team sees this"
-- After 3-4 exchanges, ask: "Is there anything else you'd like to share?"
-- If they are done: thank them and say you'll keep them posted on events they'll love
-- Never use bullet points, numbered lists, or long paragraphs
-- Never use em dashes in your replies
 - Never break character`;
-}
 
 const GIGPIG_DISCOVERY_SYSTEM = `You are GigPig's WhatsApp assistant, helping music fans discover live events from across the GigPig network — the UK's largest live music marketplace, with over 20,000 artists performing at hundreds of venues nationwide.
 
@@ -118,11 +78,10 @@ Rules:
 - Never include URLs in your text reply
 - Never break character`;
 
-function buildSystemPrompt(mode: ConversationMode, venueName: string | null, botName: string, artistContext = ""): string {
-  const discoverySystem = botName === "GigPig" ? GIGPIG_DISCOVERY_SYSTEM : buildDiscoverySystem(botName);
-  if (mode === "feedback" && venueName) return buildFeedbackPrompt(venueName);
-  if (artistContext) return `${discoverySystem}\n\n${artistContext}`;
-  return discoverySystem;
+function buildSystemPrompt(botName: string, artistContext = ""): string {
+  const system = botName === "GigPig" ? GIGPIG_DISCOVERY_SYSTEM : CROWDLOOP_SYSTEM;
+  if (artistContext) return `${system}\n\n${artistContext}`;
+  return system;
 }
 
 // ─── Event matching ───────────────────────────────────────────────────────────
@@ -368,8 +327,6 @@ function buildEventContext(events: EventFull[], location: string | null): string
 
 // Deduplicate Meta webhook deliveries
 const processedIds = new Set<string>();
-// Cache detected mode per number so we don't re-detect on every message
-const modeByNumber = new Map<string, ConversationMode>();
 // Cache last known location per number so follow-up messages inherit it
 const locationByNumber = new Map<string, string>();
 
@@ -429,14 +386,8 @@ export async function POST(req: NextRequest) {
     type Message = { role: "user" | "assistant"; content: string };
     const history: Message[] = (historyRows ?? []) as Message[];
 
-    // On first message, detect mode and upsert user_profiles row
-    const isNew = history.length === 0;
-    if (isNew) {
-      const venue = detectVenue(text);
-      const mode: ConversationMode = venue ? "feedback" : "discovery";
-      modeByNumber.set(from, mode);
-      if (venue) console.log(`[WA VENUE] ${from} → ${venue.name}`);
-      console.log(`[WA MODE] ${from} → ${mode}`);
+    // Upsert user_profiles row
+    if (history.length === 0) {
       await supabase.from("user_profiles").upsert(
         { phone_number: from, last_active: new Date().toISOString() },
         { onConflict: "phone_number" }
@@ -448,11 +399,6 @@ export async function POST(req: NextRequest) {
         .then(() => {});
     }
 
-    const mode = modeByNumber.get(from) ?? "discovery";
-    const firstUserMsg = history.find(m => m.role === "user")?.content ?? text;
-    const venue = detectVenue(firstUserMsg);
-    const venueName = venue?.name ?? null;
-
     // Persist incoming user message
     await supabase.from("messages").insert({
       phone_number: from,
@@ -463,17 +409,14 @@ export async function POST(req: NextRequest) {
 
     const fullHistory: Message[] = [...history, { role: "user", content: text }];
 
-    // In discovery mode, look up any mentioned artists on Last.fm
-    let artistContext = "";
-    if (mode === "discovery") {
-      artistContext = await buildArtistContext(text);
-    }
+    // Look up any mentioned artists on Last.fm
+    const artistContext = await buildArtistContext(text);
 
-    // In discovery mode, look up real events when the user asks or after enough exchanges
+    // Look up real events when the user asks or after enough exchanges
     let eventMatches: EventFull[] = [];
     let eventContext = "";
     let noMatchContext = "";
-    if (mode === "discovery" && (isEventQuery(text) || fullHistory.length >= 6)) {
+    if (isEventQuery(text) || fullHistory.length >= 6) {
       const { data: profileRow } = await supabase
         .from("user_profiles")
         .select("*")
@@ -497,7 +440,7 @@ export async function POST(req: NextRequest) {
 
     // Build system prompt — when events are ready, switch into recommendation mode
     // so the profiling rules don't override the instruction to recommend
-    const baseSystem = buildSystemPrompt(mode, venueName, wa.botName, artistContext);
+    const baseSystem = buildSystemPrompt(wa.botName, artistContext);
     const system = eventContext
       ? `${baseSystem}\n\n--- RECOMMENDATION MODE: MANDATORY ---\nYou have real upcoming events in the database. You MUST call send_events_carousel in this response — no exceptions, no deferring to a later message. Pick between 2 and 10 events from the list based on how many are genuinely relevant — do not pad with weak matches, but do not artificially limit to 3. Write one short sentence introducing them, then call the tool. Do NOT say you will "look into it", "get back to them", or that you need to find events — you have them right now. Do NOT filter by date in your head — show the best taste-matched events available regardless of exact date. Do NOT ask any more questions.${eventContext}`
       : noMatchContext
