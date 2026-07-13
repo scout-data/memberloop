@@ -29,13 +29,21 @@ const WA_PHONE_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
 
 // ─── Firecrawl ────────────────────────────────────────────────────────────────
 
-async function scrapeUrl(url, waitForMs = 0) {
+// scrape_config fields:
+//   waitFor       — ms to wait for JS rendering (default 0)
+//   onlyMainContent — strip nav/footer (default false; false catches more event content)
+//   includeTags   — array of CSS selectors to include (e.g. ["main", ".events-list"])
+//   excludeTags   — array of CSS selectors to exclude (e.g. [".cookie-banner"])
+//   extractSlice  — max chars to pass to Claude for event extraction (default 20000)
+async function scrapeUrl(url, config = {}) {
   const body = {
     url,
     formats: ["markdown"],
-    onlyMainContent: false,
+    onlyMainContent: config.onlyMainContent ?? false,
   };
-  if (waitForMs > 0) body.waitFor = waitForMs;
+  if (config.waitFor > 0) body.waitFor = config.waitFor;
+  if (config.includeTags?.length) body.includeTags = config.includeTags;
+  if (config.excludeTags?.length) body.excludeTags = config.excludeTags;
 
   const res = await fetch("https://api.firecrawl.dev/v1/scrape", {
     method: "POST",
@@ -68,7 +76,7 @@ function hashMarkdown(markdown) {
 
 // ─── Claude event extraction ──────────────────────────────────────────────────
 
-async function extractEvents(markdown, label) {
+async function extractEvents(markdown, label, config = {}) {
   const msg = await anthropic.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 1024,
@@ -87,7 +95,7 @@ If there are no upcoming events, respond with exactly: NO_EVENTS
 Do not add any preamble or explanation.
 
 ---
-${markdown.slice(0, 20000)}`,
+${markdown.slice(0, config.extractSlice ?? 20000)}`,
       },
     ],
   });
@@ -281,7 +289,9 @@ async function run() {
     console.log(`\n→ ${row.label} (${row.url})`);
 
     try {
-      const markdown = await scrapeUrl(row.url, row.wait_for_ms ?? 0);
+      const cfg = row.scrape_config ?? {};
+      console.log(`  Config: ${JSON.stringify(cfg)}`);
+      const markdown = await scrapeUrl(row.url, cfg);
       const newHash = hashMarkdown(markdown);
 
       console.log(`  Hash: ${newHash.slice(0, 12)}… (prev: ${(row.last_hash ?? "none").slice(0, 12)}…)`);
@@ -291,7 +301,7 @@ async function run() {
 
       if (!row.last_hash) {
         // First run — extract events and send baseline
-        const eventsText = await extractEvents(markdown, row.label);
+        const eventsText = await extractEvents(markdown, row.label, cfg);
         const events = parseEvents(eventsText);
         console.log(`  Events extracted: ${events.length} event(s)`);
 
@@ -312,7 +322,7 @@ async function run() {
 
       } else if (newHash !== row.last_hash) {
         // Page changed — extract new events
-        const newEventsText = await extractEvents(markdown, row.label);
+        const newEventsText = await extractEvents(markdown, row.label, cfg);
         const events = parseEvents(newEventsText);
         console.log(`  Change detected. New events: ${events.length} event(s)`);
 
