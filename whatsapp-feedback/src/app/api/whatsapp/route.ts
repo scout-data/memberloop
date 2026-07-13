@@ -667,20 +667,24 @@ export async function POST(req: NextRequest) {
     const toolUse  = response.content.find(b => b.type === "tool_use");
     const reply = textBlock?.type === "text" ? textBlock.text : "";
 
-    await supabase.from("messages").insert({ phone_number: from, role: "assistant", content: reply });
-    console.log(`[WA OUT] ${from}: ${reply}`);
+    // Send initial reply immediately (e.g. "Looking that up now.")
+    if (reply) {
+      console.log(`[WA OUT] ${from}: ${reply}`);
+      await sendWhatsApp(from, reply, wa);
+    }
 
-    extractAndSaveProfile(from, [...fullHistory, { role: "assistant", content: reply }]);
-
-    if (reply) await sendWhatsApp(from, reply, wa);
-
-    // If Claude called a tool but sent no text, the user is waiting in silence — send a fallback
+    // Silent fallback while tool runs
     if (toolUse?.type === "tool_use" && !reply) {
       const silentTools = ["find_venue", "list_watched_venues"];
       if (silentTools.includes(toolUse.name)) {
         await sendWhatsApp(from, "On it...", wa);
       }
     }
+
+    // savedContent is what gets persisted to the messages table.
+    // For tool turns we save the follow-up (not the placeholder), with key
+    // metadata appended so Claude has full context on the next user message.
+    let savedContent = reply;
 
     if (toolUse?.type === "tool_use") {
       if (toolUse.name === "send_event_link") {
@@ -693,6 +697,7 @@ export async function POST(req: NextRequest) {
           await sendEventTemplate(from, event_title, gigpig_slug, wa);
           console.log(`[WA LINK] ${from} (${wa.botName}): go fallback → ${gigpig_slug}`);
         }
+
       } else if (toolUse.name === "find_venue") {
         const { query } = toolUse.input as { query: string };
         const info = await findVenueInfo(query);
@@ -710,7 +715,14 @@ export async function POST(req: NextRequest) {
           ],
         });
         const followUpText = followUp.content.find(b => b.type === "text")?.text ?? "";
-        if (followUpText) await sendWhatsApp(from, followUpText, wa);
+        if (followUpText) {
+          console.log(`[WA OUT] ${from}: ${followUpText}`);
+          await sendWhatsApp(from, followUpText, wa);
+        }
+        // Append venue metadata so the next "Yes" has full context — not shown to user
+        savedContent = info.url
+          ? `${followUpText}\n[venue: ${info.name} | ${info.url}${info.image_url ? ` | image: ${info.image_url}` : ""}]`
+          : (followUpText || reply);
 
       } else if (toolUse.name === "add_venue_to_watchlist") {
         const { url, label, image_url } = toolUse.input as { url: string; label: string; image_url?: string };
@@ -735,7 +747,11 @@ export async function POST(req: NextRequest) {
           ],
         });
         const followUpText = followUp.content.find(b => b.type === "text")?.text ?? "";
-        if (followUpText) await sendWhatsApp(from, followUpText, wa);
+        if (followUpText) {
+          console.log(`[WA OUT] ${from}: ${followUpText}`);
+          await sendWhatsApp(from, followUpText, wa);
+        }
+        savedContent = followUpText || reply;
 
       } else if (toolUse.name === "list_watched_venues") {
         const { data: venues } = await supabase
@@ -745,11 +761,12 @@ export async function POST(req: NextRequest) {
           .order("created_at");
 
         if (venues?.length) {
-          // Send a short text intro then a carousel
           await sendWhatsApp(from, `You're watching ${venues.length} venue${venues.length > 1 ? "s" : ""}.`, wa);
           await sendWatchlistCarousel(from, venues, wa);
+          savedContent = `You're watching ${venues.length} venue${venues.length > 1 ? "s" : ""}: ${venues.map(v => v.label).join(", ")}.`;
         } else {
           await sendWhatsApp(from, "You're not watching any venues yet. Share a URL or a venue name and I'll set it up for you.", wa);
+          savedContent = "You're not watching any venues yet.";
         }
 
       } else if (toolUse.name === "remove_venue_from_watchlist") {
@@ -766,7 +783,11 @@ export async function POST(req: NextRequest) {
           ],
         });
         const followUpText = followUp.content.find(b => b.type === "text")?.text ?? "";
-        if (followUpText) await sendWhatsApp(from, followUpText, wa);
+        if (followUpText) {
+          console.log(`[WA OUT] ${from}: ${followUpText}`);
+          await sendWhatsApp(from, followUpText, wa);
+        }
+        savedContent = followUpText || reply;
 
       } else if (toolUse.name === "send_events_carousel") {
         const { events } = toolUse.input as { events: Array<{ event_title: string; gigpig_slug: string }> };
@@ -792,6 +813,10 @@ export async function POST(req: NextRequest) {
         }
       }
     }
+
+    // Persist assistant turn once, after all tool handling is done
+    await supabase.from("messages").insert({ phone_number: from, role: "assistant", content: savedContent });
+    extractAndSaveProfile(from, [...fullHistory, { role: "assistant", content: savedContent }]);
 
     return NextResponse.json({ ok: true });
 
