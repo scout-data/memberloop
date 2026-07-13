@@ -29,23 +29,26 @@ const WA_PHONE_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
 
 // ─── Firecrawl ────────────────────────────────────────────────────────────────
 
-async function scrapeUrl(url) {
+async function scrapeUrl(url, waitForMs = 0) {
+  const body = {
+    url,
+    formats: ["markdown"],
+    onlyMainContent: false,
+  };
+  if (waitForMs > 0) body.waitFor = waitForMs;
+
   const res = await fetch("https://api.firecrawl.dev/v1/scrape", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${FIRECRAWL_API_KEY}`,
     },
-    body: JSON.stringify({
-      url,
-      formats: ["markdown"],
-      onlyMainContent: false,
-    }),
+    body: JSON.stringify(body),
   });
 
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Firecrawl ${res.status}: ${body}`);
+    const text = await res.text();
+    throw new Error(`Firecrawl ${res.status}: ${text}`);
   }
 
   const json = await res.json();
@@ -278,7 +281,7 @@ async function run() {
     console.log(`\n→ ${row.label} (${row.url})`);
 
     try {
-      const markdown = await scrapeUrl(row.url);
+      const markdown = await scrapeUrl(row.url, row.wait_for_ms ?? 0);
       const newHash = hashMarkdown(markdown);
 
       console.log(`  Hash: ${newHash.slice(0, 12)}… (prev: ${(row.last_hash ?? "none").slice(0, 12)}…)`);
