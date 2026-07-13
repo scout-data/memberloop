@@ -317,7 +317,9 @@ function buildEventContext(events: EventFull[], location: string | null): string
   if (!events.length) return "";
   const locationNote = location ? ` in ${location.charAt(0).toUpperCase() + location.slice(1)}` : "";
   const lines = events.map((e, i) => {
-    const slug = e.details_url.replace("https://www.gigpig.uk/whats-on/", "");
+    const slug = e.details_url.startsWith("https://www.gigpig.uk/whats-on/")
+      ? e.details_url.replace("https://www.gigpig.uk/whats-on/", "")
+      : e.details_url.split("/").filter(Boolean).pop() ?? "event";
     // Extract genre/vibe line from embedding_text (e.g. "Genre: jazz, soul. Vibe: intimate, seated")
     const genreLine = e.embedding_text?.match(/Genre:[^.]+\.|Vibe:[^.]+\./g)?.join(" ") ?? "";
     return `${i + 1}. ${e.title} at ${e.venue_name} — ${formatVenueDate(e.venue_name, e.start_time)}${genreLine ? ` | ${genreLine}` : ""} [slug: ${slug}]`;
@@ -329,6 +331,68 @@ function buildEventContext(events: EventFull[], location: string | null): string
 const processedIds = new Set<string>();
 // Cache last known location per number so follow-up messages inherit it
 const locationByNumber = new Map<string, string>();
+
+// ─── Crowdloop demo events ────────────────────────────────────────────────────
+// Used when the Crowdloop number is active — curated sample events drawn from
+// Underground Fan Club's real brand partnerships. Claude picks the most relevant
+// ones based on the conversation rather than semantic DB matching.
+
+const CROWDLOOP_DEMO_EVENTS: EventFull[] = [
+  {
+    id: -1,
+    title: "Underground Fan Club x Guinness — Aston Villa After Party",
+    venue_name: "Villa Park, Birmingham",
+    start_time: "2026-08-09T21:30:00",
+    details_url: "https://www.undergroundfanclub.com/experiences/aston-villa-party",
+    artist_image: "https://images.squarespace-cdn.com/content/v1/6346c08a39caa106161c0f21/eb4551f8-33ed-45dc-b931-3ce9be4714cd/Aston+Villa+Women+-+9th+May+2026_408.jpg",
+    embedding_text: "Genre: fan experience, brand activation. Vibe: post-match, exclusive access, community.",
+  },
+  {
+    id: -2,
+    title: "Nike Run Club — Summer Series London",
+    venue_name: "Victoria Park, London",
+    start_time: "2026-07-27T08:00:00",
+    details_url: "https://www.undergroundfanclub.com/experiences/nike-summer-series",
+    artist_image: "https://images.squarespace-cdn.com/content/v1/6346c08a39caa106161c0f21/26e52b76-47d7-42a7-9666-1611bbb15cb0/_SST0933.jpg",
+    embedding_text: "Genre: running, fitness community, brand event. Vibe: active, social, outdoor, morning.",
+  },
+  {
+    id: -3,
+    title: "The Fast Supper Vol. 2 — New Balance x Sportsshoes",
+    venue_name: "Shoreditch, London",
+    start_time: "2026-08-14T19:00:00",
+    details_url: "https://www.undergroundfanclub.com/experiences/fast-supper-2",
+    artist_image: "https://images.squarespace-cdn.com/content/v1/6346c08a39caa106161c0f21/b767ce3c-13c4-4160-89ff-480f4e21e0ad/TheFastSupper-303.jpg",
+    embedding_text: "Genre: brand dinner, running community, exclusive. Vibe: intimate, post-run, social.",
+  },
+  {
+    id: -4,
+    title: "NFL UK Fan Experience — Boxpark x Underground Fan Club",
+    venue_name: "Boxpark Wembley, London",
+    start_time: "2026-09-06T17:00:00",
+    details_url: "https://www.undergroundfanclub.com/experiences/nfl-fan-experience",
+    artist_image: "https://images.squarespace-cdn.com/content/v1/6346c08a39caa106161c0f21/f67381b6-6f12-4059-8f23-0e02196a7e4d/Uunderground+Fun+Club+X+NFL-033.jpg",
+    embedding_text: "Genre: sports fan event, American football, brand activation. Vibe: high-energy, fan community, immersive.",
+  },
+  {
+    id: -5,
+    title: "Strava x Underground Fan Club — Community Ride London",
+    venue_name: "Clapham Common, London",
+    start_time: "2026-08-02T09:00:00",
+    details_url: "https://www.undergroundfanclub.com/experiences/strava-community-ride",
+    artist_image: "https://images.squarespace-cdn.com/content/v1/6346c08a39caa106161c0f21/26e52b76-47d7-42a7-9666-1611bbb15cb0/_SST0933.jpg",
+    embedding_text: "Genre: cycling, fitness community, brand event. Vibe: social, outdoor, active morning.",
+  },
+  {
+    id: -6,
+    title: "Word on the Curb — Culture Festival 2026",
+    venue_name: "Peckham Rye Park, London",
+    start_time: "2026-08-30T13:00:00",
+    details_url: "https://www.undergroundfanclub.com/experiences/word-on-the-curb",
+    artist_image: "https://images.squarespace-cdn.com/content/v1/6346c08a39caa106161c0f21/eb4551f8-33ed-45dc-b931-3ce9be4714cd/Aston+Villa+Women+-+9th+May+2026_408.jpg",
+    embedding_text: "Genre: culture, community, street festival, arts. Vibe: outdoor, diverse, food, music.",
+  },
+];
 
 // ─── Webhook verification ─────────────────────────────────────────────────────
 
@@ -417,24 +481,30 @@ export async function POST(req: NextRequest) {
     let eventContext = "";
     let noMatchContext = "";
     if (isEventQuery(text) || fullHistory.length >= 6) {
-      const { data: profileRow } = await supabase
-        .from("user_profiles")
-        .select("*")
-        .eq("phone_number", from)
-        .single();
-      if (profileRow && (profileRow.profile_confidence ?? 0) >= 0.3) {
-        // Update session location if current message mentions one explicitly
-        const msgLocation = extractLocationFromMessage(text);
-        if (msgLocation) locationByNumber.set(from, msgLocation);
-        const sessionLocation = locationByNumber.get(from) ?? null;
-        const { events, location, lowConfidence } = await fetchMatchingEvents(from, profileRow as Record<string, unknown>, text, sessionLocation, history);
-        eventMatches = events;
-        if (lowConfidence) {
-          const cityNote = location ? ` in ${location.charAt(0).toUpperCase() + location.slice(1)}` : "";
-          noMatchContext = `\n\nEVENT SEARCH RESULT: Nothing found${cityNote} in the database matching this request. Be honest — tell the user there's nothing matching right now${cityNote ? " in that area" : ""}. Then pivot: if a city was mentioned, ask if they'd consider somewhere nearby or a different night; otherwise ask what else they're into.`;
-        } else {
-          eventContext = buildEventContext(events, location);
+      if (wa.botName === "GigPig") {
+        // GigPig: match against live event database
+        const { data: profileRow } = await supabase
+          .from("user_profiles")
+          .select("*")
+          .eq("phone_number", from)
+          .single();
+        if (profileRow && (profileRow.profile_confidence ?? 0) >= 0.3) {
+          const msgLocation = extractLocationFromMessage(text);
+          if (msgLocation) locationByNumber.set(from, msgLocation);
+          const sessionLocation = locationByNumber.get(from) ?? null;
+          const { events, location, lowConfidence } = await fetchMatchingEvents(from, profileRow as Record<string, unknown>, text, sessionLocation, history);
+          eventMatches = events;
+          if (lowConfidence) {
+            const cityNote = location ? ` in ${location.charAt(0).toUpperCase() + location.slice(1)}` : "";
+            noMatchContext = `\n\nEVENT SEARCH RESULT: Nothing found${cityNote} in the database matching this request. Be honest — tell the user there's nothing matching right now${cityNote ? " in that area" : ""}. Then pivot: if a city was mentioned, ask if they'd consider somewhere nearby or a different night; otherwise ask what else they're into.`;
+          } else {
+            eventContext = buildEventContext(events, location);
+          }
         }
+      } else {
+        // Crowdloop demo: use curated sample events — Claude picks based on conversation
+        eventMatches = CROWDLOOP_DEMO_EVENTS;
+        eventContext = buildEventContext(CROWDLOOP_DEMO_EVENTS, null);
       }
     }
 
