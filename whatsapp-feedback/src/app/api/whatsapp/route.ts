@@ -598,7 +598,8 @@ export async function POST(req: NextRequest) {
             start_time: match?.start_time ?? "",
           };
         }).filter(e => e.artist_image && e.venue_date)
-          .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+          .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
+          .slice(0, 3);
 
         if (enriched.length >= 2) {
           await sendEventCarousel(from, enriched, wa);
@@ -838,7 +839,8 @@ async function sendEventCarousel(
       },
     }),
   });
-  if (!res.ok) console.error("[WA CAROUSEL ERR]", res.status, await res.text());
+  const resBody = await res.json().catch(() => null);
+  if (!res.ok || resBody?.error) console.error("[WA CAROUSEL ERR]", res.status, JSON.stringify(resBody));
 }
 
 async function sendEventTemplate(to: string, eventTitle: string, gigpigSlug: string, client: ClientConfig) {
