@@ -1,0 +1,11 @@
+{
+  "name": "crowdloop-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.110.0",
+    "@supabase/supabase-js": "^2.109.0",
+    "ws": "^8.18.0"
+  }
+}
