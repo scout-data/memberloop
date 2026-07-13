@@ -52,7 +52,12 @@ Rules:
 - When the user asks for a specific event's link, call send_event_link with the event title and slug
 - Never include URLs in your text reply
 - Never break character
-- You can watch venues for the user: if they share a URL or ask to track a venue by name, use find_venue to look it up, confirm the details with the user, then call add_venue_to_watchlist when they confirm. Use list_watched_venues to show what they're currently watching, and remove_venue_from_watchlist to stop tracking one`;
+- VENUE WATCHING — follow this exact flow, no deviations:
+  1. User shares a URL or venue name → ALWAYS write a short message first ("On it..." or "Looking that up...") AND call find_venue in the same response
+  2. find_venue returns → write ONE sentence confirming what you found (just the name and city), then ask "Want me to watch this and alert you when new events go up?" — nothing else
+  3. User says yes/yeah/sure/ok → immediately call add_venue_to_watchlist — do NOT ask any follow-up questions first
+  4. Never ask for location or extra details if the user already gave you a URL
+  5. Use list_watched_venues to show the user's watchlist. Use remove_venue_from_watchlist to stop tracking`;
 
 const GIGPIG_DISCOVERY_SYSTEM = `You are GigPig's WhatsApp assistant, helping music fans discover live events from across the GigPig network — the UK's largest live music marketplace, with over 20,000 artists performing at hundreds of venues nationwide.
 
@@ -121,13 +126,14 @@ async function findVenueInfo(query: string): Promise<{
 
   const ogImg = html.match(/property="og:image"\s+content="([^"]+)"/)?.[1]
     ?? html.match(/name="twitter:image"\s+content="([^"]+)"/)?.[1]
+    ?? [...html.matchAll(/https?:\/\/[^"'\s]+\/uploads\/[^"'\s]+\.(jpg|jpeg|webp)/gi)].map(m => m[0]).find(Boolean)
     ?? null;
 
   const name = scrapeJson.data?.metadata?.ogTitle
     ?? scrapeJson.data?.metadata?.title?.split("|")[0]?.split("–")[0]?.trim()
     ?? query;
 
-  const preview = markdown.slice(0, 600);
+  const preview = markdown.slice(0, 400);
   return { name, url, image_url: ogImg, preview };
 }
 
@@ -667,6 +673,14 @@ export async function POST(req: NextRequest) {
     extractAndSaveProfile(from, [...fullHistory, { role: "assistant", content: reply }]);
 
     if (reply) await sendWhatsApp(from, reply, wa);
+
+    // If Claude called a tool but sent no text, the user is waiting in silence — send a fallback
+    if (toolUse?.type === "tool_use" && !reply) {
+      const silentTools = ["find_venue", "list_watched_venues"];
+      if (silentTools.includes(toolUse.name)) {
+        await sendWhatsApp(from, "On it...", wa);
+      }
+    }
 
     if (toolUse?.type === "tool_use") {
       if (toolUse.name === "send_event_link") {
