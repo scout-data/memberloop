@@ -85,7 +85,14 @@ ${markdown.slice(0, 20000)}`,
 // ─── Hash ─────────────────────────────────────────────────────────────────────
 
 function hash(text) {
-  return createHash("sha256").update(text).digest("hex");
+  if (text === "NO_EVENTS") return createHash("sha256").update(text).digest("hex");
+  const normalised = text
+    .split("\n")
+    .map(l => l.toLowerCase().replace(/\s+/g, " ").trim())
+    .filter(Boolean)
+    .sort()
+    .join("\n");
+  return createHash("sha256").update(normalised).digest("hex");
 }
 
 // ─── WhatsApp text message ────────────────────────────────────────────────────
