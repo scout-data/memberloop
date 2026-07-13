@@ -27,6 +27,16 @@ const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
 const WA_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN;
 const WA_PHONE_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
 
+// WhatsApp carousel headers only support JPEG/PNG.
+// CDN WebP transforms look like "image.jpg-w690h376.webp" — strip the suffix to get the JPEG.
+function safeImageUrl(url) {
+  if (!url) return null;
+  if (!url.toLowerCase().includes(".webp")) return url;
+  const stripped = url.replace(/-[^.]+\.webp$/i, "");
+  if (stripped !== url && /\.(jpg|jpeg|png)$/i.test(stripped)) return stripped;
+  return null;
+}
+
 // ─── Firecrawl ────────────────────────────────────────────────────────────────
 
 // scrape_config fields:
@@ -149,6 +159,7 @@ async function sendWhatsApp(to, body) {
 // ─── WhatsApp carousel ────────────────────────────────────────────────────────
 
 async function sendCarousel(to, events, goSlug, venueImage) {
+  const img = safeImageUrl(venueImage) ?? "https://picsum.photos/seed/crowdloop/800/450";
   const count = Math.min(events.length, 10);
   const templateName = count === 1 ? "crowdloop_event_card" : `crowdloop_carousel_${count}`;
 
@@ -160,7 +171,7 @@ async function sendCarousel(to, events, goSlug, venueImage) {
         parameters: [
           {
             type: "image",
-            image: { link: venueImage },
+            image: { link: img },
           },
         ],
       },
@@ -189,7 +200,7 @@ async function sendCarousel(to, events, goSlug, venueImage) {
         parameters: [
           {
             type: "image",
-            image: { link: venueImage },
+            image: { link: img },
           },
         ],
       },

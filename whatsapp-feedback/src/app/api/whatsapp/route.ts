@@ -89,6 +89,18 @@ Rules:
 
 // ─── Venue watching helpers ───────────────────────────────────────────────────
 
+const FALLBACK_IMG = "https://picsum.photos/seed/crowdloop/800/450";
+
+// WhatsApp carousel headers only support JPEG/PNG.
+// CDN WebP transforms look like "image.jpg-w690h376.webp" — strip the suffix to get the JPEG.
+function safeImageUrl(url: string | null): string {
+  if (!url) return FALLBACK_IMG;
+  if (!url.toLowerCase().includes(".webp")) return url;
+  const stripped = url.replace(/-[^.]+\.webp$/i, "");
+  if (stripped !== url && /\.(jpg|jpeg|png)$/i.test(stripped)) return stripped;
+  return FALLBACK_IMG;
+}
+
 function parseWatchedEvents(eventsText: string): Array<{ date: string; name: string; details: string }> {
   if (!eventsText || eventsText === "NO_EVENTS") return [];
   return eventsText.split("\n").map(line => {
@@ -108,7 +120,7 @@ async function sendVenueEventsCarousel(
 ) {
   const count = Math.min(events.length, 10);
   const templateName = count === 1 ? "crowdloop_event_card" : `crowdloop_carousel_${count}`;
-  const img = imageUrl ?? "https://picsum.photos/seed/crowdloop/800/450";
+  const img = safeImageUrl(imageUrl);
 
   const makeCard = (e: { date: string; name: string; details: string }, index: number) => ({
     card_index: index,
@@ -1178,7 +1190,6 @@ async function sendWatchlistCarousel(
 ) {
   const count = Math.min(venues.length, 6);
   const templateName = count === 1 ? "crowdloop_watchlist_2" : `crowdloop_watchlist_${count}`;
-  const fallbackImg = "https://picsum.photos/seed/crowdloop/800/450";
 
   const cards = venues.slice(0, count).map((v, index) => {
     const lastUpdate = v.last_changed
@@ -1188,7 +1199,7 @@ async function sendWatchlistCarousel(
     return {
       card_index: index,
       components: [
-        { type: "header", parameters: [{ type: "image", image: { link: v.image_url ?? fallbackImg } }] },
+        { type: "header", parameters: [{ type: "image", image: { link: safeImageUrl(v.image_url) } }] },
         { type: "body", parameters: [{ type: "text", text: v.label }, { type: "text", text: lastUpdate }] },
         { type: "button", sub_type: "url", index: "0", parameters: [{ type: "text", text: goSlug }] },
       ],
