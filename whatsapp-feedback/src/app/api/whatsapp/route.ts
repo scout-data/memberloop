@@ -344,7 +344,7 @@ const CROWDLOOP_DEMO_EVENTS: EventFull[] = [
     venue_name: "Villa Park, Birmingham",
     start_time: "2026-08-09T21:30:00",
     details_url: "https://www.undergroundfanclub.com/experiences/aston-villa-party",
-    artist_image: "https://images.squarespace-cdn.com/content/v1/6346c08a39caa106161c0f21/eb4551f8-33ed-45dc-b931-3ce9be4714cd/Aston+Villa+Women+-+9th+May+2026_408.jpg",
+    artist_image: "https://picsum.photos/seed/crowdloop/800/450",
     embedding_text: "Genre: fan experience, brand activation. Vibe: post-match, exclusive access, community.",
   },
   {
@@ -353,7 +353,7 @@ const CROWDLOOP_DEMO_EVENTS: EventFull[] = [
     venue_name: "Victoria Park, London",
     start_time: "2026-07-27T08:00:00",
     details_url: "https://www.undergroundfanclub.com/experiences/nike-summer-series",
-    artist_image: "https://images.squarespace-cdn.com/content/v1/6346c08a39caa106161c0f21/26e52b76-47d7-42a7-9666-1611bbb15cb0/_SST0933.jpg",
+    artist_image: "https://picsum.photos/seed/crowdloop/800/450",
     embedding_text: "Genre: running, fitness community, brand event. Vibe: active, social, outdoor, morning.",
   },
   {
@@ -362,7 +362,7 @@ const CROWDLOOP_DEMO_EVENTS: EventFull[] = [
     venue_name: "Shoreditch, London",
     start_time: "2026-08-14T19:00:00",
     details_url: "https://www.undergroundfanclub.com/experiences/fast-supper-2",
-    artist_image: "https://images.squarespace-cdn.com/content/v1/6346c08a39caa106161c0f21/b767ce3c-13c4-4160-89ff-480f4e21e0ad/TheFastSupper-303.jpg",
+    artist_image: "https://picsum.photos/seed/crowdloop/800/450",
     embedding_text: "Genre: brand dinner, running community, exclusive. Vibe: intimate, post-run, social.",
   },
   {
@@ -371,7 +371,7 @@ const CROWDLOOP_DEMO_EVENTS: EventFull[] = [
     venue_name: "Boxpark Wembley, London",
     start_time: "2026-09-06T17:00:00",
     details_url: "https://www.undergroundfanclub.com/experiences/nfl-fan-experience",
-    artist_image: "https://images.squarespace-cdn.com/content/v1/6346c08a39caa106161c0f21/f67381b6-6f12-4059-8f23-0e02196a7e4d/Uunderground+Fun+Club+X+NFL-033.jpg",
+    artist_image: "https://picsum.photos/seed/crowdloop/800/450",
     embedding_text: "Genre: sports fan event, American football, brand activation. Vibe: high-energy, fan community, immersive.",
   },
   {
@@ -380,7 +380,7 @@ const CROWDLOOP_DEMO_EVENTS: EventFull[] = [
     venue_name: "Clapham Common, London",
     start_time: "2026-08-02T09:00:00",
     details_url: "https://www.undergroundfanclub.com/experiences/strava-community-ride",
-    artist_image: "https://images.squarespace-cdn.com/content/v1/6346c08a39caa106161c0f21/26e52b76-47d7-42a7-9666-1611bbb15cb0/_SST0933.jpg",
+    artist_image: "https://picsum.photos/seed/crowdloop/800/450",
     embedding_text: "Genre: cycling, fitness community, brand event. Vibe: social, outdoor, active morning.",
   },
   {
@@ -389,7 +389,7 @@ const CROWDLOOP_DEMO_EVENTS: EventFull[] = [
     venue_name: "Peckham Rye Park, London",
     start_time: "2026-08-30T13:00:00",
     details_url: "https://www.undergroundfanclub.com/experiences/word-on-the-curb",
-    artist_image: "https://images.squarespace-cdn.com/content/v1/6346c08a39caa106161c0f21/eb4551f8-33ed-45dc-b931-3ce9be4714cd/Aston+Villa+Women+-+9th+May+2026_408.jpg",
+    artist_image: "https://picsum.photos/seed/crowdloop/800/450",
     embedding_text: "Genre: culture, community, street festival, arts. Vibe: outdoor, diverse, food, music.",
   },
 ];
@@ -840,6 +840,7 @@ async function sendEventCarousel(
     }),
   });
   const resBody = await res.json().catch(() => null);
+  console.log("[WA CAROUSEL API]", res.status, JSON.stringify(resBody));
   if (!res.ok || resBody?.error) console.error("[WA CAROUSEL ERR]", res.status, JSON.stringify(resBody));
 }
 
