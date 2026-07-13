@@ -1,13 +1,13 @@
 /**
  * scan-watched-urls.mjs
- * Daily scan of watched URLs. Extracts events via Firecrawl + Claude,
- * hashes the result, and sends a WhatsApp message when something changes.
+ * Daily scan of watched URLs. Hashes the raw scraped markdown for reliable
+ * change detection, then uses Claude to extract events and build a diff message.
  *
  * Usage:
  *   node --env-file=.env.local scripts/scan-watched-urls.mjs
  *
  * First run: sends "here's what's currently on" as baseline.
- * Subsequent runs: only messages when events change.
+ * Subsequent runs: only messages when the raw page content changes.
  */
 
 import { createClient } from "@supabase/supabase-js";
@@ -53,6 +53,16 @@ async function scrapeUrl(url) {
   return json.data?.markdown ?? "";
 }
 
+// ─── Hash raw markdown (stable, deterministic) ────────────────────────────────
+
+function hashMarkdown(markdown) {
+  // Strip dynamic metadata that changes on every scrape (dates, timestamps in headers)
+  const stable = markdown
+    .replace(/\d{1,2}(st|nd|rd|th)?\s+\w+\s+\d{4}/gi, "DATE") // e.g. "13th July 2026"
+    .replace(/\d{4}-\d{2}-\d{2}/g, "DATE");
+  return createHash("sha256").update(stable).digest("hex");
+}
+
 // ─── Claude event extraction ──────────────────────────────────────────────────
 
 async function extractEvents(markdown, label) {
@@ -80,19 +90,6 @@ ${markdown.slice(0, 20000)}`,
   });
 
   return msg.content[0]?.text?.trim() ?? "NO_EVENTS";
-}
-
-// ─── Hash ─────────────────────────────────────────────────────────────────────
-
-function hash(text) {
-  if (text === "NO_EVENTS") return createHash("sha256").update(text).digest("hex");
-  const normalised = text
-    .split("\n")
-    .map(l => l.toLowerCase().replace(/\s+/g, " ").trim())
-    .filter(Boolean)
-    .sort()
-    .join("\n");
-  return createHash("sha256").update(normalised).digest("hex");
 }
 
 // ─── WhatsApp text message ────────────────────────────────────────────────────
@@ -170,41 +167,50 @@ async function run() {
 
     try {
       const markdown = await scrapeUrl(row.url);
-      const eventsText = await extractEvents(markdown, row.label);
-      const newHash = hash(eventsText);
+      const newHash = hashMarkdown(markdown);
 
-      console.log(`  Events extracted: ${eventsText === "NO_EVENTS" ? "none" : eventsText.split("\n").length + " line(s)"}`);
       console.log(`  Hash: ${newHash.slice(0, 12)}… (prev: ${(row.last_hash ?? "none").slice(0, 12)}…)`);
 
       const now = new Date().toISOString();
       let messageBody = null;
 
       if (!row.last_hash) {
-        // First run — send baseline
+        // First run — extract events and send baseline
+        const eventsText = await extractEvents(markdown, row.label);
+        console.log(`  Events extracted: ${eventsText === "NO_EVENTS" ? "none" : eventsText.split("\n").length + " line(s)"}`);
+
         if (eventsText !== "NO_EVENTS") {
           messageBody = `Here's what's currently on at ${row.label}:\n\n${eventsText}`;
         } else {
           messageBody = `I've started watching ${row.label} for events. Nothing specific is listed right now — I'll let you know as soon as something new appears.`;
         }
-      } else if (newHash !== row.last_hash) {
-        // Changed — build diff message
-        messageBody = await buildDiffMessage(row.label, row.last_events_text ?? "", eventsText);
-      } else {
-        console.log("  No change.");
-      }
 
-      // Update DB
-      await supabase
-        .from("watched_urls")
-        .update({
+        await supabase.from("watched_urls").update({
           last_events_text: eventsText,
           last_hash: newHash,
           last_checked: now,
-          ...(newHash !== row.last_hash ? { last_changed: now } : {}),
-        })
-        .eq("id", row.id);
+          last_changed: now,
+        }).eq("id", row.id);
 
-      // Send WhatsApp if there's something to say
+      } else if (newHash !== row.last_hash) {
+        // Page changed — extract new events and build diff
+        const newEvents = await extractEvents(markdown, row.label);
+        console.log(`  Change detected. New events: ${newEvents === "NO_EVENTS" ? "none" : newEvents.split("\n").length + " line(s)"}`);
+
+        messageBody = await buildDiffMessage(row.label, row.last_events_text ?? "none", newEvents);
+
+        await supabase.from("watched_urls").update({
+          last_events_text: newEvents,
+          last_hash: newHash,
+          last_checked: now,
+          last_changed: now,
+        }).eq("id", row.id);
+
+      } else {
+        console.log("  No change.");
+        await supabase.from("watched_urls").update({ last_checked: now }).eq("id", row.id);
+      }
+
       if (messageBody) {
         await sendWhatsApp(row.phone_number, messageBody);
       }
