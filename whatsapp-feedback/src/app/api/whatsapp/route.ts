@@ -200,7 +200,20 @@ async function findVenueInfo(query: string): Promise<{
     ?? query;
 
   const preview = markdown.slice(0, 400);
-  return { name, url, image_url: ogImg, preview };
+
+  // Verify the image is publicly accessible — CDNs with CloudFront/auth return 403
+  // and WhatsApp silently drops the carousel rather than rendering without the image
+  let image_url: string | null = null;
+  if (ogImg) {
+    try {
+      const probe = await fetch(ogImg, { method: "HEAD", signal: AbortSignal.timeout(4000) });
+      if (probe.ok) image_url = safeImageUrl(ogImg);
+    } catch {
+      // unreachable or blocked — leave image_url null, carousel will use fallback
+    }
+  }
+
+  return { name, url, image_url, preview };
 }
 
 function buildSystemPrompt(botName: string, artistContext = ""): string {
