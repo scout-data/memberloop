@@ -724,22 +724,19 @@ export async function POST(req: NextRequest) {
         if (followUpText) await sendWhatsApp(from, followUpText, wa);
 
       } else if (toolUse.name === "list_watched_venues") {
-        const { data: venues } = await supabase.from("watched_urls").select("label, url, last_changed").eq("phone_number", from).order("created_at");
-        const toolResult = venues?.length
-          ? venues.map(v => `• ${v.label} (${v.url})${v.last_changed ? " — last updated " + new Date(v.last_changed).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : ""}`).join("\n")
-          : "No venues on your watchlist yet.";
-        const followUp = await client.messages.create({
-          model: "claude-haiku-4-5-20251001",
-          max_tokens: 200,
-          system: buildSystemPrompt(wa.botName),
-          messages: [
-            ...fullHistory,
-            { role: "assistant", content: response.content },
-            { role: "user", content: [{ type: "tool_result", tool_use_id: toolUse.id, content: toolResult }] },
-          ],
-        });
-        const followUpText = followUp.content.find(b => b.type === "text")?.text ?? "";
-        if (followUpText) await sendWhatsApp(from, followUpText, wa);
+        const { data: venues } = await supabase
+          .from("watched_urls")
+          .select("label, url, image_url, go_slug, last_changed")
+          .eq("phone_number", from)
+          .order("created_at");
+
+        if (venues?.length) {
+          // Send a short text intro then a carousel
+          await sendWhatsApp(from, `You're watching ${venues.length} venue${venues.length > 1 ? "s" : ""}.`, wa);
+          await sendWatchlistCarousel(from, venues, wa);
+        } else {
+          await sendWhatsApp(from, "You're not watching any venues yet. Share a URL or a venue name and I'll set it up for you.", wa);
+        }
 
       } else if (toolUse.name === "remove_venue_from_watchlist") {
         const { label } = toolUse.input as { label: string };
@@ -1013,6 +1010,52 @@ async function sendEventCarousel(
   const resBody = await res.json().catch(() => null);
   console.log("[WA CAROUSEL API]", res.status, JSON.stringify(resBody));
   if (!res.ok || resBody?.error) console.error("[WA CAROUSEL ERR]", res.status, JSON.stringify(resBody));
+}
+
+async function sendWatchlistCarousel(
+  to: string,
+  venues: Array<{ label: string; go_slug: string | null; image_url: string | null; last_changed: string | null }>,
+  client: ClientConfig,
+) {
+  const count = Math.min(venues.length, 6);
+  const templateName = count === 1 ? "crowdloop_watchlist_2" : `crowdloop_watchlist_${count}`;
+  const fallbackImg = "https://picsum.photos/seed/crowdloop/800/450";
+
+  const cards = venues.slice(0, count).map((v, index) => {
+    const lastUpdate = v.last_changed
+      ? new Date(v.last_changed).toLocaleDateString("en-GB", { day: "numeric", month: "short" })
+      : "Watching for new events";
+    const goSlug = v.go_slug ?? v.label.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    return {
+      card_index: index,
+      components: [
+        { type: "header", parameters: [{ type: "image", image: { link: v.image_url ?? fallbackImg } }] },
+        { type: "body", parameters: [{ type: "text", text: v.label }, { type: "text", text: lastUpdate }] },
+        { type: "button", sub_type: "url", index: "0", parameters: [{ type: "text", text: goSlug }] },
+      ],
+    };
+  });
+
+  // For a single venue, send 2 identical cards (watchlist_2 is the minimum)
+  if (count === 1) cards.push({ ...cards[0], card_index: 1 });
+
+  const res = await fetch(`https://graph.facebook.com/v21.0/${client.phoneNumberId}/messages`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${client.accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      to,
+      type: "template",
+      template: {
+        name: templateName,
+        language: { code: "en_GB" },
+        components: [{ type: "carousel", cards }],
+      },
+    }),
+  });
+  const resBody = await res.json().catch(() => null);
+  console.log("[WA WATCHLIST CAROUSEL]", res.status, JSON.stringify(resBody));
+  if (!res.ok || resBody?.error) console.error("[WA WATCHLIST ERR]", res.status, JSON.stringify(resBody));
 }
 
 async function sendEventTemplate(to: string, eventTitle: string, gigpigSlug: string, client: ClientConfig) {
