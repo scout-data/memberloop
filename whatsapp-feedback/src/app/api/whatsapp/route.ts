@@ -6,7 +6,8 @@ import { supabase } from "@/lib/supabase";
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const openai  = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-const VERIFY_TOKEN    = process.env.WHATSAPP_VERIFY_TOKEN;
+const VERIFY_TOKEN      = process.env.WHATSAPP_VERIFY_TOKEN;
+const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
 
 type ClientConfig = {
   accessToken: string;
@@ -50,7 +51,8 @@ Rules:
 - When recommending multiple events, call send_events_carousel immediately after one short intro sentence — do not describe events in text only
 - When the user asks for a specific event's link, call send_event_link with the event title and slug
 - Never include URLs in your text reply
-- Never break character`;
+- Never break character
+- You can watch venues for the user: if they share a URL or ask to track a venue by name, use find_venue to look it up, confirm the details with the user, then call add_venue_to_watchlist when they confirm. Use list_watched_venues to show what they're currently watching, and remove_venue_from_watchlist to stop tracking one`;
 
 const GIGPIG_DISCOVERY_SYSTEM = `You are GigPig's WhatsApp assistant, helping music fans discover live events from across the GigPig network — the UK's largest live music marketplace, with over 20,000 artists performing at hundreds of venues nationwide.
 
@@ -77,6 +79,57 @@ Rules:
 - When the user asks for a specific event's link, call send_event_link with the event title and slug
 - Never include URLs in your text reply
 - Never break character`;
+
+// ─── Venue watching helpers ───────────────────────────────────────────────────
+
+function urlToGoSlug(url: string): string {
+  try {
+    const hostname = new URL(url).hostname.replace(/^www\./, "");
+    return hostname.replace(/[^a-z0-9]/gi, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").toLowerCase();
+  } catch {
+    return url.replace(/[^a-z0-9]/g, "-").slice(0, 50);
+  }
+}
+
+async function findVenueInfo(query: string): Promise<{
+  name: string; url: string; image_url: string | null; preview: string;
+}> {
+  let url = query.trim();
+
+  if (!url.startsWith("http")) {
+    // Search for the venue by name
+    const searchRes = await fetch("https://api.firecrawl.dev/v1/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${FIRECRAWL_API_KEY}` },
+      body: JSON.stringify({ query: `${query} official website events`, limit: 3 }),
+    });
+    const searchJson = await searchRes.json() as { data?: { url: string }[] };
+    url = searchJson.data?.[0]?.url ?? "";
+    if (!url) return { name: query, url: "", image_url: null, preview: "Could not find a website for that venue." };
+  }
+
+  const scrapeRes = await fetch("https://api.firecrawl.dev/v1/scrape", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${FIRECRAWL_API_KEY}` },
+    body: JSON.stringify({ url, formats: ["markdown", "html"], onlyMainContent: false }),
+  });
+  const scrapeJson = await scrapeRes.json() as { success: boolean; data?: { markdown?: string; html?: string; metadata?: { title?: string; ogTitle?: string } } };
+  if (!scrapeJson.success) return { name: query, url, image_url: null, preview: "Could not load that page." };
+
+  const html = scrapeJson.data?.html ?? "";
+  const markdown = scrapeJson.data?.markdown ?? "";
+
+  const ogImg = html.match(/property="og:image"\s+content="([^"]+)"/)?.[1]
+    ?? html.match(/name="twitter:image"\s+content="([^"]+)"/)?.[1]
+    ?? null;
+
+  const name = scrapeJson.data?.metadata?.ogTitle
+    ?? scrapeJson.data?.metadata?.title?.split("|")[0]?.split("–")[0]?.trim()
+    ?? query;
+
+  const preview = markdown.slice(0, 600);
+  return { name, url, image_url: ogImg, preview };
+}
 
 function buildSystemPrompt(botName: string, artistContext = ""): string {
   const system = botName === "GigPig" ? GIGPIG_DISCOVERY_SYSTEM : CROWDLOOP_SYSTEM;
@@ -560,6 +613,46 @@ export async function POST(req: NextRequest) {
             required: ["events"],
           },
         },
+        {
+          name: "find_venue",
+          description: "Look up a venue by URL or by name/city to preview it before adding to the watchlist. Returns the venue name, website URL, and a content preview so you can confirm it's the right place with the user.",
+          input_schema: {
+            type: "object" as const,
+            properties: {
+              query: { type: "string", description: "A full URL (e.g. https://thepigshead.com) or a venue name with optional city (e.g. 'The Pigs Head Clapham')" },
+            },
+            required: ["query"],
+          },
+        },
+        {
+          name: "add_venue_to_watchlist",
+          description: "Add a venue to this user's watchlist so they get WhatsApp alerts when new events appear. Only call this after the user has confirmed they want to watch the venue.",
+          input_schema: {
+            type: "object" as const,
+            properties: {
+              url:       { type: "string", description: "The venue website URL" },
+              label:     { type: "string", description: "The venue display name" },
+              image_url: { type: "string", description: "URL of the venue image for carousel cards (optional)" },
+            },
+            required: ["url", "label"],
+          },
+        },
+        {
+          name: "list_watched_venues",
+          description: "List all venues this user is currently watching for event updates.",
+          input_schema: { type: "object" as const, properties: {} },
+        },
+        {
+          name: "remove_venue_from_watchlist",
+          description: "Stop watching a venue and remove it from the user's watchlist.",
+          input_schema: {
+            type: "object" as const,
+            properties: {
+              label: { type: "string", description: "The venue label to remove" },
+            },
+            required: ["label"],
+          },
+        },
       ],
       tool_choice: { type: "auto" },
     });
@@ -586,6 +679,84 @@ export async function POST(req: NextRequest) {
           await sendEventTemplate(from, event_title, gigpig_slug, wa);
           console.log(`[WA LINK] ${from} (${wa.botName}): go fallback → ${gigpig_slug}`);
         }
+      } else if (toolUse.name === "find_venue") {
+        const { query } = toolUse.input as { query: string };
+        const info = await findVenueInfo(query);
+        const toolResult = info.url
+          ? `Found: "${info.name}" at ${info.url}${info.image_url ? ` (image: ${info.image_url})` : ""}.\n\nPage preview:\n${info.preview}`
+          : `Could not find a venue matching "${query}". Try a different name or paste the URL directly.`;
+        const followUp = await client.messages.create({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 200,
+          system: buildSystemPrompt(wa.botName),
+          messages: [
+            ...fullHistory,
+            { role: "assistant", content: response.content },
+            { role: "user", content: [{ type: "tool_result", tool_use_id: toolUse.id, content: toolResult }] },
+          ],
+        });
+        const followUpText = followUp.content.find(b => b.type === "text")?.text ?? "";
+        if (followUpText) await sendWhatsApp(from, followUpText, wa);
+
+      } else if (toolUse.name === "add_venue_to_watchlist") {
+        const { url, label, image_url } = toolUse.input as { url: string; label: string; image_url?: string };
+        const go_slug = urlToGoSlug(url);
+        const { data: existing } = await supabase.from("watched_urls").select("id").eq("phone_number", from).eq("url", url).maybeSingle();
+        let toolResult: string;
+        if (existing) {
+          toolResult = `Already watching ${label}.`;
+        } else {
+          await supabase.from("watched_urls").insert({ url, phone_number: from, label, image_url: image_url ?? null, go_slug });
+          toolResult = `Added ${label} to watchlist. Daily scan will alert when new events appear.`;
+          console.log(`[WATCH] ${from} → ${label} (${url})`);
+        }
+        const followUp = await client.messages.create({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 150,
+          system: buildSystemPrompt(wa.botName),
+          messages: [
+            ...fullHistory,
+            { role: "assistant", content: response.content },
+            { role: "user", content: [{ type: "tool_result", tool_use_id: toolUse.id, content: toolResult }] },
+          ],
+        });
+        const followUpText = followUp.content.find(b => b.type === "text")?.text ?? "";
+        if (followUpText) await sendWhatsApp(from, followUpText, wa);
+
+      } else if (toolUse.name === "list_watched_venues") {
+        const { data: venues } = await supabase.from("watched_urls").select("label, url, last_changed").eq("phone_number", from).order("created_at");
+        const toolResult = venues?.length
+          ? venues.map(v => `• ${v.label} (${v.url})${v.last_changed ? " — last updated " + new Date(v.last_changed).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : ""}`).join("\n")
+          : "No venues on your watchlist yet.";
+        const followUp = await client.messages.create({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 200,
+          system: buildSystemPrompt(wa.botName),
+          messages: [
+            ...fullHistory,
+            { role: "assistant", content: response.content },
+            { role: "user", content: [{ type: "tool_result", tool_use_id: toolUse.id, content: toolResult }] },
+          ],
+        });
+        const followUpText = followUp.content.find(b => b.type === "text")?.text ?? "";
+        if (followUpText) await sendWhatsApp(from, followUpText, wa);
+
+      } else if (toolUse.name === "remove_venue_from_watchlist") {
+        const { label } = toolUse.input as { label: string };
+        await supabase.from("watched_urls").delete().eq("phone_number", from).ilike("label", label);
+        const followUp = await client.messages.create({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 150,
+          system: buildSystemPrompt(wa.botName),
+          messages: [
+            ...fullHistory,
+            { role: "assistant", content: response.content },
+            { role: "user", content: [{ type: "tool_result", tool_use_id: toolUse.id, content: `Removed ${label} from watchlist.` }] },
+          ],
+        });
+        const followUpText = followUp.content.find(b => b.type === "text")?.text ?? "";
+        if (followUpText) await sendWhatsApp(from, followUpText, wa);
+
       } else if (toolUse.name === "send_events_carousel") {
         const { events } = toolUse.input as { events: Array<{ event_title: string; gigpig_slug: string }> };
         const enriched = events.map(e => {

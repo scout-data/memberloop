@@ -11,7 +11,8 @@ export async function GET(
     .from("watched_urls")
     .select("url")
     .eq("go_slug", slug)
-    .single();
+    .limit(1)
+    .maybeSingle();
 
   if (data?.url) {
     return NextResponse.redirect(data.url, { status: 302 });
