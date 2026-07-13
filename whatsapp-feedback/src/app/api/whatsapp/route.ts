@@ -498,16 +498,35 @@ export async function POST(req: NextRequest) {
 
     await markAsRead(message.id, wa);
 
-    // ── Load history from Supabase ─────────────────────────────────────────────
-    const { data: historyRows } = await supabase
-      .from("messages")
-      .select("role, content")
-      .eq("phone_number", from)
-      .order("created_at", { ascending: true })
-      .limit(30);
+    // ── Load history + profile from Supabase ──────────────────────────────────
+    const [historyResult, profileResult] = await Promise.all([
+      supabase.from("messages").select("role, content").eq("phone_number", from).order("created_at", { ascending: true }).limit(30),
+      supabase.from("user_profiles").select("pending_venue").eq("phone_number", from).maybeSingle(),
+    ]);
 
     type Message = { role: "user" | "assistant"; content: string };
-    const history: Message[] = (historyRows ?? []) as Message[];
+    const history: Message[] = (historyResult.data ?? []) as Message[];
+    const pendingVenue = profileResult.data?.pending_venue as { name: string; url: string; image_url?: string } | null;
+
+    // ── Intercept "Yes" confirmations for pending venue adds ───────────────────
+    // Bypass Claude entirely — deterministic, survives deploys, no history pollution
+    if (pendingVenue && /\b(yes|yeah|sure|ok|yep)\b/i.test(text) && text.trim().length < 60) {
+      const go_slug = urlToGoSlug(pendingVenue.url);
+      const { data: existing } = await supabase.from("watched_urls").select("id").eq("phone_number", from).eq("url", pendingVenue.url).maybeSingle();
+      if (!existing) {
+        await supabase.from("watched_urls").insert({ url: pendingVenue.url, phone_number: from, label: pendingVenue.name, image_url: pendingVenue.image_url ?? null, go_slug });
+        console.log(`[WATCH] ${from} → ${pendingVenue.name} (${pendingVenue.url})`);
+      }
+      await supabase.from("user_profiles").update({ pending_venue: null }).eq("phone_number", from);
+      const confirmMsg = `Done! I've added ${pendingVenue.name} to your watchlist. I'll message you when new events go up.`;
+      await sendWhatsApp(from, confirmMsg, wa);
+      console.log(`[WA OUT] ${from}: ${confirmMsg}`);
+      await supabase.from("messages").insert([
+        { phone_number: from, role: "user", content: text, wa_message_id: message.id },
+        { phone_number: from, role: "assistant", content: confirmMsg },
+      ]);
+      return NextResponse.json({ ok: true });
+    }
 
     // Upsert user_profiles row
     if (history.length === 0) {
@@ -719,10 +738,13 @@ export async function POST(req: NextRequest) {
           console.log(`[WA OUT] ${from}: ${followUpText}`);
           await sendWhatsApp(from, followUpText, wa);
         }
-        // Append venue metadata so the next "Yes" has full context — not shown to user
-        savedContent = info.url
-          ? `${followUpText}\n[venue: ${info.name} | ${info.url}${info.image_url ? ` | image: ${info.image_url}` : ""}]`
-          : (followUpText || reply);
+        // Save pending venue so the "Yes" intercept can add it without Claude
+        if (info.url) {
+          await supabase.from("user_profiles").update({
+            pending_venue: { name: info.name, url: info.url, image_url: info.image_url ?? null },
+          }).eq("phone_number", from);
+        }
+        savedContent = followUpText || reply;
 
       } else if (toolUse.name === "add_venue_to_watchlist") {
         const { url, label, image_url } = toolUse.input as { url: string; label: string; image_url?: string };
@@ -733,6 +755,7 @@ export async function POST(req: NextRequest) {
           toolResult = `Already watching ${label}.`;
         } else {
           await supabase.from("watched_urls").insert({ url, phone_number: from, label, image_url: image_url ?? null, go_slug });
+          await supabase.from("user_profiles").update({ pending_venue: null }).eq("phone_number", from);
           toolResult = `Added ${label} to watchlist. Daily scan will alert when new events appear.`;
           console.log(`[WATCH] ${from} → ${label} (${url})`);
         }
