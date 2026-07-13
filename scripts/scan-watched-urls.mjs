@@ -138,7 +138,7 @@ async function sendWhatsApp(to, body) {
 // ─── WhatsApp carousel ────────────────────────────────────────────────────────
 
 async function sendCarousel(to, events, goSlug, venueImage) {
-  const count = Math.min(events.length, 3);
+  const count = Math.min(events.length, 10);
   const templateName = count === 1 ? "crowdloop_event_card" : `crowdloop_carousel_${count}`;
 
   const makeCard = (event, index) => ({
