@@ -31,11 +31,14 @@ export async function POST(req: NextRequest) {
     }
     const filteredMessages = normalized;
 
+    const today = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    const systemWithDate = `TODAY'S DATE: ${today}\n\n${config.system}`;
+
     console.log("[venue-chat] sending to Claude:", JSON.stringify(filteredMessages));
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 300,
-      system: config.system,
+      system: systemWithDate,
       messages: filteredMessages,
     });
 
