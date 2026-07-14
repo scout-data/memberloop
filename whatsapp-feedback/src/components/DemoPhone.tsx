@@ -52,7 +52,7 @@ export function WhatsAppCard({ card, onCta }: { card: CardData; onCta?: (cta: st
 
 // ─── Demo Phone ───────────────────────────────────────────────────────────────
 
-export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput, onKey, onSend, onCardCta, showPrompt, readOnly, venueLogoUrl, venueLogoBg, venueName }: {
+export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput, onKey, onSend, onCardCta, onSuggestedReply, showPrompt, readOnly, venueLogoUrl, venueLogoBg, venueName }: {
   messages: DemoMessage[];
   input?: string;
   loading?: boolean;
@@ -62,6 +62,7 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
   onKey?: (e: React.KeyboardEvent) => void;
   onSend?: () => void;
   onCardCta?: (cta: string) => void;
+  onSuggestedReply?: (text: string) => void;
   showPrompt?: boolean;
   readOnly?: boolean;
   venueLogoUrl?: string;

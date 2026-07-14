@@ -108,7 +108,7 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
 
 
         {/* Phone */}
-        <div className="flex w-full justify-center lg:justify-start order-2">
+        <div className="flex flex-col w-full items-center lg:items-start order-2" style={{ gap: 16 }}>
           <DemoPhone
             messages={messages}
             input={input}
@@ -118,11 +118,20 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
             onInput={setInput}
             onKey={handleKey}
             onSend={() => send(input)}
+            onSuggestedReply={send}
             showPrompt={true}
             venueLogoUrl={config.logoUrl}
             venueLogoBg={config.logoBg}
             venueName={config.name}
           />
+          {messages.length === 1 && !loading && (
+            <button
+              onClick={() => send("What's on this week?")}
+              style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: "#666", fontFamily: "'Plus Jakarta Sans', Helvetica Neue, Arial, sans-serif", padding: 0, width: 300, textAlign: "center", textDecoration: "underline" }}
+            >
+              What&apos;s on this week?
+            </button>
+          )}
         </div>
 
       </div>
