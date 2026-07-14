@@ -9,20 +9,19 @@ import { HomeDemoSection } from "@/components/HomeDemoSection";
 type ChatMessage =
   | { kind: "bubble"; side: "left" | "right"; time: string; text: string }
   | { kind: "separator"; label: string }
-  | { kind: "card"; body: string; image: string; title: string; detail: string; cta: string };
+  | { kind: "card"; body: string; image: string; title: string; detail: string; cta: string; url?: string };
 
 const MESSAGES: ChatMessage[] = [
-  { kind: "bubble",    side: "left",  time: "23:51", text: "How was Oval Space tonight? Want notifying when Floating Points is playing again?" },
-  { kind: "bubble",    side: "right", time: "23:52", text: "Yes please! Keep me posted on similar nights there too." },
-  { kind: "bubble",    side: "left",  time: "23:52", text: "Done. You're on the list for Floating Points dates and deep house nights at Oval Space." },
-  { kind: "separator", label: "Next month" },
-  { kind: "card", body: "Oval Space have a night next Saturday with Four Tet that we think you'd love.", image: "/four-tet.jpg", title: "Four Tet · Oval Space", detail: "Saturday 15 Feb · Doors 9pm · From £22", cta: "Buy tickets" },
-  { kind: "bubble",    side: "right", time: "18:31", text: "Yes please!" },
-  { kind: "bubble",    side: "left",  time: "18:31", text: "You're in. Ticket confirmed and on its way to you." },
+  { kind: "bubble", side: "right", time: "14:23", text: "Any events coming up?" },
+  { kind: "bubble", side: "left",  time: "14:23", text: "Here's two events this summer you'll love 👇" },
+  { kind: "card", body: "Jay-Z brings The HOV Tour to Tottenham Hotspur Stadium this summer.", image: "/hero-crowd.jpg", title: "Jay-Z · The HOV Tour", detail: "Sat 18 Jul 2026", cta: "View event", url: "https://www.tottenhamhotspurstadium.com/events/1075568/jay-z" },
+  { kind: "card", body: "The NFL returns to London for another sell-out showdown.", image: "/wembley-fireworks.webp", title: "NFL London 2026", detail: "Oct 2026 · From £45", cta: "View event", url: "https://www.tottenhamhotspurstadium.com/events/1069172/nfl-2026" },
+  { kind: "bubble", side: "right", time: "14:25", text: "Text me when Jay-Z tickets go on sale" },
+  { kind: "bubble", side: "left",  time: "14:25", text: "Saved. Will message you the morning they go on sale." },
 ];
 
 // Delay before each message appears (ms)
-const DELAYS = [1800, 3200, 2200, 1400, 2800, 1200, 1800];
+const DELAYS = [1200, 1800, 2000, 2000, 2200, 1800];
 
 const ROTATING_WORDS = ["fan", "venue's", "club's"];
 
@@ -58,29 +57,27 @@ export default function Home() {
     <div className="min-h-screen bg-surface-primary">
 
       {/* Hero */}
-      <div className="relative overflow-hidden flex flex-col" style={{ backgroundImage: "url('/hero-crowd.jpg')", backgroundSize: "cover", backgroundPosition: "center", height: "100vh" }}>
+      <div className="relative overflow-hidden flex flex-col bg-surface-primary" style={{ height: "100vh" }}>
 
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/55 to-black/30" />
-
-        <Nav active="home" transparent />
+        <Nav active="home" />
 
         <section className="relative z-10 px-6 lg:px-10 py-16 lg:py-24 max-w-[1328px] mx-auto w-full flex-1 flex items-center">
           <div className="flex flex-col lg:flex-row items-center lg:items-stretch gap-12 lg:gap-20 w-full">
 
             {/* Left */}
             <div className="flex-1 max-w-[636px] flex flex-col justify-center pt-2 lg:pt-4">
-              <h1 className="text-[48px] lg:text-[56px] font-light leading-[1.05] tracking-[-0.04em] text-white mb-6 lg:mb-7">
-                Grow your <RotatingWord /><br className="hidden lg:block" /> community on WhatsApp
+              <h1 className="text-[52px] lg:text-[68px] font-light leading-[1.05] tracking-[-0.04em] text-text-primary mb-6 lg:mb-7">
+                Sell out events<br /> through WhatsApp
               </h1>
 
-              <p className="text-[17px] lg:text-[20px] leading-[1.4] tracking-[-0.02em] mb-8 lg:mb-10 max-w-[500px] text-white/75">
+              <p className="text-[17px] lg:text-[20px] leading-[1.4] tracking-[-0.02em] mb-8 lg:mb-10 max-w-[500px] text-text-secondary">
                 Build a personal relationship with every one of your community. Promote and sell out events on the world&apos;s most trusted messaging app.
               </p>
 
               <div className="flex items-center gap-3">
                 <a
                   href="/contact"
-                  className="inline-flex items-center gap-2 bg-white text-[#003014] text-[15px] font-medium px-6 py-3 rounded-full hover:bg-white/90 transition-colors tracking-[-0.01em]"
+                  className="inline-flex items-center gap-2 bg-[#232323] text-white text-[15px] font-medium px-6 py-3 rounded-full hover:bg-black transition-colors tracking-[-0.01em]"
                 >
                   Get started
                 </a>
@@ -152,30 +149,30 @@ export default function Home() {
 
 const WHO_WE_HELP = [
   {
-    id: "live",
-    label: "Festivals & Live Sport",
+    id: "music",
+    label: "Music",
     img: "/hero-crowd.jpg",
-    heading: "crowdloop for live events",
-    body: "Know what your crowd thought while it's still fresh. Build a direct WhatsApp channel to everyone who attended, and use it to sell the next event before they've even got home.",
+    heading: "crowdloop for music",
+    body: "From venue nights to festivals, give fans a direct line to upcoming shows. Notify them the moment tickets drop, send set time updates, and collect feedback while the night is still fresh.",
   },
   {
-    id: "venues",
-    label: "Event Venues",
-    img: "/event-venues.jpg",
-    heading: "crowdloop for event venues",
-    body: "Collect guest feedback after every hire, re-engage bookers for their next event, and turn one-off bookings into long-term relationships. Your venue becomes the obvious choice next time.",
+    id: "sport",
+    label: "Sport",
+    img: "/sport.jpg",
+    heading: "crowdloop for sport",
+    body: "Keep season ticket holders and casual fans close. Send fixture reminders, ticket release alerts, and post-match check-ins. All in the channel they already use every day.",
   },
   {
-    id: "corporate",
-    label: "Corporate Event Teams",
-    img: "/corporate-events.jpg",
-    heading: "crowdloop for corporate events",
-    body: "Follow up with every attendee, collect meaningful feedback for stakeholders, and give your clients the data they need to justify the next event and book it with you again.",
+    id: "food",
+    label: "Food & Drink",
+    img: "/food-drink.jpg",
+    heading: "crowdloop for food & drink",
+    body: "Let guests discover what's on, make a booking, and hear about new menus or events. All without leaving WhatsApp. Turn every visit into a reason to come back.",
   },
 ];
 
 function WhoWeHelpSection() {
-  const [selected, setSelected] = useState("live");
+  const [selected, setSelected] = useState("music");
   const active = WHO_WE_HELP.find(w => w.id === selected)!;
 
   return (
@@ -191,7 +188,7 @@ function WhoWeHelpSection() {
           marginBottom: 52,
           fontFamily: "'Plus Jakarta Sans', sans-serif",
         }}>
-          For events where every guest counts
+          Make it easy for fans to find and book events
         </h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 lg:items-start" style={{ gap: "40px 80px" }}>
@@ -885,14 +882,14 @@ function Screen() {
           flexShrink: 0,
         }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/crowdloop-logo-square.png" alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <img src="/wembley-fireworks.webp" alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
 
         {/* Name + online */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
             <span style={{ fontSize: 13, fontWeight: 600, color: "#000", fontFamily: "inherit" }}>
-              crowdloop
+              Tottenham Hotspur Stadium
             </span>
             {/* Meta verified tick */}
             <svg width="12" height="12" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0 }}>
@@ -1012,10 +1009,10 @@ function AnimatedChat() {
               </span>
             </div>
           ) : msg.kind === "card" ? (
-            <HeroCard body={msg.body} image={msg.image} title={msg.title} detail={msg.detail} cta={msg.cta} />
+            <HeroCard body={msg.body} image={msg.image} title={msg.title} detail={msg.detail} cta={msg.cta} url={msg.url} />
           ) : (
             <Bubble side={msg.side} time={msg.time} read={msg.side === "right" && readUpTo > i}>
-              {msg.text}
+              {renderBubbleText(msg.text)}
             </Bubble>
           )}
         </div>
@@ -1026,7 +1023,7 @@ function AnimatedChat() {
 
 // ─── WhatsApp hero card (template message) ────────────────────────────────────
 
-function HeroCard({ body, image, title, detail, cta }: { body: string; image: string; title: string; detail: string; cta: string }) {
+function HeroCard({ body, image, title, detail, cta, url }: { body: string; image: string; title: string; detail: string; cta: string; url?: string }) {
   return (
     <div style={{ display: "flex", justifyContent: "flex-start" }}>
       <div style={{
@@ -1040,20 +1037,34 @@ function HeroCard({ body, image, title, detail, cta }: { body: string; image: st
           <img src={image} alt={title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
         <div style={{ padding: "8px 10px 6px" }}>
-          <div style={{ fontSize: 13, color: "#111", lineHeight: "18px", marginBottom: 6 }}>{body}</div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#111", marginBottom: 1, lineHeight: "16px" }}>{title}</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "#111", marginBottom: 3, lineHeight: "16px" }}>{title}</div>
+          <div style={{ fontSize: 12, color: "#111", lineHeight: "17px", marginBottom: 3 }}>{body}</div>
           <div style={{ fontSize: 11, color: "#667781", lineHeight: "15px" }}>{detail}</div>
         </div>
         <div style={{ height: 1, background: "#F0F0F0" }} />
-        <button style={{ width: "100%", padding: "7px 10px", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, background: "none", border: "none", cursor: "default" }}>
+        <a href={url ?? "#"} target="_blank" rel="noopener noreferrer" style={{ width: "100%", padding: "7px 10px", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, background: "none", border: "none", cursor: "pointer", textDecoration: "none" }}>
           <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
             <path d="M1 6.5h11M7 1.5l5 5-5 5" stroke="#00A67E" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           <span style={{ fontSize: 13, fontWeight: 500, color: "#00A67E" }}>{cta}</span>
-        </button>
+        </a>
       </div>
     </div>
   );
+}
+
+function renderBubbleText(text: string) {
+  return text.split("\n").map((line, i) => {
+    const isUrl = /^https?:\/\//.test(line.trim());
+    return (
+      <span key={i}>
+        {i > 0 && <br />}
+        {isUrl
+          ? <span style={{ color: "#1a75bb", textDecoration: "underline", wordBreak: "break-all" }}>{line}</span>
+          : line}
+      </span>
+    );
+  });
 }
 
 // ─── WhatsApp bubble ──────────────────────────────────────────────────────────

@@ -5,7 +5,7 @@ import { DemoMessage, CardData } from "@/lib/demoModes";
 
 // ─── WhatsApp Rich Card ───────────────────────────────────────────────────────
 
-export function WhatsAppCard({ card, onCta }: { card: CardData; onCta?: (cta: string) => void }) {
+export function WhatsAppCard({ card, onCta }: { card: CardData; onCta?: (cta: string) => void; }) {
   return (
     <div style={{
       width: 220, borderRadius: 8, overflow: "hidden",
@@ -34,33 +34,38 @@ export function WhatsAppCard({ card, onCta }: { card: CardData; onCta?: (cta: st
         <div style={{ fontSize: 11, color: "#667781", lineHeight: "15px" }}>{card.detail}</div>
       </div>
       <div style={{ height: 1, background: "#F0F0F0", margin: "0 10px" }} />
-      <button
+      <a
+        href={card.url ?? "#"}
+        target="_blank"
+        rel="noopener noreferrer"
         onClick={() => onCta?.(card.cta)}
-        disabled={!onCta}
-        style={{ width: "100%", padding: "7px 10px", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, background: "none", border: "none", cursor: onCta ? "pointer" : "default" }}
+        style={{ width: "100%", padding: "7px 10px", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, background: "none", border: "none", cursor: "pointer", textDecoration: "none" }}
       >
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
           <path d="M1 6.5h11M7 1.5l5 5-5 5" stroke="#00A67E" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         <span style={{ fontSize: 13, fontWeight: 500, color: "#00A67E" }}>{card.cta}</span>
-      </button>
+      </a>
     </div>
   );
 }
 
 // ─── Demo Phone ───────────────────────────────────────────────────────────────
 
-export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput, onKey, onSend, onCardCta, showPrompt }: {
+export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput, onKey, onSend, onCardCta, showPrompt, readOnly, venueLogoUrl, venueName }: {
   messages: DemoMessage[];
-  input: string;
-  loading: boolean;
+  input?: string;
+  loading?: boolean;
   chatRef: React.RefObject<HTMLDivElement>;
-  inputRef: React.RefObject<HTMLInputElement>;
-  onInput: (v: string) => void;
-  onKey: (e: React.KeyboardEvent) => void;
-  onSend: () => void;
+  inputRef?: React.RefObject<HTMLInputElement>;
+  onInput?: (v: string) => void;
+  onKey?: (e: React.KeyboardEvent) => void;
+  onSend?: () => void;
   onCardCta?: (cta: string) => void;
   showPrompt?: boolean;
+  readOnly?: boolean;
+  venueLogoUrl?: string;
+  venueName?: string;
 }) {
   return (
     <div style={{
@@ -105,11 +110,11 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
           </div>
           <div style={{ width: 34, height: 34, borderRadius: "50%", overflow: "hidden", flexShrink: 0 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/crowdloop-logo-square.png" alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src={venueLogoUrl ?? "/wembley-fireworks.webp"} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: "#000", fontFamily: "inherit" }}>crowdloop</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#000", fontFamily: "inherit" }}>{venueName ?? "Tottenham Hotspur Stadium"}</span>
               <svg width="12" height="12" viewBox="0 0 20 20" fill="none" style={{ flexShrink: 0 }}>
                 <circle cx="10" cy="10" r="10" fill="#1DA1F2"/>
                 <path d="M5.5 10L8.5 13L14.5 7" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -127,6 +132,28 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
 
           {messages.map((msg, i) => {
             const right = msg.role === "user";
+
+            if (msg.carousel && msg.carousel.length > 0) {
+              return (
+                <div key={i} style={{ animation: "fadeSlideIn 0.25s ease" }}>
+                  {msg.content ? (
+                    <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: 4 }}>
+                      <div style={{ background: "#fff", borderRadius: "2px 12px 12px 12px", padding: "5px 8px 4px", maxWidth: "80%", boxShadow: "0 1px 1px rgba(0,0,0,0.1)", fontFamily: "Helvetica Neue, Arial, sans-serif", fontSize: 13, lineHeight: "19px", color: "#111", whiteSpace: "pre-wrap" }}>
+                        {msg.content}
+                      </div>
+                    </div>
+                  ) : null}
+                  <div style={{ display: "flex", gap: 6, overflowX: "auto", scrollbarWidth: "none", paddingBottom: 2 }}>
+                    {msg.carousel.map((card, j) => (
+                      <div key={j} style={{ flexShrink: 0, width: 200 }}>
+                        <WhatsAppCard card={card} onCta={onCardCta} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+
             if (msg.card) {
               return (
                 <div key={i} style={{ display: "flex", justifyContent: "flex-start", animation: "fadeSlideIn 0.25s ease" }}>
@@ -163,7 +190,7 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
         </div>
 
         {/* Type prompt */}
-        {showPrompt && messages.length === 1 && !loading && (
+        {!readOnly && showPrompt && messages.length === 1 && !loading && (
           <div style={{ textAlign: "center", padding: "6px 8px 4px", background: "#ECE5DD", animation: "fadeSlideIn 0.4s ease 0.8s both" }}>
             <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", background: "#25D366", borderRadius: 999, padding: "4px 12px", fontFamily: "Helvetica Neue, Arial, sans-serif", display: "inline-block", animation: "nudge 1.6s ease-in-out infinite" }}>
               ✏️ Type your reply below
@@ -172,31 +199,33 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
         )}
 
         {/* Input bar */}
-        <div style={{ background: "#F0F2F5", padding: "7px 8px", display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M11 4v14M4 11h14" stroke="#8E8E93" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-          <div style={{ flex: 1, background: "#fff", borderRadius: 999, padding: "0 10px", display: "flex", alignItems: "center", animation: !input && !loading ? "inputPulse 2s ease-in-out infinite" : "none" }}>
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={e => onInput(e.target.value)}
-              onKeyDown={onKey}
-              placeholder="Message"
-              style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 12, color: "#111", padding: "6px 0", fontFamily: "Helvetica Neue, Arial, sans-serif", caretColor: "#111" }}
-            />
-          </div>
-          <button
-            onClick={onSend}
-            disabled={!input.trim() || loading}
-            style={{ width: 30, height: 30, borderRadius: "50%", background: input.trim() && !loading ? "#25D366" : "#C8C8C8", border: "none", cursor: input.trim() && !loading ? "pointer" : "default", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.15s" }}
-          >
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-              <path d="M1 6.5h11M7 1.5l5 5-5 5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+        {!readOnly && (
+          <div style={{ background: "#F0F2F5", padding: "7px 8px", display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path d="M11 4v14M4 11h14" stroke="#8E8E93" strokeWidth="2" strokeLinecap="round"/>
             </svg>
-          </button>
-        </div>
+            <div style={{ flex: 1, background: "#fff", borderRadius: 999, padding: "0 10px", display: "flex", alignItems: "center", animation: !input && !loading ? "inputPulse 2s ease-in-out infinite" : "none" }}>
+              <input
+                ref={inputRef}
+                type="text"
+                value={input ?? ""}
+                onChange={e => onInput?.(e.target.value)}
+                onKeyDown={onKey}
+                placeholder="Message"
+                style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 12, color: "#111", padding: "6px 0", fontFamily: "Helvetica Neue, Arial, sans-serif", caretColor: "#111" }}
+              />
+            </div>
+            <button
+              onClick={onSend}
+              disabled={!input?.trim() || loading}
+              style={{ width: 30, height: 30, borderRadius: "50%", background: input?.trim() && !loading ? "#25D366" : "#C8C8C8", border: "none", cursor: input?.trim() && !loading ? "pointer" : "default", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.15s" }}
+            >
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M1 6.5h11M7 1.5l5 5-5 5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
