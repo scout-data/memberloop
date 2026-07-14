@@ -83,13 +83,14 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
       </div>
 
       {/* Layout */}
-      <div className="flex flex-col lg:flex-row flex-1 w-full mx-auto items-start"
-        style={{ maxWidth: 1100, padding: "48px 24px", gap: 0 }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 w-full px-6 lg:px-16"
+        style={{ paddingTop: 64, paddingBottom: 48, gap: 100 }}
+      >
 
         {/* Text */}
-        <div className="flex flex-col w-full lg:flex-1 lg:pr-0" style={{ gap: 24, paddingBottom: 40 }}>
+        <div className="flex flex-col w-full lg:items-end order-1" style={{ gap: 24, paddingBottom: 40 }}><div style={{ maxWidth: 520 }}>
           <div>
-            <h1 style={{ fontSize: 32, fontWeight: 300, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#111", marginBottom: 16 }}>
+            <h1 className="lg:text-5xl" style={{ fontSize: 32, fontWeight: 300, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#111", marginBottom: 16 }}>
               Build a personal channel with every {config.name} fan
             </h1>
             <p style={{ fontSize: 16, color: "#666", lineHeight: 1.6, letterSpacing: "-0.01em" }}>
@@ -103,10 +104,11 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
           >
             ↺ Start over
           </button>
-        </div>
+        </div></div>
+
 
         {/* Phone */}
-        <div className="flex w-full justify-center lg:justify-start lg:flex-shrink-0" style={{ paddingLeft: 0 }}>
+        <div className="flex w-full justify-center lg:justify-start order-2">
           <DemoPhone
             messages={messages}
             input={input}

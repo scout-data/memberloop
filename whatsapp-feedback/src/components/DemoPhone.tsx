@@ -212,7 +212,7 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
                 onChange={e => onInput?.(e.target.value)}
                 onKeyDown={onKey}
                 placeholder="Message"
-                style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 12, color: "#111", padding: "6px 0", fontFamily: "Helvetica Neue, Arial, sans-serif", caretColor: "#111" }}
+                style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 16, color: "#111", padding: "6px 0", fontFamily: "Helvetica Neue, Arial, sans-serif", caretColor: "#111" }}
               />
             </div>
             <button
