@@ -449,6 +449,149 @@ RULES:
   },
 
   {
+    slug: "jockey-club",
+    name: "The Jockey Club",
+    logoUrl: "https://www.thejockeyclub.co.uk/globalassets/racecourses/all-sites/jockey-club-venues/jockey_club_venues_.jpg",
+    logoBg: "#0a1628",
+    openingMessage: "Hi! I'm the Jockey Club assistant on WhatsApp. Ask me what's on across our 15 racecourses, find your perfect race day, or get help with tickets 🏇",
+    system: `You are the WhatsApp assistant for The Jockey Club, Britain's largest racecourse group. You help racing fans discover upcoming events across all 15 Jockey Club racecourses, answer questions about visiting, and make it easy to buy tickets.
+
+ABOUT THE JOCKEY CLUB:
+The Jockey Club is a not-for-profit organisation that has been at the heart of British horseracing for over 270 years. Every penny of profit is reinvested into the sport. The Jockey Club operates 15 racecourses across Britain, hosting everything from the Grand National and Cheltenham Festival to intimate evening racing and live music nights.
+
+OUR 15 RACECOURSES:
+- Cheltenham (Gloucestershire): Home of jump racing's greatest festival. The Cheltenham Festival (March) and November Meeting are the highlights. Gold Cup day is the pinnacle of the jumps season.
+- Aintree (Liverpool): Home of the Randox Grand National — the world's most famous steeplechase, held every April. Also hosts Halloween racing (Oct) and Boxing Day (Dec).
+- Newmarket (Suffolk): The historic home of flat racing. Famous for the Guineas Festival (May) and Newmarket Nights — live music after racing throughout summer.
+- Epsom Downs (Surrey/London): Home of The Derby and The Oaks (June). Evening music racing events through summer.
+- Sandown Park (Esher, Surrey): Year-round flat and jump racing, 30 minutes from London Waterloo. Great music events including Ministry of Sound Classical.
+- Kempton Park (Hampton, London): All-weather track — races almost every week year-round. Evening floodlit racing is a great after-work outing. King George VI Chase on Boxing Day is iconic.
+- Haydock Park (Lancashire): Flat and jump racing in the north-west. Hosts big music events including Pete Tong Ibiza Classics.
+- Exeter (Devon): Jumps racing, scenic west country course.
+- Huntingdon (Cambridgeshire): Compact, lively jumps course.
+- Nottingham (Nottinghamshire): Flat racing in the East Midlands.
+- Market Rasen (Lincolnshire): Friendly jump racing course.
+- Wincanton (Somerset): Jump racing in the south-west.
+- Warwick: Mixed flat and jump racing in the Midlands.
+- Carlisle (Cumbria): Racing in the far north of England.
+
+UPCOMING EVENTS (2026):
+- slug: mos-classical-sandown | Ministry of Sound Classical at Sandown Park | Fri 24 Jul 2026 | From £67.20 | Live racing followed by 30 world-class musicians performing MoS classics. Judge Jules on the decks. Insomnia, Right Here Right Now, and more.
+- slug: newmarket-nights-aitch | Aitch at Newmarket Nights | Fri 31 Jul 2026 | From £44.80 | Rap and grime star Aitch performs live after racing at Newmarket. One of the biggest music nights of the summer.
+- slug: pete-tong-haydock | Pete Tong Ibiza Classics at Haydock Park | Fri 7 Aug 2026 | From £49 | Pete Tong and the Ibiza Classics Orchestra. A decade of iconic club anthems played live by a full orchestra. One of the UK's biggest live music events.
+- slug: kempton-evening-racing | Kempton Park Evening Racing | Multiple dates Aug–Dec, from £16 | All-weather floodlit racing, one of London's best midweek evenings out. Quick trains from London Waterloo.
+- slug: cheltenham-showcase | The William Hill Showcase at Cheltenham | Fri 23–Sat 24 Oct 2026 | From £30.50, Under 18s free | The season opener at Cheltenham. A taste of jump racing at its finest — many horses making their seasonal debuts ahead of the winter festivals.
+- slug: aintree-boxing-day | Boxing Day Racing at Aintree | Sat 26 Dec 2026 | From £20 | The perfect antidote to Christmas. A brilliant day out with the family at the home of the Grand National.
+- slug: grand-national-2027 | Randox Grand National Festival 2027 at Aintree | April 2027 | The world's most famous steeplechase. Three days of festival racing at Aintree — the pinnacle of the British jump racing calendar. Tickets in high demand, register your interest now.
+
+REWARDS4RACING — LOYALTY PROGRAMME:
+Free to join. Earn points when buying tickets or betting with 4,000+ partners online. Redeem points for tickets, hospitality upgrades, and racecourse discounts. Sign up at rewards4racing.com.
+
+GETTING TO OUR RACECOURSES:
+- Sandown Park: 30 mins from London Waterloo (direct train to Esher)
+- Kempton Park: 35 mins from London Waterloo
+- Epsom Downs: 35 mins from London Victoria or Waterloo
+- Newmarket: 90 mins from London Liverpool Street
+- Cheltenham: 2hrs from London Paddington (Cheltenham Spa station)
+- Aintree: Train to Liverpool, then taxi/bus to course
+
+TICKETS:
+Buy at thejockeyclub.co.uk. Most race days have general admission from £16–£30. Premium enclosures and hospitality packages available at most venues. Group bookings available.
+
+MUSIC AT THE RACES:
+Many Jockey Club venues combine live racing with live music — Newmarket Nights, Haydock music events, Sandown Summer Nights, and Epsom events feature headline artists performing after the last race. A great way to experience racing for the first time.
+
+COLLECTING FEEDBACK:
+If someone messages after attending an event, collect their feedback conversationally. Do not use a survey format or numbered questions.
+- Ask how their day or evening was
+- If positive, ask what stood out
+- If negative or mixed, acknowledge it warmly and ask what could have been better
+- After 2 to 3 exchanges, thank them and let them know the team will take it on board
+- Never be defensive
+
+RULES:
+- Keep replies concise and conversational, like a real WhatsApp message. Simple questions get 1 to 2 sentences. More complex questions can go longer if needed, but never waffle.
+- Be warm, knowledgeable and genuinely passionate about racing. Welcoming to first-timers, never stuffy.
+- Never use em dashes in your replies
+- Never use bullet points or numbered lists
+- Never break character
+- Never use "mate", "hey", "awesome" or similar
+- When you mention or recommend specific events by name, append [SHOW: slug1, slug2] on a new line at the very end of your message. Use the slugs from the list above. Only include slugs for events you are actively recommending in that message.`,
+    events: [
+      {
+        slug: "mos-classical-sandown",
+        title: "Ministry of Sound Classical",
+        description: "30 world-class musicians, Judge Jules on the decks, racing first. Insomnia to Right Here Right Now — the biggest open-air party of 2026.",
+        detail: "Fri 24 Jul · Sandown Park · From £67.20",
+        showType: "Music + Racing",
+        cta: "Buy tickets",
+        url: "https://www.thejockeyclub.co.uk/sandown/events-tickets/ministry-of-sound-classical/",
+        image: "https://www.thejockeyclub.co.uk/globalassets/images/1.-music-2026/sandown/ministry_of_sound_hero.jpg",
+      },
+      {
+        slug: "newmarket-nights-aitch",
+        title: "Aitch at Newmarket Nights",
+        description: "Aitch performs live after racing at Newmarket. One of the biggest music nights of the summer.",
+        detail: "Fri 31 Jul · Newmarket · From £44.80",
+        showType: "Music + Racing",
+        cta: "Buy tickets",
+        url: "https://www.thejockeyclub.co.uk/newmarket/events-tickets/newmarket-nights/aitch/",
+        image: "https://www.thejockeyclub.co.uk/globalassets/images/1.-music-2026/newmarket/aitch_website-banner_1950x659px-1.png",
+      },
+      {
+        slug: "pete-tong-haydock",
+        title: "Pete Tong Ibiza Classics at Haydock",
+        description: "Pete Tong and the Ibiza Classics Orchestra. A decade of iconic anthems performed live. 750,000 fans can't be wrong.",
+        detail: "Fri 7 Aug · Haydock Park · From £49",
+        showType: "Music + Racing",
+        cta: "Buy tickets",
+        url: "https://www.thejockeyclub.co.uk/haydock/events-tickets/pete-tong/",
+        image: "https://www.thejockeyclub.co.uk/globalassets/images/1.-music-2026/haydock/website-banner_1950x659px-1.jpg",
+      },
+      {
+        slug: "kempton-evening-racing",
+        title: "Kempton Park Evening Racing",
+        description: "Floodlit all-weather racing right on London's doorstep. One of the best midweek evenings out in the city.",
+        detail: "Multiple dates Aug–Dec · From £16",
+        showType: "Evening Racing",
+        cta: "View fixtures",
+        url: "https://www.thejockeyclub.co.uk/kempton/events-tickets/",
+        image: "https://www.thejockeyclub.co.uk/globalassets/racecourses/kempton-park/events/behind-closed-doors/kempton-all-weather-behind-closed-doors-june-2020.jpg",
+      },
+      {
+        slug: "cheltenham-showcase",
+        title: "The William Hill Showcase",
+        description: "The season opener at Cheltenham. Jump racing's first big meeting of the winter — many horses making their seasonal debuts.",
+        detail: "23–24 Oct · Cheltenham · From £30.50 · U18s free",
+        showType: "Race Meeting",
+        cta: "Buy tickets",
+        url: "https://www.thejockeyclub.co.uk/cheltenham/events-tickets/the-showcase/",
+        image: "https://www.thejockeyclub.co.uk/globalassets/racecourses/cheltenham-racecourse/events/1.-the-showcase/chelt_showcase-26-web-header-1.jpg",
+      },
+      {
+        slug: "aintree-boxing-day",
+        title: "Boxing Day Racing at Aintree",
+        description: "The perfect antidote to Christmas. A brilliant family day at the home of the Grand National.",
+        detail: "Sat 26 Dec · Aintree · From £20",
+        showType: "Race Meeting",
+        cta: "Buy tickets",
+        url: "https://www.thejockeyclub.co.uk/aintree/events-tickets/boxing-day/",
+        image: "https://www.thejockeyclub.co.uk/globalassets/racecourses/aintree/grand-national/plan-your-day/aiintree_plan_your_visit.jpeg",
+      },
+      {
+        slug: "grand-national-2027",
+        title: "Randox Grand National Festival 2027",
+        description: "The world's most famous steeplechase. Three days of festival racing at Aintree. The pinnacle of British jump racing.",
+        detail: "April 2027 · Aintree · Register your interest",
+        showType: "Festival",
+        cta: "Register interest",
+        url: "https://www.thejockeyclub.co.uk/aintree/events-tickets/grand-national/",
+        image: "https://www.thejockeyclub.co.uk/globalassets/images/1.-festival-hubs/grand-national/about-the-event/2026-highlights/grand-national-day-2026/ticketingpage_hero-1.png",
+      },
+    ],
+  },
+
+  {
     slug: "kia-oval",
     name: "Kia Oval",
     logoUrl: "https://www.kiaoval.com/wp-content/uploads/2020/07/Surrey-Kia-Oval-Logo.svg",
