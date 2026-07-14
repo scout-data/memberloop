@@ -91,7 +91,7 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
         <div className="flex flex-col w-full lg:items-end order-1" style={{ gap: 24, paddingBottom: 40 }}><div style={{ maxWidth: 520 }}>
           <div>
             <h1 className="lg:text-5xl" style={{ fontSize: 32, fontWeight: 300, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#111", marginBottom: 16 }}>
-              Build a personal channel with every {config.name} fan
+              Build a personal relationship with every {config.name} fan
             </h1>
             <p style={{ fontSize: 16, color: "#666", lineHeight: 1.6, letterSpacing: "-0.01em" }}>
               This is a live demo of what {config.name} WhatsApp agent could do. It knows your upcoming shows, can answer questions about visiting, take feedback from members, and sends event cards with direct booking links.
