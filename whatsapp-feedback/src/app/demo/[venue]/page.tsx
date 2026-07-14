@@ -106,7 +106,7 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
               Build a personal channel with every {config.name} fan
             </h1>
             <p style={{ fontSize: 16, color: "#666", lineHeight: 1.6, letterSpacing: "-0.01em" }}>
-              This is a live demo of what {config.name.endsWith("'s") ? config.name : `${config.name}'s`} WhatsApp agent could do. It knows your upcoming shows, can answer questions about visiting, and sends event cards with direct booking links.
+              This is a live demo of what {config.name} WhatsApp agent could do. It knows your upcoming shows, can answer questions about visiting, take feedback from members, and sends event cards with direct booking links.
             </p>
           </div>
 
