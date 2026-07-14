@@ -34,6 +34,25 @@ export async function POST(req: NextRequest) {
     const today = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
     const systemWithDate = `TODAY'S DATE: ${today}\n\n${config.system}`;
 
+    // Notify on first user message (fire-and-forget)
+    const isFirstMessage = messages.filter(m => m.role === "user").length === 1;
+    if (isFirstMessage && process.env.RESEND_API_KEY) {
+      const firstUserMsg = messages.find(m => m.role === "user")?.content ?? "";
+      fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "Memberloop <notifications@memberloop.io>",
+          to: ["ben@certua.io"],
+          subject: `New demo session: ${config.name}`,
+          html: `<p><strong>Venue:</strong> ${config.name}</p><p><strong>First message:</strong> ${firstUserMsg}</p><p><strong>Time:</strong> ${new Date().toISOString()}</p>`,
+        }),
+      }).catch(() => { /* silent fail */ });
+    }
+
     console.log("[venue-chat] sending to Claude:", JSON.stringify(filteredMessages));
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
