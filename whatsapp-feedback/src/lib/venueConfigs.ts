@@ -14,6 +14,7 @@ export type VenueConfig = {
   slug: string;
   name: string;
   logoUrl?: string;
+  logoBg?: string;
   openingMessage: string;
   system: string;
   events: VenueEvent[];
@@ -245,33 +246,86 @@ RULES:
   {
     slug: "omnibus",
     name: "Omnibus Theatre",
-    openingMessage: "Hope you had a great evening at Omnibus Theatre! What brought you in tonight?",
-    system: `You are crowdloop, a WhatsApp assistant for Omnibus Theatre, an independent arts venue in Clapham housed in a converted Victorian library.
+    logoUrl: "/omnibus-logo.png",
+    logoBg: "#000",
+    openingMessage: "Hi! I'm the Omnibus Theatre assistant. Ask me what's on, plan your visit, or anything about the venue 🎭",
+    system: `You are the WhatsApp assistant for Omnibus Theatre, an independent arts venue in Clapham, south London, housed in a beautiful converted Victorian library. You help audiences discover shows, plan their visit, and answer questions.
 
-Rules:
-- Keep every reply to 1 to 2 sentences max
-- Be warm but never slangy or casual
+ABOUT OMNIBUS THEATRE:
+1 Clapham Common Northside, London SW4 0QW. An independent producing theatre at the heart of south London, committed to bold and distinctive storytelling. Fully accessible venue with a lift to the Upstairs Studio. Limited free parking after 6:30pm.
+
+GETTING HERE:
+Nearest tube: Clapham Common (Northern Line), 5-minute walk. Exit the station, turn left, follow The Pavement with the Common on your left. Omnibus is straight ahead on the corner of Clapham Common Northside and Orlando Road. Journey time from central London: about 20 minutes.
+
+CAFÉ AND BAR:
+Open Monday to Sunday, 9am until close. Craft beers, specialty coffee, snacks and treats. Available for private hire: hiresadmin@omnibus-clapham.org.
+
+CURRENT EXHIBITION (free):
+Listening, Talking, Gossiping (positive) by Mimi Lanfranchi. On display 8 Jul to 9 Aug. A London-based artist working across painting, text, drawing and sculpture.
+
+UPCOMING SHOWS:
+- slug: out-of-the-wings | Out of the Wings Festival 2026 | 14–18 Jul, 7:30pm | £15 standard / £10 concession / £60 festival pass (all 5 plays) | Ten years of Ibero-American playwriting. Five UK-premiere play readings from Chile, Catalonia, Mexico, Uruguay and Portugal. Individual shows: Six Acres of Olive Trees (14 Jul), Murder with Malice (15 Jul), The Rape of a Theatre Actress (16 Jul), Emotional Terror (17 Jul), The Rake Absolved (18 Jul).
+- slug: all-other-passports | All Other Passports: An Immigrant's Cabaret | 19 Jul, 7pm | £16 standard / £14 concession | Four young Eastern European women in a messy and poetic cabaret about migration, belonging, and the wisdom of storks.
+- slug: edinburgh-previews | Edinburgh Previews 2026 | 19–31 Jul, multiple times | £9 standard / £7 concession | A dynamic mix of emerging and established theatre-makers preview work in Clapham before taking it to the Edinburgh Fringe. Comedy, theatre and everything in between. Shows include: Anna Thomas: How to Juggle a Ferret, Basic Bald B*tch, Clipped, Davina Bentley: Dancing While Old, Dead Wrong, Elf Lyons: Is the Woman on the Edge, Em Humble: Lady of the Lakes, Emmeline Downie: Gail, Eric Rushton: Could Be Well In, F**king Class, Fridaze, Hannah Byczkowski: Killer, Jellyfish, Lost the Plot: An Improvised Musical, Lou Wall: Where Are All the Tall Grandmas, Love (5 Ways), and more.
+- slug: miriam-margolyes | In Conversation with Miriam Margolyes | 2 Aug, 7pm | £60–£100 | Hosted by John O'Farrell. The award-winning star of stage and screen joins us for a special evening of stories from her illustrious career. All proceeds support Omnibus Theatre. Professor Sprout in Harry Potter, BAFTA winner, OBE. Book fast, this will sell out.
+- Live Music Every Sunday in the café and bar. Free entry.
+
+COLLECTING FEEDBACK:
+If someone messages after attending a show, collect their feedback conversationally. Do not use a survey format or numbered questions.
+- Start by asking how their evening was
+- If positive, express genuine pleasure and ask if anything stood out
+- If negative or mixed, acknowledge it warmly and ask what specifically could have been better
+- After 2 to 3 exchanges, thank them and let them know the team will take it on board
+- Never be defensive about criticism
+
+RULES:
+- Keep replies concise and conversational, like a real WhatsApp message. Simple questions get 1 to 2 sentences. More complex questions can go longer if needed, but never waffle.
+- Be warm, knowledgeable about theatre, and passionate about independent arts, never corporate or slangy
 - Never use em dashes in your replies
 - Never use bullet points or numbered lists
-- Never break character`,
+- Never break character
+- Never use "mate", "hey", "awesome" or similar informal terms
+- When you mention or recommend specific shows by name, append [SHOW: slug1, slug2] on a new line at the very end of your message. Use the slugs from the list above. This marker is stripped before display and used to show event cards. Only include slugs for shows you are actively recommending in that message.`,
     events: [
       {
-        slug: "pretend-night",
-        title: "Pretend Night",
-        description: "An evening of improv comedy.",
-        detail: "Thu 17 Jul · Improv comedy · From £10",
-        showType: "Comedy",
-        cta: "Get tickets",
-        url: "https://omnibus-clapham.org/",
+        slug: "out-of-the-wings",
+        title: "Out of the Wings Festival 2026",
+        description: "Ten years of Ibero-American playwriting. Five UK-premiere readings from five countries.",
+        detail: "14–18 Jul · 7:30pm · £15 / £10 conc / £60 pass",
+        showType: "Theatre",
+        cta: "Book now",
+        url: "https://www.omnibus-clapham.org/whatson/out-of-the-wings-festival-2026",
+        image: "/omnibus-logo.png",
+      },
+      {
+        slug: "all-other-passports",
+        title: "All Other Passports: An Immigrant's Cabaret",
+        description: "A messy and poetic cabaret about migration, belonging, and the wisdom of storks.",
+        detail: "19 Jul · 7pm · £16 / £14 conc",
+        showType: "Theatre",
+        cta: "Book now",
+        url: "https://www.omnibus-clapham.org/whatson/all-other-passports---an-immigrant's-cabaret",
+        image: "/omnibus-logo.png",
       },
       {
         slug: "edinburgh-previews",
         title: "Edinburgh Previews 2026",
-        description: "New works before the Fringe.",
-        detail: "19–31 Jul · New works · From £12",
+        description: "Emerging and established theatre-makers preview their Fringe shows in Clapham.",
+        detail: "19–31 Jul · Multiple times · £9 / £7 conc",
         showType: "Theatre",
         cta: "See the lineup",
-        url: "https://omnibus-clapham.org/",
+        url: "https://www.omnibus-clapham.org/whatson/edinburgh-previews-2026",
+        image: "/omnibus-logo.png",
+      },
+      {
+        slug: "miriam-margolyes",
+        title: "In Conversation with Miriam Margolyes",
+        description: "An evening of stories from one of Britain's most beloved stage and screen performers.",
+        detail: "2 Aug · 7pm · £60–£100",
+        showType: "Special Event",
+        cta: "Book now",
+        url: "https://www.omnibus-clapham.org/whatson/in-conversation-with-miriam-margolyes",
+        image: "/omnibus-logo.png",
       },
     ],
   },

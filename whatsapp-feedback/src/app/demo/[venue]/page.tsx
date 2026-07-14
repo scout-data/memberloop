@@ -120,6 +120,7 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
             onSend={() => send(input)}
             showPrompt={true}
             venueLogoUrl={config.logoUrl}
+            venueLogoBg={config.logoBg}
             venueName={config.name}
           />
         </div>

@@ -52,7 +52,7 @@ export function WhatsAppCard({ card, onCta }: { card: CardData; onCta?: (cta: st
 
 // ─── Demo Phone ───────────────────────────────────────────────────────────────
 
-export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput, onKey, onSend, onCardCta, showPrompt, readOnly, venueLogoUrl, venueName }: {
+export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput, onKey, onSend, onCardCta, showPrompt, readOnly, venueLogoUrl, venueLogoBg, venueName }: {
   messages: DemoMessage[];
   input?: string;
   loading?: boolean;
@@ -65,6 +65,7 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
   showPrompt?: boolean;
   readOnly?: boolean;
   venueLogoUrl?: string;
+  venueLogoBg?: string;
   venueName?: string;
 }) {
   return (
@@ -108,7 +109,7 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
             </svg>
             <span style={{ color: "#007AFF", fontSize: 14, fontFamily: "inherit" }}>6</span>
           </div>
-          <div style={{ width: 26, height: 26, borderRadius: "50%", overflow: "hidden", flexShrink: 0 }}>
+          <div style={{ width: 26, height: 26, borderRadius: "50%", overflow: "hidden", flexShrink: 0, background: venueLogoBg ?? "transparent" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={venueLogoUrl ?? "/wembley-fireworks.webp"} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
