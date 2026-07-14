@@ -23,7 +23,7 @@ const VENUE_CONFIGS: VenueConfig[] = [
   {
     slug: "ronnie-scotts",
     name: "Ronnie Scott's",
-    logoUrl: "https://cdn.ronniescotts.co.uk/uploads/_main_image/982676/RS_JazzJam_01_2024-10-31-165935_wicl.webp",
+    logoUrl: "https://bcasfbrjxhokxszafiaj.supabase.co/storage/v1/object/public/venue-images/ronnie-scotts.jpg",
     openingMessage: "Hi! I'm the Ronnie Scott's assistant on WhatsApp. Ask me what's on, get ticket links, or anything about your visit 🎷",
     system: `You are the WhatsApp assistant for Ronnie Scott's Jazz Club in Soho, London. You help fans discover upcoming shows, answer questions about visiting, and make it easy to book tickets.
 

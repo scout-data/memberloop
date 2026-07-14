@@ -3,10 +3,9 @@
 import { useState, useEffect, useRef } from "react";
 import { notFound } from "next/navigation";
 import { DemoPhone } from "@/components/DemoPhone";
+import { CrowdloopLogo } from "@/components/CrowdloopLogo";
 import { DemoMessage } from "@/lib/demoModes";
 import { getVenueConfig, VenueConfig } from "@/lib/venueConfigs";
-
-// ─── Inner page ───────────────────────────────────────────────────────────────
 
 function VenueDemoInner({ config }: { config: VenueConfig }) {
   const [messages, setMessages] = useState<DemoMessage[]>([]);
@@ -72,68 +71,91 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
       flexDirection: "column",
       fontFamily: "'Plus Jakarta Sans', Helvetica Neue, Arial, sans-serif",
     }}>
+
       {/* Top bar */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "18px 40px",
-        borderBottom: "1px solid rgba(0,0,0,0.06)",
         flexShrink: 0,
       }}>
         <a href="/" style={{ textDecoration: "none" }}>
-          <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.03em", color: "#111" }}>crowdloop</span>
+          <CrowdloopLogo />
         </a>
         <span style={{ fontSize: 13, color: "#9a9a9a", letterSpacing: "-0.01em" }}>
           a demo built for {config.name}
         </span>
       </div>
 
-      {/* Main */}
+      {/* Two-column layout */}
       <div style={{
         flex: 1,
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
+        maxWidth: 1100,
+        margin: "0 auto",
+        width: "100%",
+        padding: "48px 40px",
+        gap: 80,
         alignItems: "center",
-        justifyContent: "center",
-        padding: "48px 24px",
       }}>
-        <p style={{
-          fontSize: 15, color: "#666", textAlign: "center",
-          marginBottom: 28, maxWidth: 300, lineHeight: 1.5,
-          letterSpacing: "-0.01em",
-        }}>
-          This is what your fans experience on {config.name}&apos;s WhatsApp. Try it.
-        </p>
 
-        <DemoPhone
-          messages={messages}
-          input={input}
-          loading={loading}
-          chatRef={chatRef}
-          inputRef={inputRef}
-          onInput={setInput}
-          onKey={handleKey}
-          onSend={() => send(input)}
-          showPrompt={true}
-          venueLogoUrl={config.logoUrl}
-          venueName={config.name}
-        />
+        {/* LHS: description */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 24 }}>
+          <div>
+            <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", color: "#9a9a9a", textTransform: "uppercase", marginBottom: 16 }}>
+              Built for {config.name}
+            </p>
+            <h1 style={{ fontSize: 36, fontWeight: 300, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#111", marginBottom: 16 }}>
+              Your fans on WhatsApp, from day one.
+            </h1>
+            <p style={{ fontSize: 16, color: "#666", lineHeight: 1.6, letterSpacing: "-0.01em" }}>
+              This is a live demo of what {config.name}&apos;s WhatsApp agent could do. It knows your upcoming shows, can answer questions about visiting, and sends event cards with direct booking links.
+            </p>
+          </div>
 
-        <button
-          onClick={reset}
-          style={{
-            marginTop: 12, fontSize: 13, color: "#aaa",
-            background: "none", border: "none", cursor: "pointer",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          start over
-        </button>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {[
+              { label: "Ticket releases", body: "Notify fans the moment tickets go live and close the sale in the chat." },
+              { label: "Event reminders", body: "Send show day info directly to ticketholders before they need to ask." },
+              { label: "FAQs", body: "Answer questions about opening times, cancellations, and directions instantly." },
+              { label: "Feedback", body: "Collect post-show insights while the experience is still fresh." },
+            ].map(item => (
+              <div key={item.label} style={{ borderLeft: "2px solid #e8e8e8", paddingLeft: 16 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#111", letterSpacing: "-0.01em", marginBottom: 2 }}>{item.label}</div>
+                <div style={{ fontSize: 13, color: "#888", lineHeight: 1.5 }}>{item.body}</div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={reset}
+            style={{ alignSelf: "flex-start", fontSize: 13, color: "#aaa", background: "none", border: "none", cursor: "pointer", letterSpacing: "-0.01em", padding: 0 }}
+          >
+            ↺ Start over
+          </button>
+        </div>
+
+        {/* RHS: phone */}
+        <div style={{ flexShrink: 0, display: "flex", justifyContent: "center" }}>
+          <DemoPhone
+            messages={messages}
+            input={input}
+            loading={loading}
+            chatRef={chatRef}
+            inputRef={inputRef}
+            onInput={setInput}
+            onKey={handleKey}
+            onSend={() => send(input)}
+            showPrompt={true}
+            venueLogoUrl={config.logoUrl}
+            venueName={config.name}
+          />
+        </div>
+
       </div>
     </div>
   );
 }
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function VenueDemoPage({ params }: { params: { venue: string } }) {
   const config = getVenueConfig(params.venue);
