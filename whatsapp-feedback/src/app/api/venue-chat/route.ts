@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({
           from: "Memberloop <notifications@memberloop.io>",
-          to: ["ben@certua.io"],
+          to: ["ben@crowdloop.co"],
           subject: `New demo session: ${config.name}`,
           html: `<p><strong>Venue:</strong> ${config.name}</p><p><strong>First message:</strong> ${firstUserMsg}</p><p><strong>Time:</strong> ${new Date().toISOString()}</p>`,
         }),
