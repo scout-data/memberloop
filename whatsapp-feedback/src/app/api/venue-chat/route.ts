@@ -16,8 +16,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Venue not found" }, { status: 404 });
     }
 
-    const filteredMessages = messages.filter((m) => m.content.trim() !== "");
+    // Anthropic requires messages to start with user and alternate roles.
+    // Drop leading assistant messages and collapse consecutive same-role messages.
+    const normalized: ChatMessage[] = [];
+    for (const m of messages) {
+      if (!m.content.trim()) continue;
+      if (normalized.length === 0 && m.role === "assistant") continue;
+      const last = normalized[normalized.length - 1];
+      if (last && last.role === m.role) {
+        last.content += "\n" + m.content;
+      } else {
+        normalized.push({ ...m });
+      }
+    }
+    const filteredMessages = normalized;
 
+    console.log("[venue-chat] sending to Claude:", JSON.stringify(filteredMessages));
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 300,
@@ -51,7 +65,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ content, carousel });
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Failed to get response" }, { status: 500 });
+    console.error("[venue-chat] error:", err);
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: "Failed to get response", detail: message }, { status: 500 });
   }
 }

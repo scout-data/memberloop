@@ -74,11 +74,11 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
 
       {/* Top bar */}
       <div style={{
-        display: "flex", alignItems: "center", justifyContent: "space-between",
+        display: "flex", alignItems: "center", justifyContent: "center", position: "relative",
         padding: "18px 40px",
         flexShrink: 0,
       }}>
-        <a href="/" style={{ textDecoration: "none" }}>
+        <a href="/" style={{ textDecoration: "none", position: "absolute", left: 40 }}>
           <CrowdloopLogo />
         </a>
         <span style={{ fontSize: 13, color: "#9a9a9a", letterSpacing: "-0.01em" }}>
@@ -94,34 +94,20 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
         maxWidth: 1100,
         margin: "0 auto",
         width: "100%",
-        padding: "48px 40px",
-        gap: 80,
-        alignItems: "center",
+        padding: "80px 40px 80px 0",
+        gap: 140,
+        alignItems: "flex-start",
       }}>
 
         {/* LHS: description */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 24 }}>
           <div>
             <h1 style={{ fontSize: 36, fontWeight: 300, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#111", marginBottom: 16 }}>
-              Your fans on WhatsApp, from day one.
+              Build a personal channel with every {config.name} fan
             </h1>
             <p style={{ fontSize: 16, color: "#666", lineHeight: 1.6, letterSpacing: "-0.01em" }}>
               This is a live demo of what {config.name}&apos;s WhatsApp agent could do. It knows your upcoming shows, can answer questions about visiting, and sends event cards with direct booking links.
             </p>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {[
-              { label: "Ticket releases", body: "Notify fans the moment tickets go live and close the sale in the chat." },
-              { label: "Event reminders", body: "Send show day info directly to ticketholders before they need to ask." },
-              { label: "FAQs", body: "Answer questions about opening times, cancellations, and directions instantly." },
-              { label: "Feedback", body: "Collect post-show insights while the experience is still fresh." },
-            ].map(item => (
-              <div key={item.label} style={{ borderLeft: "2px solid #e8e8e8", paddingLeft: 16 }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#111", letterSpacing: "-0.01em", marginBottom: 2 }}>{item.label}</div>
-                <div style={{ fontSize: 13, color: "#888", lineHeight: 1.5 }}>{item.body}</div>
-              </div>
-            ))}
           </div>
 
           <button

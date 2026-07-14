@@ -29,9 +29,9 @@ export function WhatsAppCard({ card, onCta }: { card: CardData; onCta?: (cta: st
           </div>
         )}
       </div>
-      <div style={{ padding: "8px 10px 6px" }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: "#111", marginBottom: 2, lineHeight: "17px" }}>{card.title}</div>
-        <div style={{ fontSize: 11, color: "#667781", lineHeight: "15px" }}>{card.detail}</div>
+      <div style={{ padding: "8px 10px 6px", height: 72, overflow: "hidden" }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#111", marginBottom: 2, lineHeight: "17px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{card.title}</div>
+        <div style={{ fontSize: 11, color: "#667781", lineHeight: "15px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{card.detail}</div>
       </div>
       <div style={{ height: 1, background: "#F0F0F0", margin: "0 10px" }} />
       <a
@@ -108,7 +108,7 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
             </svg>
             <span style={{ color: "#007AFF", fontSize: 14, fontFamily: "inherit" }}>6</span>
           </div>
-          <div style={{ width: 34, height: 34, borderRadius: "50%", overflow: "hidden", flexShrink: 0 }}>
+          <div style={{ width: 26, height: 26, borderRadius: "50%", overflow: "hidden", flexShrink: 0 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={venueLogoUrl ?? "/wembley-fireworks.webp"} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
@@ -145,7 +145,7 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
                   ) : null}
                   <div style={{ display: "flex", gap: 6, overflowX: "auto", scrollbarWidth: "none", paddingBottom: 2 }}>
                     {msg.carousel.map((card, j) => (
-                      <div key={j} style={{ flexShrink: 0, width: 200 }}>
+                      <div key={j} style={{ flexShrink: 0, width: 220 }}>
                         <WhatsAppCard card={card} onCta={onCardCta} />
                       </div>
                     ))}
@@ -191,9 +191,9 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
 
         {/* Type prompt */}
         {!readOnly && showPrompt && messages.length === 1 && !loading && (
-          <div style={{ textAlign: "center", padding: "6px 8px 4px", background: "#ECE5DD", animation: "fadeSlideIn 0.4s ease 0.8s both" }}>
-            <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", background: "#25D366", borderRadius: 999, padding: "4px 12px", fontFamily: "Helvetica Neue, Arial, sans-serif", display: "inline-block", animation: "nudge 1.6s ease-in-out infinite" }}>
-              ✏️ Type your reply below
+          <div style={{ textAlign: "center", padding: "6px 8px 4px", background: "#ECE5DD" }}>
+            <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", background: "#8b0000", borderRadius: 999, padding: "4px 12px", fontFamily: "Helvetica Neue, Arial, sans-serif", display: "inline-block", animation: "nudge 1.6s ease-in-out infinite" }}>
+              Type your reply below
             </span>
           </div>
         )}
