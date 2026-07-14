@@ -73,36 +73,23 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
     }}>
 
       {/* Top bar */}
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "center", position: "relative",
-        padding: "18px 40px",
-        flexShrink: 0,
-      }}>
-        <a href="/" style={{ textDecoration: "none", position: "absolute", left: 40 }}>
+      <div className="flex items-center justify-between lg:justify-center lg:relative" style={{ padding: "18px 24px", flexShrink: 0 }}>
+        <a href="/" style={{ textDecoration: "none" }} className="lg:absolute lg:left-6">
           <CrowdloopLogo />
         </a>
-        <span style={{ fontSize: 13, color: "#9a9a9a", letterSpacing: "-0.01em" }}>
+        <span className="hidden lg:inline" style={{ fontSize: 13, color: "#9a9a9a", letterSpacing: "-0.01em" }}>
           a demo built for {config.name}
         </span>
       </div>
 
-      {/* Two-column layout */}
-      <div style={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "row",
-        maxWidth: 1100,
-        margin: "0 auto",
-        width: "100%",
-        padding: "80px 40px 80px 0",
-        gap: 140,
-        alignItems: "flex-start",
-      }}>
+      {/* Layout */}
+      <div className="flex flex-col lg:flex-row flex-1 w-full mx-auto items-start"
+        style={{ maxWidth: 1100, padding: "48px 24px", gap: 0 }}>
 
-        {/* LHS: description */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 24 }}>
+        {/* Text */}
+        <div className="flex flex-col w-full lg:flex-1 lg:pr-0" style={{ gap: 24, paddingBottom: 40 }}>
           <div>
-            <h1 style={{ fontSize: 36, fontWeight: 300, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#111", marginBottom: 16 }}>
+            <h1 style={{ fontSize: 32, fontWeight: 300, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#111", marginBottom: 16 }}>
               Build a personal channel with every {config.name} fan
             </h1>
             <p style={{ fontSize: 16, color: "#666", lineHeight: 1.6, letterSpacing: "-0.01em" }}>
@@ -118,8 +105,8 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
           </button>
         </div>
 
-        {/* RHS: phone */}
-        <div style={{ flexShrink: 0, display: "flex", justifyContent: "center" }}>
+        {/* Phone */}
+        <div className="flex w-full justify-center lg:justify-start lg:flex-shrink-0" style={{ paddingLeft: 0 }}>
           <DemoPhone
             messages={messages}
             input={input}
