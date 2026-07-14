@@ -139,7 +139,11 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
                   {msg.content ? (
                     <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: 4 }}>
                       <div style={{ background: "#fff", borderRadius: "2px 12px 12px 12px", padding: "5px 8px 4px", maxWidth: "80%", boxShadow: "0 1px 1px rgba(0,0,0,0.1)", fontFamily: "Helvetica Neue, Arial, sans-serif", fontSize: 13, lineHeight: "19px", color: "#111", whiteSpace: "pre-wrap" }}>
-                        {msg.content}
+                        {msg.content.split(/(\*\*[^*]+\*\*)/).map((part, j) =>
+                          part.startsWith("**") && part.endsWith("**")
+                            ? <strong key={j}>{part.slice(2, -2)}</strong>
+                            : part
+                        )}
                       </div>
                     </div>
                   ) : null}
@@ -172,7 +176,11 @@ export function DemoPhone({ messages, input, loading, chatRef, inputRef, onInput
                   fontSize: 13, lineHeight: "19px", color: "#111",
                   whiteSpace: "pre-wrap",
                 }}>
-                  {msg.content}
+                  {msg.content.split(/(\*\*[^*]+\*\*)/).map((part, j) =>
+                    part.startsWith("**") && part.endsWith("**")
+                      ? <strong key={j}>{part.slice(2, -2)}</strong>
+                      : part
+                  )}
                 </div>
               </div>
             );
