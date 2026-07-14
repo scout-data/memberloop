@@ -5,6 +5,42 @@ import { CardData } from "@/lib/demoModes";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+const WMO_DESCRIPTIONS: Record<number, string> = {
+  0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
+  45: "Fog", 48: "Icy fog",
+  51: "Light drizzle", 53: "Drizzle", 55: "Heavy drizzle",
+  61: "Light rain", 63: "Rain", 65: "Heavy rain",
+  71: "Light snow", 73: "Snow", 75: "Heavy snow",
+  80: "Rain showers", 81: "Heavy rain showers", 82: "Violent rain showers",
+  95: "Thunderstorm", 96: "Thunderstorm with hail", 99: "Thunderstorm with heavy hail",
+};
+
+async function fetchKiaOvalWeather(): Promise<string> {
+  try {
+    const res = await fetch(
+      "https://api.open-meteo.com/v1/forecast?latitude=51.4816&longitude=-0.1165&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode&forecast_days=7&timezone=Europe%2FLondon",
+      { next: { revalidate: 1800 } }
+    );
+    if (!res.ok) return "";
+    const data = await res.json();
+    const { time, temperature_2m_max, temperature_2m_min, precipitation_probability_max, weathercode } = data.daily;
+    const lines: string[] = [];
+    for (let i = 0; i < time.length; i++) {
+      const date = new Date(time[i]);
+      const label = date.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+      const desc = WMO_DESCRIPTIONS[weathercode[i]] ?? "Variable";
+      const rainChance = precipitation_probability_max[i];
+      const maxT = Math.round(temperature_2m_max[i]);
+      const minT = Math.round(temperature_2m_min[i]);
+      const playRisk = rainChance >= 60 ? " — RAIN RISK, play may be affected" : rainChance >= 30 ? " — some rain possible" : "";
+      lines.push(`- ${label}: ${desc}, ${minT}–${maxT}°C, ${rainChance}% rain chance${playRisk}`);
+    }
+    return `\n\nLIVE WEATHER FORECAST FOR THE KIA OVAL (SE11):\n${lines.join("\n")}\nSource: Open-Meteo. Use this to answer questions about whether play is likely to be affected by rain.`;
+  } catch {
+    return "";
+  }
+}
+
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
 export async function POST(req: NextRequest) {
@@ -32,7 +68,8 @@ export async function POST(req: NextRequest) {
     const filteredMessages = normalized;
 
     const today = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-    const systemWithDate = `TODAY'S DATE: ${today}\n\n${config.system}`;
+    const weatherContext = venueSlug === "kia-oval" ? await fetchKiaOvalWeather() : "";
+    const systemWithDate = `TODAY'S DATE: ${today}${weatherContext}\n\n${config.system}`;
 
     // Notify on first user message (fire-and-forget)
     const isFirstMessage = messages.filter(m => m.role === "user").length === 1;
