@@ -102,9 +102,6 @@ function VenueDemoInner({ config }: { config: VenueConfig }) {
         {/* LHS: description */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 24 }}>
           <div>
-            <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", color: "#9a9a9a", textTransform: "uppercase", marginBottom: 16 }}>
-              Built for {config.name}
-            </p>
             <h1 style={{ fontSize: 36, fontWeight: 300, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#111", marginBottom: 16 }}>
               Your fans on WhatsApp, from day one.
             </h1>
