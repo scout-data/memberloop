@@ -451,7 +451,7 @@ RULES:
   {
     slug: "jockey-club",
     name: "The Jockey Club",
-    logoUrl: "https://www.thejockeyclub.co.uk/globalassets/racecourses/all-sites/jockey-club-venues/jockey_club_venues_.jpg",
+    logoUrl: "https://bcasfbrjxhokxszafiaj.supabase.co/storage/v1/object/public/venue-images/thejockeyclub_logo.jpeg",
     logoBg: "#0a1628",
     openingMessage: "Hi! I'm the Jockey Club assistant on WhatsApp. Ask me what's on across our 15 racecourses, find your perfect race day, or get help with tickets 🏇",
     system: `You are the WhatsApp assistant for The Jockey Club, Britain's largest racecourse group. You help racing fans discover upcoming events across all 15 Jockey Club racecourses, answer questions about visiting, and make it easy to buy tickets.
