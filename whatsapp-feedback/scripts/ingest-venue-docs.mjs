@@ -64,6 +64,40 @@ const VENUE_SOURCES = {
       { path: join(root, "../../.firecrawl/thejockeyclub.co.uk-events-tickets-rewards4racing.md"),                url: "https://www.thejockeyclub.co.uk/events-tickets/rewards4racing/" },
     ],
   },
+  "little-door-co": {
+    files: [
+      // Group site
+      { path: join(root, "../../.firecrawl/tlod-group-home.md"),           url: "https://www.thelittledoorandco.com/home" },
+      // Orange Door — Clapham
+      { path: join(root, "../../.firecrawl/tlod-orange-home.md"),          url: "https://www.thelittleorangedoor.co.uk/our-home" },
+      { path: join(root, "../../.firecrawl/tlod-orange-whats-on.md"),      url: "https://www.thelittleorangedoor.co.uk/whats-on" },
+      { path: join(root, "../../.firecrawl/tlod-orange-brunch.md"),        url: "https://www.thelittleorangedoor.co.uk/bottomless-prosecco-brunch-clapham-1" },
+      { path: join(root, "../../.firecrawl/tlod-orange-birthdays.md"),     url: "https://www.thelittleorangedoor.co.uk/birthdays" },
+      // Blue Door — Fulham
+      { path: join(root, "../../.firecrawl/tlod-blue-home.md"),            url: "https://www.thelittlebluedoor.co.uk/our-home" },
+      { path: join(root, "../../.firecrawl/tlod-blue-whats-on.md"),        url: "https://www.thelittlebluedoor.co.uk/whats-on" },
+      { path: join(root, "../../.firecrawl/tlod-blue-brunch.md"),          url: "https://www.thelittlebluedoor.co.uk/best-bottomless-brunch-fulham-1" },
+      { path: join(root, "../../.firecrawl/tlod-blue-birthdays.md"),       url: "https://www.thelittlebluedoor.co.uk/birthdays" },
+      // Yellow Door — Notting Hill
+      { path: join(root, "../../.firecrawl/tlod-yellow-home.md"),          url: "https://www.thelittleyellowdoor.com/our-home" },
+      { path: join(root, "../../.firecrawl/tlod-yellow-whats-on.md"),      url: "https://www.thelittleyellowdoor.com/whats-on" },
+      { path: join(root, "../../.firecrawl/tlod-yellow-brunch.md"),        url: "https://www.thelittleyellowdoor.com/bottomless-prosecco-brunch-nottinghill-1" },
+      // Scarlet Door — Soho
+      { path: join(root, "../../.firecrawl/tlod-scarlet-home.md"),         url: "https://www.thelittlescarletdoor.co.uk/our-home" },
+      { path: join(root, "../../.firecrawl/tlod-scarlet-whats-on.md"),     url: "https://www.thelittlescarletdoor.co.uk/whats-on" },
+      { path: join(root, "../../.firecrawl/tlod-scarlet-brunch.md"),       url: "https://www.thelittlescarletdoor.co.uk/bottomless" },
+      // Violet Door — Carnaby
+      { path: join(root, "../../.firecrawl/tlod-violet-home.md"),          url: "https://www.thelittlevioletdoor.co.uk/home" },
+      { path: join(root, "../../.firecrawl/tlod-violet-whats-on.md"),      url: "https://www.thelittlevioletdoor.co.uk/whats-on" },
+      { path: join(root, "../../.firecrawl/tlod-violet-brunch.md"),        url: "https://www.thelittlevioletdoor.co.uk/bottomless-brunch" },
+      // Neon Door — Shoreditch
+      { path: join(root, "../../.firecrawl/tlod-neon-home.md"),            url: "https://www.thelittleneondoor.co.uk/home" },
+      { path: join(root, "../../.firecrawl/tlod-neon-whats-on.md"),        url: "https://www.thelittleneondoor.co.uk/whats-on" },
+      { path: join(root, "../../.firecrawl/tlod-neon-karaoke.md"),         url: "https://www.thelittleneondoor.co.uk/karaoke" },
+      { path: join(root, "../../.firecrawl/tlod-neon-brunch.md"),          url: "https://www.thelittleneondoor.co.uk/brunch" },
+      { path: join(root, "../../.firecrawl/tlod-neon-house-party.md"),     url: "https://www.thelittleneondoor.co.uk/house-party" },
+    ],
+  },
 };
 
 // ─── Chunking ─────────────────────────────────────────────────────────────────

@@ -9,7 +9,7 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const openai  = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Venues that have documents ingested into venue_documents
-const RAG_VENUES = new Set(["jockey-club"]);
+const RAG_VENUES = new Set(["jockey-club", "little-door-co"]);
 
 async function retrieveVenueContext(venueSlug: string, userMessage: string): Promise<string> {
   if (!RAG_VENUES.has(venueSlug) || !process.env.POSTGRES_URL) return "";
